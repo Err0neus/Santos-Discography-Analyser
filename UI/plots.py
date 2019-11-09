@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import time
 from matplotlib.ticker import MaxNLocator
-
+import seaborn as sns
 from IPython.display import clear_output
 
 ##################################################################
 #import sample discography
-discog = pd.read_csv('sample_discography.csv')
+discog = pd.read_csv('sample_discography_w_lyrics.csv')
 ##################################################################
 
 
@@ -39,6 +39,17 @@ def album_song_count_per_period(discog, bin_size):
     data_songs = unique_per_period(discog, 'track_title', bin_size)
     return data_albums.merge(data_songs, on = 'period')
 
+def add_period_column(discog, bin_size):
+    '''adds column with period info without any other modifications'''
+    period_col_data = []
+    bins = generate_period_bins(discog, bin_size)
+    for i, r in discog.iterrows():
+        for period in bins:
+            if r['year'] >= int(period[:4]) and r['year'] <= int(period[5:]):
+                period_col_data.append(period)
+    discog['period'] = period_col_data
+    return discog
+                                                                 
 
 def plot_albums_songs_per_period(discog, bin_size):
     '''plots the number of albums and songs per period'''
@@ -98,6 +109,15 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
 
     plt.show()
     
+def pirate_plot(discog, bin_size):
+    data = add_period_column(discog, bin_size)
+    sns.set_style("whitegrid")
+    fig, ax = plt.subplots(figsize=(8,4))
+    ax = sns.boxplot(x="period", y="unique_words", data=data)
+    ax = sns.stripplot(x="period", y="unique_words", data=data, color=".25")
+
+
+
 # set bin_size var with default 10
 bin_size = 10
 # define function to overwrite bin_size from slider input
@@ -117,6 +137,7 @@ def button_1_func(x):
     #display chart using the new bin_size
     plot_albums_songs_per_period(discog, bin_size)
     plot_albums_songs_per_period_bar(discog, bin_size)
+    pirate_plot(discog, bin_size)
 
     
 # UI
