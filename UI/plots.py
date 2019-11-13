@@ -4,12 +4,16 @@ import time
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
 from IPython.display import clear_output
+# UI
+import ipywidgets as widgets
 
 ##################################################################
 #import sample discography
 discog = pd.read_csv('sample_discography_w_lyrics.csv')
 ##################################################################
 
+# default selected tab in the UI
+selected_tab = 0
 
 def generate_period_bins(discog, bin_size):
     '''returns list of period bins starting 0th year of the decade of first release'''
@@ -22,7 +26,6 @@ def generate_period_bins(discog, bin_size):
         year += bin_size
     return bins
 
-
 def unique_per_period(discog, column, bin_size):
     '''returns a dataframe with count of unique values within a column by defined bin size'''
     data = {'period' : generate_period_bins(discog, bin_size),
@@ -31,7 +34,6 @@ def unique_per_period(discog, column, bin_size):
         data[column].append(len(discog[(discog['year'] >= int(period[:4])) \
                                        & (discog['year'] <= int(period[5:]))][column].unique()))   
     return pd.DataFrame.from_dict(data)
-
 
 def album_song_count_per_period(discog, bin_size):
     '''returns a merged dataframe by period with counts of albums and songs per period'''
@@ -50,7 +52,6 @@ def add_period_column(discog, bin_size):
     discog['period'] = period_col_data
     return discog
                                                                  
-
 def plot_albums_songs_per_period(discog, bin_size):
     '''plots the number of albums and songs per period'''
     
@@ -125,8 +126,8 @@ def set_bin_size(x):
     global bin_size
     bin_size = x
 
-# function to run at click of the button_1
-def button_1_func(x):
+# function to run at click of the button_3
+def button_3_func(x):
     global bin_size
     #overwrite bin_size with current selection of the slider
     set_bin_size(slider_1.value)
@@ -135,13 +136,44 @@ def button_1_func(x):
     # display UI
     plots()
     #display chart using the new bin_size
-    plot_albums_songs_per_period(discog, bin_size)
-    plot_albums_songs_per_period_bar(discog, bin_size)
-    pirate_plot(discog, bin_size)
+    plot_albums_songs_per_period(discog_filtered, bin_size)
+    plot_albums_songs_per_period_bar(discog_filtered, bin_size)
+    pirate_plot(discog_filtered, bin_size)
 
+#global var for artist
+artist = ''
+#global widget to type artist name
+artist_input = widgets.Text()
+# define function to overwrite artist from user input
+def set_artist(x):
+    global artist
+    artist = x
+# function to set list of albums into the selector
+def set_album_selector(albums,selected):
+    global album_selector
+    album_selector.options = albums
+    album_selector.value = selected
     
-# UI
-import ipywidgets as widgets
+# function to run at click of the button_1    
+def button_1_func(x):
+    global artist    
+    #overwrite artist with current text of the input box
+    set_artist(artist_input.value)
+    #clear previous output
+    clear_output()
+    # select next tab
+    global selected_tab
+    selected_tab = 1
+    # set album selecor content
+    
+    global album_selector
+    set_album_selector(discog['album'].unique(),discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
+    # display UI
+    plots()
+    print('retrieving discography for ' + artist)
+    
+    
+
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(
@@ -158,19 +190,76 @@ slider_1 = widgets.IntSlider(
         readout_format='d'
     )
 
+
+#create album_filter
+album_filter = []
+# create album selector
+album_selector = widgets.SelectMultiple(
+    options=[],
+    value=[],
+    rows=20,
+    layout=widgets.Layout(width="50%"),
+    description='Albums',
+    disabled=False
+)
+# func to set album filter
+def set_album_filter(x):
+    global album_filter
+    album_filter = x
+
+discog_filtered = []
+def button_2_func(x):
+    #clear previous output
+    clear_output()    
+    #overwrite album_filter with current selection
+    global album_filter    
+    set_album_filter(album_selector.value)
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
+    # select next tab
+    global selected_tab
+    selected_tab = 2
+    # display UI
+    plots()
+    
+    
 def plots():
+    # SECTION 1 = lyrics getter
+    # input box = insert artist
+    # button = get artist discography
+    global artist_input
+    button_1 = widgets.Button(description="Get discography")
+    button_1.on_click(button_1_func)
+    SECTION_1 = widgets.VBox([artist_input, button_1,])
+    
+    
+    # SECTION 2 = review retrieved data
+    # list of albums to include in the analysis
+    # selector to include/exclude albums
+    # button = confirm
+    global album_selector
+    button_2 = widgets.Button(description="Apply")
+    button_2.on_click(button_2_func)
+    text_2 = widgets.Label('Use CTRL+click to toggle selection.', layout=widgets.Layout(width="80%"))
+    SECTION_2 = widgets.VBox([text_2, album_selector, button_2,])    
+    
+    
+    # SECTION 3 = chart plots
     # chart 1
     global slider_1
     # button to update chart
-    button_1 = widgets.Button(description="Show/refresh chart")
-    button_1.on_click(button_1_func)
+    button_3 = widgets.Button(description="Show/refresh chart")
+    button_3.on_click(button_3_func)
     
     # vertical block
-    window_1 = widgets.VBox([slider_1, button_1,])
+    SECTION_3 = widgets.VBox([slider_1, button_3,])
        
     #tab_contents = ['Chart_1',]
-    children = [window_1,]    
+    children = [SECTION_1, SECTION_2, SECTION_3]    
     accordion = widgets.Accordion(children=children)
-    accordion.set_title(0, 'Chart_1')
-    accordion.selected_index = 0
+    accordion.set_title(0, 'Get Discography')
+    accordion.set_title(1, 'Select albums')
+    accordion.set_title(2, 'Show Stats')
+    accordion.selected_index = selected_tab
     display(accordion)
