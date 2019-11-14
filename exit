@@ -1,0 +1,168 @@
+[33mcommit 36980aeddca17af52693230d3c5eac7731564e0e[m[33m ([m[1;36mHEAD -> [m[1;32mbasic_charts[m[33m)[m
+Merge: adb1c3e 19a263f
+Author: Cernan <Dusan.Cernan@nielsen.com>
+Date:   Wed Nov 13 18:05:18 2019 +0000
+
+    Merge branch 'basic_charts' of https://github.com/Err0neus/Project_Santos into basic_charts
+
+[33mcommit adb1c3ecc64df9baabd2fa25907e154076799a3b[m
+Author: Cernan <Dusan.Cernan@nielsen.com>
+Date:   Wed Nov 13 18:00:36 2019 +0000
+
+    updated sample files with album exclude_flag
+
+[33mcommit 19a263f125117d005d678c46f73495b35fe95b34[m[33m ([m[1;31morigin/basic_charts[m[33m)[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Mon Nov 11 21:04:51 2019 +0000
+
+    update to from_song_list_to_lyrics
+
+[33mcommit f631f600d50174ff10ef99d5e3850882b1268ad0[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 18:55:31 2019 +0000
+
+    Rename from_album_list_to_song_list to from_album_list_to_song_list.ipynb
+
+[33mcommit ab323a7e0e5c66e83a7b3e133d8a272aaff4d0f1[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 18:54:12 2019 +0000
+
+    Rename basic_charts_workbook-data_getter.ipynb to from_album_list_to_song_list
+
+[33mcommit c808c4f0981027ddf912248f23554b9c358f1ae7[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 17:50:50 2019 +0000
+
+    latest file saves
+
+[33mcommit 797ece8a8e21d586350d452c8fb0bc7b282bf20c[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 17:49:42 2019 +0000
+
+    run with 3 charts now, using all chart types of plots.py
+
+[33mcommit eef23c2d7bc91926b7cc3a5cde839fa6a51c8471[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 17:47:48 2019 +0000
+
+    added boxplot to visualize lexical variety
+
+[33mcommit 73112a96e3f0913a3bce474693165434fde1ed8e[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 17:46:35 2019 +0000
+
+    sample list with lyrics, output of 'from_song_list_to_lyrics' code
+
+[33mcommit 3031b474ea0b4bfea3b6f882bd79da16709e1505[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 17:45:36 2019 +0000
+
+    code to scrape for lyrics using song list + after cleaning
+
+[33mcommit 9e047a7f8b2f52dbe11d13325dc56e55707154df[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 16:03:07 2019 +0000
+
+    added a bar version of the chart - to choose better style
+
+[33mcommit e0e15c39cee7c949fa320fdbe79065b309a069f8[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 15:39:06 2019 +0000
+
+    separated code into module, leaving notebook for UI only
+
+[33mcommit 463cb18d1004ea6abf95c6391735388f38c4b3cc[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 15:37:56 2019 +0000
+
+    separated API code from chart file
+
+[33mcommit 8cddf3742da0afdee15b53b74c549ea4f9fafccb[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 15:36:10 2019 +0000
+
+    renamed UI/UI.py to UI/plots.py
+
+[33mcommit 92ab2da2c2f91b27eb7687e9b156bccda4781a8e[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Sat Nov 9 15:34:58 2019 +0000
+
+    sample data file added
+
+[33mcommit 14db939186a6013ab5d812a7e14b65379397c479[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 23:31:24 2019 +0000
+
+    update
+
+[33mcommit 1f22aaf28b8653987b0b9669ca6fe2ca7bfd5f39[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 22:36:50 2019 +0000
+
+    subfolder for UI
+
+[33mcommit d3ba4cb481ed758c430a3706e138e4b30d855520[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 22:34:16 2019 +0000
+
+    updated
+
+[33mcommit 997859ef58cf0e601b104b8e35945f4c84d2e62a[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 22:29:19 2019 +0000
+
+    created folder for UI code
+
+[33mcommit 8c69465df79b120bf9a8c3ff9e9f387983157e0e[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 22:21:28 2019 +0000
+
+    update
+
+[33mcommit 137731c3febd964114d436d4615c46f6599f6178[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 00:10:32 2019 +0000
+
+    update chart bin size
+
+[33mcommit 41b52c993342f7fb4da81e07d6f39237503b4aff[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Fri Nov 8 00:09:48 2019 +0000
+
+    update - avoid skipping periods
+
+[33mcommit c4b735a1765318c2ff714cde39b5a5d4d9824b71[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Thu Nov 7 23:18:43 2019 +0000
+
+    update
+
+[33mcommit a8e16d1c500f7d1f58bea9c13833e9ce0fcf4388[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Thu Nov 7 23:04:52 2019 +0000
+
+    updated file
+
+[33mcommit 4601ec3290fa51d1add84fe61f113ac46971f280[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Thu Nov 7 23:55:09 2019 +0000
+
+    added working file for easy access. not for master
+
+[33mcommit 4d15c70575d62cc55b1e87fbbf6f91e77f75162d[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Wed Nov 6 16:57:41 2019 +0000
+
+    created an empty file for the main program
+
+[33mcommit d713c0ba09013e80a39bd8f118028c0a9915b89c[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Wed Nov 6 14:57:29 2019 +0000
+
+    added High Level Overview to README
+
+[33mcommit 23771b346b1070fcbd773482d73cf6f9ba506c26[m
+Author: Err0neus <43116506+Err0neus@users.noreply.github.com>
+Date:   Wed Nov 6 14:53:54 2019 +0000
+
+    Initial commit

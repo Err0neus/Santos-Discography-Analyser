@@ -153,7 +153,9 @@ def set_album_selector(albums,selected):
     global album_selector
     album_selector.options = albums
     album_selector.value = selected
-    
+ 
+
+
 # function to run at click of the button_1    
 def button_1_func(x):
     global artist    
@@ -165,9 +167,15 @@ def button_1_func(x):
     global selected_tab
     selected_tab = 1
     # set album selecor content
-    
+
+    #overwrite album_filter with current selection
+    global album_filter    
+    set_album_filter(discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
+               
     global album_selector
-    set_album_selector(discog['album'].unique(),discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
+    set_album_selector(discog['album'].unique(), album_filter)
+    global album_selector_alt 
+    set_album_selector_alt(discog['album'].unique().tolist(), album_filter)
     # display UI
     plots()
     print('retrieving discography for ' + artist)
@@ -219,10 +227,52 @@ def button_2_func(x):
     discog_filtered = discog[discog['album'].isin(album_filter)].copy()
     # select next tab
     global selected_tab
-    selected_tab = 2
+    selected_tab = 3
     # display UI
     plots()
     
+def button_2_alt_func(x):
+    #clear previous output
+    clear_output()    
+    #overwrite album_filter with current selection
+    
+    global album_selector_alt 
+    
+    global album_filter 
+    selected = []
+    for album in album_selector_alt.children[0].children:
+        if album.value == True:
+            selected.append(album.description)
+    
+    set_album_selector_alt(discog['album'].unique().tolist(), selected)
+    set_album_filter(selected)
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
+    # select next tab
+    global selected_tab
+    selected_tab = 3
+    # display UI
+    plots()    
+    print(selected)
+#------------------------------------------------------------
+options = []
+def multi_checkbox_widget(albums, albums_filter):
+    options_dict = {album: widgets.Checkbox(description=album, value=False) for album in albums}
+    options = [options_dict[album] for album in albums]
+    for option in options:
+        if option.description in albums_filter:
+            option.value = True
+    options_widget = widgets.VBox(options, layout={'overflow': 'scroll'})
+    multi_select = widgets.VBox([options_widget])
+    return multi_select
+
+def set_album_selector_alt(options, options_filter):
+    global album_selector_alt
+    album_selector_alt = multi_checkbox_widget(options,options_filter) 
+
+album_selector_alt = multi_checkbox_widget([],[])
+#------------------------------------------------------------
     
 def plots():
     # SECTION 1 = lyrics getter
@@ -243,7 +293,16 @@ def plots():
     button_2.on_click(button_2_func)
     text_2 = widgets.Label('Use CTRL+click to toggle selection.', layout=widgets.Layout(width="80%"))
     SECTION_2 = widgets.VBox([text_2, album_selector, button_2,])    
-    
+
+    # SECTION 2 alternative
+    # list of albums to include in the analysis
+    # selector to include/exclude albums
+    # button = confirm
+    global album_selector_alt
+    button_2_alt = widgets.Button(description="Apply")
+    button_2_alt.on_click(button_2_alt_func)
+    text_2_alt = widgets.Label('Use checkboxes to toggle selection.', layout=widgets.Layout(width="80%"))
+    SECTION_2_alt = widgets.VBox([text_2_alt, album_selector_alt, button_2_alt,])  
     
     # SECTION 3 = chart plots
     # chart 1
@@ -256,10 +315,11 @@ def plots():
     SECTION_3 = widgets.VBox([slider_1, button_3,])
        
     #tab_contents = ['Chart_1',]
-    children = [SECTION_1, SECTION_2, SECTION_3]    
+    children = [SECTION_1, SECTION_2, SECTION_2_alt, SECTION_3,]    
     accordion = widgets.Accordion(children=children)
     accordion.set_title(0, 'Get Discography')
     accordion.set_title(1, 'Select albums')
-    accordion.set_title(2, 'Show Stats')
+    accordion.set_title(2, 'Select albums v2')
+    accordion.set_title(3, 'Show Stats')
     accordion.selected_index = selected_tab
     display(accordion)
