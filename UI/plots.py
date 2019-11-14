@@ -254,11 +254,13 @@ def button_2_alt_func(x):
     selected_tab = 3
     # display UI
     plots()    
-    print(selected)
+
 #------------------------------------------------------------
 options = []
 def multi_checkbox_widget(albums, albums_filter):
-    options_dict = {album: widgets.Checkbox(description=album, value=False) for album in albums}
+    options_dict = {album: widgets.Checkbox(description=album, 
+                                            value=False,
+                                            layout={'margin' : '-4px'}) for album in albums}
     options = [options_dict[album] for album in albums]
     for option in options:
         if option.description in albums_filter:
