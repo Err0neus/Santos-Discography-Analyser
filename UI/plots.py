@@ -15,6 +15,138 @@ discog = pd.read_csv('sample_discography_w_lyrics.csv')
 # default selected tab in the UI
 selected_tab = 0
 
+#----------------------------------------------------------------------------------------
+# UI SECTION 1
+
+#global var for artist
+artist = ''
+#global widget to type artist name
+artist_input = widgets.Text()
+# define function to overwrite artist from user input
+def set_artist(x):
+    global artist
+    artist = x
+# function to set list of albums into the selector
+def set_album_selector(albums,selected):
+    global album_selector
+    album_selector.options = albums
+    album_selector.value = selected
+ 
+
+
+# function to run at click of the button_1    
+def button_1_func(x):
+    
+    global artist 
+    print('retrieving discography for ' + artist)
+    #overwrite artist with current text of the input box
+    set_artist(artist_input.value)
+    #clear previous output
+    clear_output()
+    # select next tab
+    global selected_tab
+    selected_tab = 1
+    # set album selecor content
+
+    #overwrite album_filter with current selection
+    global album_filter    
+    set_album_filter(discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
+               
+    global album_selector
+    set_album_selector(discog['album'].unique(), album_filter)
+    global album_selector_alt 
+    set_album_selector_alt(discog['album'].unique().tolist(), album_filter)
+    # display UI
+    plots()
+    
+ 
+#----------------------------------------------------------------------------------------
+# UI SECTION 2
+
+#create album_filter
+album_filter = []
+# create album selector
+album_selector = widgets.SelectMultiple(
+    options=[],
+    value=[],
+    rows=20,
+    layout=widgets.Layout(width="50%"),
+    description='Albums',
+    disabled=False
+)
+# func to set album filter
+def set_album_filter(x):
+    global album_filter
+    album_filter = x
+
+discog_filtered = []
+def button_2_func(x):
+    #clear previous output
+    clear_output()    
+    #overwrite album_filter with current selection
+    global album_filter    
+    set_album_filter(album_selector.value)
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
+    # select next tab
+    global selected_tab
+    selected_tab = 3
+    # display UI
+    plots()
+    
+#----------------------------------------------------------------------------------------
+# UI SECTION 2 -ALT
+
+options = []
+def multi_checkbox_widget(albums, albums_filter):
+    options_dict = {album: widgets.Checkbox(description=album, 
+                                            value=False,
+                                            layout={'margin' : '-3px'}) for album in albums}
+    options = [options_dict[album] for album in albums]
+    for option in options:
+        if option.description in albums_filter:
+            option.value = True
+    options_widget = widgets.VBox(options, layout={'overflow': 'scroll'})
+    multi_select = widgets.VBox([options_widget])
+    return multi_select
+
+def set_album_selector_alt(options, options_filter):
+    global album_selector_alt
+    album_selector_alt = multi_checkbox_widget(options,options_filter) 
+
+album_selector_alt = multi_checkbox_widget([],[])
+import time
+def button_2_alt_func(x):
+    #clear previous output
+    print('getting the lyrics, please hold on')
+    time.sleep(3)
+    clear_output()    
+    #overwrite album_filter with current selection
+    
+    global album_selector_alt 
+    
+    global album_filter 
+    selected = []
+    for album in album_selector_alt.children[0].children:
+        if album.value == True:
+            selected.append(album.description)
+    
+    set_album_selector_alt(discog['album'].unique().tolist(), selected)
+    set_album_filter(selected)
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
+    # select next tab
+    global selected_tab
+    selected_tab = 3
+    # display UI
+    plots()    
+    
+
+#----------------------------------------------------------------------------------------
+# UI SECTION 3
+
 def generate_period_bins(discog, bin_size):
     '''returns list of period bins starting 0th year of the decade of first release'''
     bins = []
@@ -118,7 +250,6 @@ def pirate_plot(discog, bin_size):
     ax = sns.stripplot(x="period", y="unique_words", data=data, color=".25")
 
 
-
 # set bin_size var with default 10
 bin_size = 10
 # define function to overwrite bin_size from slider input
@@ -140,48 +271,6 @@ def button_3_func(x):
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
     pirate_plot(discog_filtered, bin_size)
 
-#global var for artist
-artist = ''
-#global widget to type artist name
-artist_input = widgets.Text()
-# define function to overwrite artist from user input
-def set_artist(x):
-    global artist
-    artist = x
-# function to set list of albums into the selector
-def set_album_selector(albums,selected):
-    global album_selector
-    album_selector.options = albums
-    album_selector.value = selected
- 
-
-
-# function to run at click of the button_1    
-def button_1_func(x):
-    global artist    
-    #overwrite artist with current text of the input box
-    set_artist(artist_input.value)
-    #clear previous output
-    clear_output()
-    # select next tab
-    global selected_tab
-    selected_tab = 1
-    # set album selecor content
-
-    #overwrite album_filter with current selection
-    global album_filter    
-    set_album_filter(discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
-               
-    global album_selector
-    set_album_selector(discog['album'].unique(), album_filter)
-    global album_selector_alt 
-    set_album_selector_alt(discog['album'].unique().tolist(), album_filter)
-    # display UI
-    plots()
-    print('retrieving discography for ' + artist)
-    
-    
-
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(
@@ -199,82 +288,9 @@ slider_1 = widgets.IntSlider(
     )
 
 
-#create album_filter
-album_filter = []
-# create album selector
-album_selector = widgets.SelectMultiple(
-    options=[],
-    value=[],
-    rows=20,
-    layout=widgets.Layout(width="50%"),
-    description='Albums',
-    disabled=False
-)
-# func to set album filter
-def set_album_filter(x):
-    global album_filter
-    album_filter = x
 
-discog_filtered = []
-def button_2_func(x):
-    #clear previous output
-    clear_output()    
-    #overwrite album_filter with current selection
-    global album_filter    
-    set_album_filter(album_selector.value)
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
-    # select next tab
-    global selected_tab
-    selected_tab = 3
-    # display UI
-    plots()
-    
-def button_2_alt_func(x):
-    #clear previous output
-    clear_output()    
-    #overwrite album_filter with current selection
-    
-    global album_selector_alt 
-    
-    global album_filter 
-    selected = []
-    for album in album_selector_alt.children[0].children:
-        if album.value == True:
-            selected.append(album.description)
-    
-    set_album_selector_alt(discog['album'].unique().tolist(), selected)
-    set_album_filter(selected)
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
-    # select next tab
-    global selected_tab
-    selected_tab = 3
-    # display UI
-    plots()    
-
-#------------------------------------------------------------
-options = []
-def multi_checkbox_widget(albums, albums_filter):
-    options_dict = {album: widgets.Checkbox(description=album, 
-                                            value=False,
-                                            layout={'margin' : '-4px'}) for album in albums}
-    options = [options_dict[album] for album in albums]
-    for option in options:
-        if option.description in albums_filter:
-            option.value = True
-    options_widget = widgets.VBox(options, layout={'overflow': 'scroll'})
-    multi_select = widgets.VBox([options_widget])
-    return multi_select
-
-def set_album_selector_alt(options, options_filter):
-    global album_selector_alt
-    album_selector_alt = multi_checkbox_widget(options,options_filter) 
-
-album_selector_alt = multi_checkbox_widget([],[])
-#------------------------------------------------------------
+#----------------------------------------------------------------------------------------
+# display UI
     
 def plots():
     # SECTION 1 = lyrics getter
