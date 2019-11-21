@@ -92,6 +92,7 @@ album_selector_alt = multi_checkbox_widget([],[])
 import time
 def button_2_alt_func(x):
     #clear previous output
+    clear_output() 
     print('getting the lyrics, please hold on')
     time.sleep(3)
     clear_output()    
@@ -162,7 +163,7 @@ def plot_albums_songs_per_period(discog, bin_size):
     
     data = album_song_count_per_period(discog, bin_size)
     
-    fig, ax1 = plt.subplots(figsize=(8,4))
+    fig, ax1 = plt.subplots(figsize=(8,5))
 
     color = 'tab:red'
     ax1.set_xlabel(str(bin_size) + '-year period')
@@ -190,7 +191,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     width = 0.2
     data = album_song_count_per_period(discog, bin_size).set_index('period')
     
-    fig, ax1 = plt.subplots(figsize=(8,4))
+    fig, ax1 = plt.subplots(figsize=(8,5))
 
     color = 'tab:red'
 
@@ -218,9 +219,18 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
 def pirate_plot(discog, bin_size):
     data = add_period_column(discog, bin_size)
     sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=(8,4))
+    fig, ax = plt.subplots(figsize=(8,5))
     ax = sns.boxplot(x="period", y="unique_words", data=data)
     ax = sns.stripplot(x="period", y="unique_words", data=data, color=".25")
+    
+def violin_plot(discog, bin_size):
+    data = add_period_column(discog, bin_size)
+    # Draw Plot
+    plt.figure(figsize=(8,5), dpi= 80)
+    sns.violinplot(x='period', y='unique_words', data=data, scale='width', inner='quartile', cut=0)
+    # Decoration
+    plt.title('Lexical diversity', fontsize=22)
+    plt.show()
 
 
 # set bin_size var with default 10
@@ -243,7 +253,7 @@ def button_3_func(x):
     plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
     pirate_plot(discog_filtered, bin_size)
-
+    violin_plot(discog_filtered, bin_size)
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(
