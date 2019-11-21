@@ -52,8 +52,6 @@ def button_1_func(x):
     global album_filter    
     set_album_filter(discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
                
-    global album_selector
-    set_album_selector(discog['album'].unique(), album_filter)
     global album_selector_alt 
     set_album_selector_alt(discog['album'].unique().tolist(), album_filter)
     # display UI
@@ -65,38 +63,13 @@ def button_1_func(x):
 
 #create album_filter
 album_filter = []
-# create album selector
-album_selector = widgets.SelectMultiple(
-    options=[],
-    value=[],
-    rows=20,
-    layout=widgets.Layout(width="50%"),
-    description='Albums',
-    disabled=False
-)
+
 # func to set album filter
 def set_album_filter(x):
     global album_filter
     album_filter = x
 
 discog_filtered = []
-def button_2_func(x):
-    #clear previous output
-    clear_output()    
-    #overwrite album_filter with current selection
-    global album_filter    
-    set_album_filter(album_selector.value)
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
-    # select next tab
-    global selected_tab
-    selected_tab = 3
-    # display UI
-    plots()
-    
-#----------------------------------------------------------------------------------------
-# UI SECTION 2 -ALT
 
 options = []
 def multi_checkbox_widget(albums, albums_filter):
@@ -139,7 +112,7 @@ def button_2_alt_func(x):
     discog_filtered = discog[discog['album'].isin(album_filter)].copy()
     # select next tab
     global selected_tab
-    selected_tab = 3
+    selected_tab = 2
     # display UI
     plots()    
     
@@ -301,16 +274,6 @@ def plots():
     button_1.on_click(button_1_func)
     SECTION_1 = widgets.VBox([artist_input, button_1,])
     
-    
-    # SECTION 2 = review retrieved data
-    # list of albums to include in the analysis
-    # selector to include/exclude albums
-    # button = confirm
-    global album_selector
-    button_2 = widgets.Button(description="Apply")
-    button_2.on_click(button_2_func)
-    text_2 = widgets.Label('Use CTRL+click to toggle selection.', layout=widgets.Layout(width="80%"))
-    SECTION_2 = widgets.VBox([text_2, album_selector, button_2,])    
 
     # SECTION 2 alternative
     # list of albums to include in the analysis
@@ -333,11 +296,10 @@ def plots():
     SECTION_3 = widgets.VBox([slider_1, button_3,])
        
     #tab_contents = ['Chart_1',]
-    children = [SECTION_1, SECTION_2, SECTION_2_alt, SECTION_3,]    
+    children = [SECTION_1, SECTION_2_alt, SECTION_3,]    
     accordion = widgets.Accordion(children=children)
     accordion.set_title(0, 'Get Discography')
     accordion.set_title(1, 'Select albums')
-    accordion.set_title(2, 'Select albums v2')
-    accordion.set_title(3, 'Show Stats')
+    accordion.set_title(2, 'Show Stats')
     accordion.selected_index = selected_tab
     display(accordion)
