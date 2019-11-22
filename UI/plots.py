@@ -7,9 +7,12 @@ from IPython.display import clear_output
 # UI
 import ipywidgets as widgets
 
+# other fuctions
+import get_discogs
+
 ##################################################################
 #import sample discography
-discog = pd.read_csv('sample_discography_w_lyrics.csv')
+discog_store = pd.read_csv('discog_store.csv')
 ##################################################################
 
 # default selected tab in the UI
@@ -18,6 +21,8 @@ selected_tab = 0
 #----------------------------------------------------------------------------------------
 # UI SECTION 1
 
+# global var for discog
+discog = ''
 #global var for artist
 artist = ''
 #global widget to type artist name
@@ -36,24 +41,38 @@ def set_album_selector(albums,selected):
 
 # function to run at click of the button_1    
 def button_1_func(x):
-    
-    global artist 
-    print('retrieving discography for ' + artist)
-    #overwrite artist with current text of the input box
-    set_artist(artist_input.value)
     #clear previous output
     clear_output()
+    
+    global artist 
+    #overwrite artist with current text of the input box
+    set_artist(get_discogs.getArtistID(artist_input.value)[1])
+    
+    print('retrieving discography for ' + artist)    
+
+    
+    # get discogs
+    global discog
+    
+    if artist in discog_store['ARTIST_NAME'].unique():
+        discog = discog_store[discog_store['ARTIST_NAME'] == artist]
+    else:
+        discog = get_discogs.getArtistData(artist)
+    
+    #clear previous output
+    clear_output()
+    
     # select next tab
     global selected_tab
     selected_tab = 1
     # set album selecor content
-
+    
     #overwrite album_filter with current selection
     global album_filter    
-    set_album_filter(discog[discog['exclude_flag'] != 'y']['album'].unique().tolist())
+    set_album_filter(discog[discog['EXCLUDE_ALBUM'] != True]['ALBUMS'].unique().tolist())
                
     global album_selector_alt 
-    set_album_selector_alt(discog['album'].unique().tolist(), album_filter)
+    set_album_selector_alt(discog['ALBUMS'].unique().tolist(), album_filter)
     # display UI
     plots()
     
@@ -106,11 +125,11 @@ def button_2_alt_func(x):
         if album.value == True:
             selected.append(album.description)
     
-    set_album_selector_alt(discog['album'].unique().tolist(), selected)
+    set_album_selector_alt(discog['ALBUMS'].unique().tolist(), selected)
     set_album_filter(selected)
     #filter dataset
     global discog_filtered
-    discog_filtered = discog[discog['album'].isin(album_filter)].copy()
+    discog_filtered = discog[discog['ALBUMS'].isin(album_filter)].copy()
     # select next tab
     global selected_tab
     selected_tab = 2
@@ -124,8 +143,8 @@ def button_2_alt_func(x):
 def generate_period_bins(discog, bin_size):
     '''returns list of period bins starting 0th year of the decade of first release'''
     bins = []
-    start_year = int(str(discog.year.min())[:3]+'0')
-    last_year = int(str(discog.year.max())[:2]+str(int(str(discog.year.max())[2])+1)+'0')
+    start_year = int(str(discog['YEAR'].min())[:3]+'0')
+    last_year = int(str(discog['YEAR'].max())[:2]+str(int(str(discog['YEAR'].max())[2])+1)+'0')
     year = start_year
     while year < last_year:
         bins.append(str(year) + '-' + str(year + bin_size-1))
@@ -137,14 +156,14 @@ def unique_per_period(discog, column, bin_size):
     data = {'period' : generate_period_bins(discog, bin_size),
             column : []}
     for period in data['period']:
-        data[column].append(len(discog[(discog['year'] >= int(period[:4])) \
-                                       & (discog['year'] <= int(period[5:]))][column].unique()))   
+        data[column].append(len(discog[(discog['YEAR'] >= int(period[:4])) \
+                                       & (discog['YEAR'] <= int(period[5:]))][column].unique()))   
     return pd.DataFrame.from_dict(data)
 
 def album_song_count_per_period(discog, bin_size):
     '''returns a merged dataframe by period with counts of albums and songs per period'''
-    data_albums = unique_per_period(discog, 'album', bin_size)
-    data_songs = unique_per_period(discog, 'track_title', bin_size)
+    data_albums = unique_per_period(discog, 'ALBUMS', bin_size)
+    data_songs = unique_per_period(discog, 'TRACK_TITLE', bin_size)
     return data_albums.merge(data_songs, on = 'period')
 
 def add_period_column(discog, bin_size):
@@ -153,7 +172,7 @@ def add_period_column(discog, bin_size):
     bins = generate_period_bins(discog, bin_size)
     for i, r in discog.iterrows():
         for period in bins:
-            if r['year'] >= int(period[:4]) and r['year'] <= int(period[5:]):
+            if r['year'] >= int(period[:4]) and r['YEAR'] <= int(period[5:]):
                 period_col_data.append(period)
     discog['period'] = period_col_data
     return discog
@@ -168,7 +187,7 @@ def plot_albums_songs_per_period(discog, bin_size):
     color = 'tab:red'
     ax1.set_xlabel(str(bin_size) + '-year period')
     ax1.set_ylabel('number of albums', color=color)
-    ax1.plot(data.period, data.album, color=color)
+    ax1.plot(data['period'], data['ALBUMS'], color=color)
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45)
     
@@ -176,7 +195,7 @@ def plot_albums_songs_per_period(discog, bin_size):
 
     color = 'tab:blue'
     ax2.set_ylabel('number of songs', color=color)  # we already handled the x-label with ax1
-    ax2.plot(data.index.tolist(), data.track_title, color=color)
+    ax2.plot(data.index.tolist(), data['TRACK_TITLE'], color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
@@ -197,7 +216,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
 
     ax1.set_ylabel('number of albums', color=color)
     #ax1.plot(data.period, data.album, color=color)
-    data.album.plot(kind='bar', color='red', ax=ax1, width=width, position=1)
+    data['ALBUMS'].plot(kind='bar', color='red', ax=ax1, width=width, position=1)
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45)
     ax1.set_xlabel(str(bin_size) + '-year period')
@@ -210,7 +229,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
-    data.track_title.plot(kind='bar', color='blue', ax=ax2, width=width, position=0)
+    data['TRACK_TITLE'].plot(kind='bar', color='blue', ax=ax2, width=width, position=0)
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
 
@@ -252,8 +271,8 @@ def button_3_func(x):
     #display chart using the new bin_size
     plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
-    pirate_plot(discog_filtered, bin_size)
-    violin_plot(discog_filtered, bin_size)
+    #pirate_plot(discog_filtered, bin_size)
+    #violin_plot(discog_filtered, bin_size)
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(
