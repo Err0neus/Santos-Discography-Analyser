@@ -1,0 +1,264 @@
+ID,ARTIST_NAME,ALBUMS,YEAR,TRACK_TITLE,TRACK_POSITION,EXCLUDE_ALBUM,EXCLUDE_SONG
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,Avalanche,A1,False,False
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,Cabin Fever!,A2,False,False
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,Well Of Misery,A3,False,False
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,From Her To Eternity,A4,False,False
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,Saint Huck,B1,False,False
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,Wings Off Flies,B2,False,False
+17098,Nick Cave & The Bad Seeds,From Her To Eternity,1984,A Box For Black Paul,B3,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Tupelo,A1,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Say Goodbye To The Little Girl Tree,A2,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Train Long-Suffering,A3,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Black Crow King,A4,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Knockin' On Joe,B1,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Wanted Man,B2,False,False
+17126,Nick Cave & The Bad Seeds,The Firstborn Is Dead,1985,Blind Lemon Jefferson,B3,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,Sad Waters,A1,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,The Carny,A2,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,"Your Funeral, My Trial",B1,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,Stranger Than Kindness,B2,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,Jack's Shadow,C1,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,Hard On For Love,C2,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,She Fell Away,D1,False,False
+17242,Nick Cave & The Bad Seeds,Your Funeral ... My Trial,1986,Long Time Man,D2,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,Muddy Water,A1,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,I'm Gonna Kill That Woman,A2,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,Sleeping Annaleah,A3,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,Long Black Veil,A4,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,Hey Joe,A5,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,The Singer,A6,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,All Tomorrow's Parties,B1,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,By The Time I Get To Phoenix,B2,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,The Hammer Song,B3,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,Something's Gotten Hold Of My Heart,B4,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,Jesus Met The Woman At The Well,B5,False,False
+17164,Nick Cave & The Bad Seeds,Kicking Against The Pricks,1986,The Carnival Is Over,B6,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,The Mercy Seat,A1,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Up Jumped The Devil,A2,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Deanna,A3,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Watching Alice,A4,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Mercy,A5,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,City Of Refuge,B1,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Slowly Goes The Night,B2,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Sunday's Slave,B3,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,Sugar Sugar Sugar,B4,False,False
+17277,Nick Cave & The Bad Seeds,Tender Prey,1988,New Morning,B5,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,Foi Na Cruz,A1,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,The Good Son,A2,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,Sorrow's Child,A3,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,The Weeping Song,A4,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,The Ship Song,B1,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,The Hammer Song,B2,False,True
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,Lament,B3,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,The Witness Song,B4,False,False
+17303,Nick Cave & The Bad Seeds,The Good Son,1990,Lucy,B5,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,"Papa Won't Leave You, Henry",1,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,"I Had A Dream, Joe",2,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,Straight To You,3,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,"Brother, My Cup Is Empty",4,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,Christina The Astonishing,5,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,When I First Came To Town,6,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,John Finns' Wife,7,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,Loom Of The Land,8,False,False
+17322,Nick Cave & The Bad Seeds,Henry's Dream,1992,Jack The Ripper,9,False,False
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,The Mercy Seat,1,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,Deanna,2,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,The Ship Song,3,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,Papa Won't Leave You Henry,4,True,False
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,Plain Gold Ring,5,True,False
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,John Finn's Wife,6,True,False
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,Tupelo,7,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,Brother My Cup Is Empty,8,True,False
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,The Weeping Song,9,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,Jack The Ripper,10,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,The Good Son,11,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,From Her To Eternity,12,True,True
+17462,Nick Cave & The Bad Seeds,Live Seeds,1993,New Morning,13,True,True
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Do You Love Me ?,1,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Nobody's Baby Now,2,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Loverman,3,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Jangling Jack,4,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Red Right Hand,5,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,I Let Love In,6,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Thirsty Dog,7,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Ain't Gonna Rain Anymore,8,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Lay Me Low,9,False,False
+17506,Nick Cave & The Bad Seeds,Let Love In,1994,Do You Love Me ? (Part 2),10,False,True
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Song Of Joy,1,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Stagger Lee,2,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Henry Lee,3,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Lovely Creature,4,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Where The Wild Roses Grow,5,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,The Curse Of Millhaven,6,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,The Kindness Of Strangers,7,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Crow Jane,8,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,O'Malley's Bar,9,False,False
+18354,Nick Cave & The Bad Seeds,Murder Ballads,1996,Death Is Not The End,10,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Into My Arms,1,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Lime Tree Arbour,2,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,People Ain't No Good,3,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Brompton Oratory,4,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,There Is A Kingdom,5,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,(Are You) The One That I've Been Waiting For?,6,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Where Do We Go Now But Nowhere?,7,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,West Country Girl,8,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Black Hair,9,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Idiot Prayer,10,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Far From Me,11,False,False
+18393,Nick Cave & The Bad Seeds,The Boatman's Call,1997,Green Eyes,12,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,As I Sat Sadly By Her Side,1,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,And No More Shall We Part,2,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Hallelujah,3,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Love Letter,4,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Fifteen Feet Of Pure White Snow,5,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,God Is In The House,6,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Oh My Lord,7,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Sweetheart Come,8,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,The Sorrowful Wife,9,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,We Came Along This Road,10,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Gates To The Garden,11,False,False
+22944,Nick Cave & The Bad Seeds,No More Shall We Part,2001,Darker With The Day,12,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,Wonderful Life,CD-1,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,He Wants You,CD-2,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,Right Out Of Your Hand,CD-3,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,Bring It On,CD-4,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,Dead Man In My Bed,CD-5,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,Still In Love,CD-6,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,There Is A Town,CD-7,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,Rock Of Gibraltar,CD-8,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,She Passed By My Window,CD-9,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,"Babe, I'm On Fire",CD-10,False,False
+23089,Nick Cave & The Bad Seeds,Nocturama,2002,"Babe, I'm On Fire",DVD,False,True
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Abattoir Blues,,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Get Ready For Love,1-1,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Cannibal's Hymn,1-2,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Hiding All Away,1-3,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Messiah Ward,1-4,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,"There She Goes, My Beautiful World",1-5,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Nature Boy,1-6,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Abattoir Blues,1-7,False,True
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Let The Bells Ring,1-8,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Fable Of The Brown Ape,1-9,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,The Lyre Of Orpheus,,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,The Lyre Of Orpheus,2-1,False,True
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Breathless,2-2,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,"Babe, You Turn Me On",2-3,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Easy Money,2-4,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Supernaturally,2-5,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Spell,2-6,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,Carry Me,2-7,False,False
+23104,Nick Cave & The Bad Seeds,Abattoir Blues / The Lyre Of Orpheus,2004,O Children,2-8,False,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"Brixton Academy, London, Thursday 11th November 2004",,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Hiding All Away,DVD1-1,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Messiah Ward,DVD1-2,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Easy Money,DVD1-3,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Supernaturally,DVD1-4,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,The Lyre Of Orpheus,DVD1-5,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"Babe, You Turn Me On",DVD1-6,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Nature Boy,DVD1-7,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Get Ready For Love,DVD1-8,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Carry Me,DVD1-9,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"There She Goes, My Beautiful World",DVD1-10,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,God Is In The House,DVD1-11,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Red Right Hand,DVD1-12,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,The Ship Song,DVD1-13,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Stagger Lee,DVD1-14,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"Hammersmith Apollo, London, Saturday 7th June 2003",,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Wonderful Life,DVD2-1,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Nobody's Baby Now,DVD2-2,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Bring It On,DVD2-3,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Sad Waters,DVD2-4,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Watching Alice,DVD2-5,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Christina The Astonishing,DVD2-6,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Wild World,DVD2-7,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,-,,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"The ""Bring It On"" Shoot",DVD2-8,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Promotional Videos,,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Bring It On,DVD2-9,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"Babe, I'm On Fire",DVD2-10,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Nature Boy,DVD2-11,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Breathless,DVD2-12,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Get Ready For Love,DVD2-13,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,-,,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"Abattoir Blues / The Lyre Of Orpheus, A Short Film",DVD2-14,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,The Abattoir Blues Tour 2004,,True,False
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,O Children,CD1-1,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Hiding All Away,CD1-2,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Breathless,CD1-3,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Get Ready For Love,CD1-4,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Red Right Hand,CD1-5,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,The Ship Song,CD1-6,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,The Weeping Song,CD1-7,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Stagger Lee,CD1-8,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Carry Me,CD2-1,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Let The Bells Ring,CD2-2,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Easy Money,CD2-3,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Supernaturally,CD2-4,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"Babe, You Turn Me On",CD2-5,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,"There She Goes, My Beautiful World",CD2-6,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,God Is In The House,CD2-7,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Deanna,CD2-8,True,True
+23190,Nick Cave & The Bad Seeds,The Abattoir Blues Tour,2007,Lay Me Low,CD2-9,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Lime Tree Arbour,1,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Stranger Than Kindness,2,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Red Right Hand,3,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,I Let Love In,4,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Brompton Oratory,5,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Henry Lee,6,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,The Ship Song,7,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Where The Wild Roses Grow,8,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,People Ain't No Good,9,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Do You Love Me?,10,True,False
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,Far From Me,11,True,True
+525889,Nick Cave & The Bad Seeds,Live At The Royal Albert Hall,1998,The Mercy Seat,12,True,True
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,"Dig, Lazarus, Dig!!!",1,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Today's Lesson,2,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Moonland,3,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Night Of The Lotus Eaters,4,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Albert Goes West,5,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,We Call Upon The Author,6,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Hold On To Yourself,7,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Lie Down Here (& Be My Girl),8,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Jesus Of The Moon,9,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,Midnight Man,10,False,False
+23223,Nick Cave & The Bad Seeds,"Dig, Lazarus, Dig!!!",2008,More News From Nowhere,11,False,False
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Higgs Boson Blues,1,True,False
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Far From Me,2,True,True
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Stranger Than Kindness,3,True,True
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,The Mercy Seat,4,True,True
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,And No More Shall We Part,5,True,True
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Wide Lovely Eyes,6,True,False
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Mermaids,7,True,False
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,People Ain't No Good,8,True,True
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Push The Sky Away,9,True,False
+624027,Nick Cave & The Bad Seeds,Live From KCRW,2013,Jack The Ripper,10,True,True
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,We No Who U R,1,False,False
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Wide Lovely Eyes,2,False,True
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Water's Edge,3,False,False
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Jubilee Street,4,False,False
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Mermaids,5,False,True
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,We Real Cool,6,False,False
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Finishing Jubilee Street,7,False,False
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Higgs Boson Blues,8,False,True
+519359,Nick Cave & The Bad Seeds,Push The Sky Away,2012,Push The Sky Away,9,False,True
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Jesus Alone,A1,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Rings Of Saturn,A2,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Girl In Amber,A3,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Magneto,A4,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Anthrocene,B1,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,I Need You,B2,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Distant Sky,B3,False,False
+1054118,Nick Cave & The Bad Seeds,Skeleton Tree,2016,Skeleton Tree,B4,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Part 1,,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Spinning Song,A1,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Bright Horses,A2,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Waiting For You,A3,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Night Raid,A4,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Sun Forest,B1,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Galleon Ship,B2,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Ghosteen Speaks,B3,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Leviathan,B4,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Part 2,,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Ghosteen,C1,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Fireflies,C2,False,False
+1619220,Nick Cave & The Bad Seeds,Ghosteen,2019,Hollywood,D1,False,False
