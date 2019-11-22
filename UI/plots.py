@@ -94,7 +94,7 @@ options = []
 def multi_checkbox_widget(albums, albums_filter):
     options_dict = {album: widgets.Checkbox(description=album, 
                                             value=False,
-                                            layout={'margin' : '-3px'}) for album in albums}
+                                            layout={'margin' : '-3px', 'width' : '100%'}) for album in albums}
     options = [options_dict[album] for album in albums]
     for option in options:
         if option.description in albums_filter:
