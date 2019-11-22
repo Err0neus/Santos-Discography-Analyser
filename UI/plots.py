@@ -12,7 +12,7 @@ import get_discogs
 
 ##################################################################
 #import sample discography
-discog_store = pd.read_csv('discog_store.csv')
+
 ##################################################################
 
 # default selected tab in the UI
@@ -36,26 +36,26 @@ def set_album_selector(albums,selected):
     global album_selector
     album_selector.options = albums
     album_selector.value = selected
- 
+    
+discog_store = []
 
 
 # function to run at click of the button_1    
 def button_1_func(x):
     #clear previous output
     clear_output()
-    
+    print('Retrieveing discography for ' + str(artist_input.value))
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
     global artist 
     #overwrite artist with current text of the input box
     set_artist(get_discogs.getArtistID(artist_input.value)[1])
+    print('Retrieveing discography for ' + artist)    
     
-    print('retrieving discography for ' + artist)    
-
-    
-    # get discogs
+    # get discogs - check if in csv, else use DISCOGS API
     global discog
-    
     if artist in discog_store['ARTIST_NAME'].unique():
-        discog = discog_store[discog_store['ARTIST_NAME'] == artist]
+        discog = discog_store[discog_store['ARTIST_NAME'] == artist].copy()
     else:
         discog = get_discogs.getArtistData(artist)
     
@@ -110,27 +110,49 @@ def set_album_selector_alt(options, options_filter):
 album_selector_alt = multi_checkbox_widget([],[])
 import time
 def button_2_alt_func(x):
+    global discog
+    global discog_store
+    
     #clear previous output
     clear_output() 
     print('getting the lyrics, please hold on')
     time.sleep(3)
-    clear_output()    
+     
     #overwrite album_filter with current selection
     
     global album_selector_alt 
     
     global album_filter 
     selected = []
+    # read user input
     for album in album_selector_alt.children[0].children:
+        # overwrite EXCLUDE_ALBUM flag
+        discog.loc[discog['ALBUMS'] == album.description, 'EXCLUDE_ALBUM'] = not album.value
+        #make a list of selected albums
         if album.value == True:
             selected.append(album.description)
     
-    set_album_selector_alt(discog['ALBUMS'].unique().tolist(), selected)
+    # reset selector
     set_album_filter(selected)
+    set_album_selector_alt(discog['ALBUMS'].unique().tolist(), selected)
     #filter dataset
     global discog_filtered
     discog_filtered = discog[discog['ALBUMS'].isin(album_filter)].copy()
-    # select next tab
+
+    
+    
+    # overwrite .CSV and update flags
+
+            
+    if artist not in discog_store['ARTIST_NAME'].unique():
+        discog_store = discog_store.append(discog, ignore_index=True)
+    else:
+        discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True)
+    
+    discog_store.to_csv('discog_store.csv', index = False)
+    
+    clear_output()   
+    # select next tab    
     global selected_tab
     selected_tab = 2
     # display UI
@@ -156,8 +178,8 @@ def unique_per_period(discog, column, bin_size):
     data = {'period' : generate_period_bins(discog, bin_size),
             column : []}
     for period in data['period']:
-        data[column].append(len(discog[(discog['YEAR'] >= int(period[:4])) \
-                                       & (discog['YEAR'] <= int(period[5:]))][column].unique()))   
+        data[column].append(len(discog[(discog['YEAR'].astype(int) >= int(period[:4])) \
+                                       & (discog['YEAR'].astype(int) <= int(period[5:]))][column].unique()))   
     return pd.DataFrame.from_dict(data)
 
 def album_song_count_per_period(discog, bin_size):
