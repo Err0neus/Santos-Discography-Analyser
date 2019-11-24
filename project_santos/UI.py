@@ -3,12 +3,12 @@ import pandas as pd
 import time
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
-from IPython.display import clear_output
+from IPython.display import clear_output, display
 # UI
 import ipywidgets as widgets
 
 # other fuctions
-import get_discogs
+from project_santos import get_discogs
 
 ##################################################################
 #import sample discography
@@ -44,20 +44,31 @@ discog_store = []
 def button_1_func(x):
     #clear previous output
     clear_output()
-    print('Retrieveing discography for ' + str(artist_input.value))
+    print("Looking for best match for '" + str(artist_input.value) +"'")
+    time.sleep(2)
     global discog_store
     discog_store = pd.read_csv('discog_store.csv')
     global artist 
-    #overwrite artist with current text of the input box
-    set_artist(get_discogs.getArtistID(artist_input.value)[1])
-    print('Retrieveing discography for ' + artist)    
     
+    #try to overwrite artist artist found as best match from DISCOGS  
+    try:
+        set_artist(get_discogs.getArtistID(artist_input.value)[1])
+    # if no match found from discogs, stop and print a message
+    except:
+        display(widgets.HTML(value=f'''<b><font color="red">No match found, please try again </b>''',
+                           layout=widgets.Layout(width="100%")))
+        #print(widgets"No match found, please try again")
+        return UI()
+    
+    print("Retrieveing discography for '" + artist + "'")    
+    time.sleep(2)
     # get discogs - check if in csv, else use DISCOGS API
     global discog
     if artist in discog_store['ARTIST_NAME'].unique():
         discog = discog_store[discog_store['ARTIST_NAME'] == artist].copy()
     else:
         discog = get_discogs.getArtistData(artist)
+
     
     #clear previous output
     clear_output()
@@ -74,7 +85,7 @@ def button_1_func(x):
     global album_selector_alt 
     set_album_selector_alt(discog['ALBUMS'].unique().tolist(), album_filter)
     # display UI
-    plots()
+    UI()
     
  
 #----------------------------------------------------------------------------------------
@@ -94,13 +105,13 @@ options = []
 def multi_checkbox_widget(albums, albums_filter):
     options_dict = {album: widgets.Checkbox(description=album, 
                                             value=False,
-                                            layout={'margin' : '-3px', 'width' : '100%'}) for album in albums}
+                                            layout={'margin' : '-2px', 'width' : 'initial'}) for album in albums}
     options = [options_dict[album] for album in albums]
     for option in options:
         if option.description in albums_filter:
             option.value = True
-    options_widget = widgets.VBox(options, layout={'overflow': 'scroll'})
-    multi_select = widgets.VBox([options_widget])
+    options_widget = widgets.VBox(options, layout={'overflow': 'scroll', 'max_height': '300px', 'width' : 'initial'})
+    multi_select = widgets.VBox([options_widget], layout=widgets.Layout(padding = "20px"))
     return multi_select
 
 def set_album_selector_alt(options, options_filter):
@@ -156,7 +167,7 @@ def button_2_alt_func(x):
     global selected_tab
     selected_tab = 2
     # display UI
-    plots()    
+    UI()    
     
 
 #----------------------------------------------------------------------------------------
@@ -209,6 +220,7 @@ def plot_albums_songs_per_period(discog, bin_size):
     color = 'tab:red'
     ax1.set_xlabel(str(bin_size) + '-year period')
     ax1.set_ylabel('number of albums', color=color)
+
     ax1.plot(data['period'], data['ALBUMS'], color=color)
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45)
@@ -224,6 +236,8 @@ def plot_albums_songs_per_period(discog, bin_size):
     
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+    ax1.set_ylim(ymin=0)
+    ax2.set_ylim(ymin=0)
     plt.show()
 
 def plot_albums_songs_per_period_bar(discog, bin_size):
@@ -289,7 +303,7 @@ def button_3_func(x):
     #clear previous output
     clear_output()
     # display UI
-    plots()
+    UI()
     #display chart using the new bin_size
     plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
@@ -331,10 +345,13 @@ def UI():
     # selector to include/exclude albums
     # button = confirm
     global album_selector_alt
-    button_2_alt = widgets.Button(description="Apply")
-    button_2_alt.on_click(button_2_alt_func)
-    text_2_alt = widgets.Label('Use checkboxes to toggle selection.', layout=widgets.Layout(width="80%"))
-    SECTION_2_alt = widgets.VBox([text_2_alt, album_selector_alt, button_2_alt,])  
+    button_2 = widgets.Button(description="Apply")
+    button_2.on_click(button_2_alt_func)
+    label_2 = widgets.HTML(value=f'''<b><font size = "+1">Selected discography for <u>{artist}</u></b>''',
+                           layout=widgets.Layout(width="100%"))
+    text_2 = widgets.Label('Use checkboxes to toggle selection:', layout=widgets.Layout(width="80%"))
+    SECTION_2 = widgets.VBox([label_2, text_2, album_selector_alt, button_2,], 
+                             layout=widgets.Layout(width="80%", padding = "10px"))  
     
     # SECTION 3 = chart plots
     # chart 1
@@ -347,7 +364,7 @@ def UI():
     SECTION_3 = widgets.VBox([slider_1, button_3,])
        
     #tab_contents = ['Chart_1',]
-    children = [SECTION_1, SECTION_2_alt, SECTION_3,]    
+    children = [SECTION_1, SECTION_2, SECTION_3,]    
     accordion = widgets.Accordion(children=children)
     accordion.set_title(0, 'Get Discography')
     accordion.set_title(1, 'Select albums')
