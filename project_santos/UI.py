@@ -316,7 +316,7 @@ slider_1 = widgets.IntSlider(
 #----------------------------------------------------------------------------------------
 # display UI
     
-def plots():
+def UI():
     # SECTION 1 = lyrics getter
     # input box = insert artist
     # button = get artist discography
