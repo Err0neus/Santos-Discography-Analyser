@@ -47,7 +47,11 @@ def button_1_func(x):
     print("Looking for best match for '" + str(artist_input.value) +"'")
     time.sleep(2)
     global discog_store
-    discog_store = pd.read_csv('discog_store.csv')
+    try:
+        discog_store = pd.read_csv('discog_store.csv')
+    except:
+        pass
+        
     global artist 
     
     #try to overwrite artist artist found as best match from DISCOGS  
@@ -60,15 +64,16 @@ def button_1_func(x):
         #print(widgets"No match found, please try again")
         return UI()
     
-    print("Retrieveing discography for '" + artist + "'")    
+    print("Retrieving discography for '" + artist + "'")    
     time.sleep(2)
     # get discogs - check if in csv, else use DISCOGS API
     global discog
-    if artist in discog_store['ARTIST_NAME'].unique():
+    if len(discog_store) == 0:
+        discog = get_discogs.getArtistData(artist)
+    elif artist in discog_store['ARTIST_NAME'].unique():
         discog = discog_store[discog_store['ARTIST_NAME'] == artist].copy()
     else:
         discog = get_discogs.getArtistData(artist)
-
     
     #clear previous output
     clear_output()
@@ -154,13 +159,15 @@ def button_2_alt_func(x):
     
     # overwrite .CSV and update flags
 
-            
-    if artist not in discog_store['ARTIST_NAME'].unique():
-        discog_store = discog_store.append(discog, ignore_index=True)
+    if len(discog_store) == 0:
+        discog.to_csv('discog_store.csv', index = False)
     else:
-        discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True)
+        if artist not in discog_store['ARTIST_NAME'].unique():
+            discog_store = discog_store.append(discog, ignore_index=True)
+        else:
+            discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True)
     
-    discog_store.to_csv('discog_store.csv', index = False)
+        discog_store.to_csv('discog_store.csv', index = False)
     
     clear_output()   
     # select next tab    
@@ -236,8 +243,8 @@ def plot_albums_songs_per_period(discog, bin_size):
     
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-    ax1.set_ylim(ymin=0)
-    ax2.set_ylim(ymin=0)
+    ax1.set_ylim(bottom=0)
+    ax2.set_ylim(bottom=0)
     plt.show()
 
 def plot_albums_songs_per_period_bar(discog, bin_size):
