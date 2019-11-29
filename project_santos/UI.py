@@ -147,10 +147,12 @@ def button_2_alt_func(x):
         #make a list of selected albums
         if album.value == True:
             selected.append(album.description)
+    # set filter = list of selected albums
+    set_album_filter(selected)
     
     # reset selector
-    set_album_filter(selected)
     set_album_selector_alt(discog['ALBUMS'].unique().tolist(), selected)
+    
     #filter dataset
     global discog_filtered
     discog_filtered = discog[discog['ALBUMS'].isin(album_filter)].copy()
@@ -169,7 +171,7 @@ def button_2_alt_func(x):
     
         discog_store.to_csv('discog_store.csv', index = False)
     
-    clear_output()   
+    clear_output()
     # select next tab    
     global selected_tab
     selected_tab = 2
@@ -184,7 +186,7 @@ def generate_period_bins(discog, bin_size):
     '''returns list of period bins starting 0th year of the decade of first release'''
     bins = []
     start_year = int(str(discog['YEAR'].min())[:3]+'0')
-    last_year = int(str(discog['YEAR'].max())[:2]+str(int(str(discog['YEAR'].max())[2])+1)+'0')
+    last_year = int(discog['YEAR'].max()) + int(str(100 - int(str(discog['YEAR'].max())[2:]))[-1])
     year = start_year
     while year < last_year:
         bins.append(str(year) + '-' + str(year + bin_size-1))
