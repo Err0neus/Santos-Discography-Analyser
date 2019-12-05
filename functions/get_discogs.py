@@ -73,7 +73,7 @@ def extract(el, css_sel):
     return None if len(ms) != 1 else ms[0].text
 
 def cleaningTrackData(df, a_nam):
-    data = df[df["TRACK_TITLE"] != ""]# filter any empty track title
+    data = df[(df["TRACK_TITLE"] != "")|(df["TRACK_POSITION"] != "")]# filter any empty track title
     data["ARTIST_NAME"] = (a_nam).title() # adding new column with given artist name
     
     #SONGS REPEATED WITH " ("
