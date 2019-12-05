@@ -8,7 +8,7 @@ from IPython.display import clear_output, display
 import ipywidgets as widgets
 
 # other fuctions
-from project_santos import get_discogs
+from functions import get_discogs
 
 ##################################################################
 #import sample discography
