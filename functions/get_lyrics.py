@@ -6,7 +6,7 @@ genius.remove_section_headers = True
 ##
 
 def getLyrics(df):
-    filter_data = df[(df["EXCLUDE_ALBUM"] == False) & (df["EXCLUDE_SONG"] == False)]
+    filter_data = df[(df["EXCLUDE_ALBUM"] == False) & (df["EXCLUDE_SONG"] == False)].copy(deep=True) 
     atrist_name = filter_data["ARTIST_NAME"].unique()[0]
     
     for track in filter_data.TRACK_TITLE:
