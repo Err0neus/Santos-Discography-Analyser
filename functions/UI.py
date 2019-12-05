@@ -9,6 +9,7 @@ import ipywidgets as widgets
 
 # other fuctions
 from functions import get_discogs
+from functions import get_lyrics
 
 ##################################################################
 #import sample discography
@@ -65,7 +66,7 @@ def button_1_func(x):
         return UI()
     
     print("Retrieving discography for '" + artist + "'")    
-    time.sleep(2)
+    time.sleep(1)
     # get discogs - check if in csv, else use DISCOGS API
     global discog
     if len(discog_store) == 0:
@@ -128,16 +129,10 @@ import time
 def button_2_alt_func(x):
     global discog
     global discog_store
+
     
-    #clear previous output
-    clear_output() 
-    print('getting the lyrics, please hold on')
-    time.sleep(3)
-     
-    #overwrite album_filter with current selection
-    
+    #apply user selections, overwrite album_filter with current selection
     global album_selector_alt 
-    
     global album_filter 
     selected = []
     # read user input
@@ -149,27 +144,46 @@ def button_2_alt_func(x):
             selected.append(album.description)
     # set filter = list of selected albums
     set_album_filter(selected)
-    
-    # reset selector
+    # reset selector to keep the actual selections
     set_album_selector_alt(discog['ALBUMS'].unique().tolist(), selected)
     
     #filter dataset
     global discog_filtered
     discog_filtered = discog[discog['ALBUMS'].isin(album_filter)].copy()
-
-    
+    #clear previous output
+    clear_output() 
+  
     
     # overwrite .CSV and update flags
-
     if len(discog_store) == 0:
-        discog.to_csv('discog_store.csv', index = False)
+        discog_store = discog.copy(deep=True)
     else:
         if artist not in discog_store['ARTIST_NAME'].unique():
             discog_store = discog_store.append(discog, ignore_index=True)
         else:
             discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True)
     
-        discog_store.to_csv('discog_store.csv', index = False)
+    discog_store.to_csv('discog_store.csv', index = False)
+        
+        
+    #get lyrics
+    print('Getting the lyrics, please hold on')
+    if "LYRICS" not in discog_store.columns:
+        lyrics_data = get_lyrics.getLyrics(discog_store[discog_store['ARTIST_NAME'] == artist])
+    elif len(discog_store[(discog_store['ARTIST_NAME'] == artist)\
+                          &(~discog_store['LYRICS'].notnull())]) > 0:
+        lyrics_data = get_lyrics.getLyrics(discog_store[(discog_store['ARTIST_NAME'] == artist) \
+                                                        &(~discog_store['LYRICS'].notnull())])
+    else:
+        lyrics_data = []
+             
+    if len(lyrics_data) != 0:
+        for i,r in lyrics_data.iterrows():
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['ALBUMS'] == r['ALBUMS']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS"] = r['LYRICS']
+    # write the updated content
+    discog_store.to_csv('discog_store.csv', index = False)
     
     clear_output()
     # select next tab    
