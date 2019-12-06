@@ -159,9 +159,9 @@ def button_2_alt_func(x):
         discog_store = discog.copy(deep=True)
     else:
         if artist not in discog_store['ARTIST_NAME'].unique():
-            discog_store = discog_store.append(discog, ignore_index=True)
+            discog_store = discog_store.append(discog, ignore_index=True, sort=False)
         else:
-            discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True)
+            discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True, sort=False)
     
     discog_store.to_csv('discog_store.csv', index = False)
         
@@ -180,7 +180,6 @@ def button_2_alt_func(x):
     if len(lyrics_data) != 0:
         for i,r in lyrics_data.iterrows():
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['ALBUMS'] == r['ALBUMS']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS"] = r['LYRICS']
     # write the updated content
     discog_store.to_csv('discog_store.csv', index = False)
