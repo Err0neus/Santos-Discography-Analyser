@@ -165,18 +165,26 @@ def button_2_alt_func(x):
     
     discog_store.to_csv('discog_store.csv', index = False)
         
-        
+    
     #get lyrics
     print('Getting the lyrics, please hold on')
-    if "LYRICS" not in discog_store.columns:
-        lyrics_data = get_lyrics.getLyrics(discog_store[discog_store['ARTIST_NAME'] == artist])
-    elif len(discog_store[(discog_store['ARTIST_NAME'] == artist)\
-                          &(~discog_store['LYRICS'].notnull())]) > 0:
-        lyrics_data = get_lyrics.getLyrics(discog_store[(discog_store['ARTIST_NAME'] == artist) \
-                                                        &(~discog_store['LYRICS'].notnull())])
+    
+    if len(discog_store[(discog_store['ARTIST_NAME'] == artist)
+                    & (discog_store["EXCLUDE_ALBUM"] == False) 
+                    & (discog_store["EXCLUDE_SONG"] == False)]) > 0:
+        if "LYRICS" not in discog_store.columns:
+            lyrics_data = get_lyrics.getLyrics(discog_store[discog_store['ARTIST_NAME'] == artist])
+        elif len(discog_store[(discog_store['ARTIST_NAME'] == artist)
+                              & (discog_store["EXCLUDE_ALBUM"] == False)
+                              & (discog_store["EXCLUDE_SONG"] == False)
+                              &(~discog_store['LYRICS'].notnull())]) > 0:
+            lyrics_data = get_lyrics.getLyrics(discog_store[(discog_store['ARTIST_NAME'] == artist) \
+                                                            &(~discog_store['LYRICS'].notnull())])
+        else:
+            lyrics_data = []
     else:
         lyrics_data = []
-             
+        
     if len(lyrics_data) != 0:
         for i,r in lyrics_data.iterrows():
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
