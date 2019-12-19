@@ -15,7 +15,7 @@ def getLyrics(df):
     
     for i in tqdm_notebook(range(len(filter_data.TRACK_TITLE))):
     #for i in tqdm(range(len(filter_data.TRACK_TITLE))):
-        track = filter_data["TRACK_TITLE"][i]
+        track = filter_data.reset_index()["TRACK_TITLE"][i]
         song = genius.search_song(track, atrist_name)       
         if song is None: # to abort error when lyrics is not found for particular songs
             filter_data.loc[df["TRACK_TITLE"] == track, "LYRICS"] = "Not Found"
