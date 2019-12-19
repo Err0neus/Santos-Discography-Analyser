@@ -11,6 +11,16 @@ import ipywidgets as widgets
 from functions import get_discogs
 from functions import get_lyrics
 
+# word processing
+import os
+import nltk
+nltk.download('punkt')
+from nltk.corpus import stopwords
+nltk.download('stopwords')
+stop_words = stopwords.words('english')
+clear_output()
+import string
+
 ##################################################################
 #import sample discography
 
@@ -184,11 +194,27 @@ def button_2_alt_func(x):
             lyrics_data = []
     else:
         lyrics_data = []
-        
+    print('processing and cleaning, please hold on')
     if len(lyrics_data) != 0:
         for i,r in lyrics_data.iterrows():
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS"] = r['LYRICS']
+            # add column with lyrics with removed stopwords
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in x.lower().split() if word not in stop_words)))
+            
+            # remove punctuation
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN_+"] = discog_store['LYRICS_CLEAN'].str.replace('[^\w\s]','')
+            
+            #list unique clean words
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN_UNIQUE"] = discog_store['LYRICS_CLEAN_+'].astype(str).apply(lambda x: list(set(x.split())))
+            #count unique clean words
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN_UNIQUE_COUNT"] =discog_store['LYRICS_CLEAN_UNIQUE'].apply(lambda x: len(i.split(',')) if type(i) == str else '')
+            
+    
     # write the updated content
     discog_store.to_csv('discog_store.csv', index = False)
     
@@ -235,7 +261,7 @@ def add_period_column(discog, bin_size):
     bins = generate_period_bins(discog, bin_size)
     for i, r in discog.iterrows():
         for period in bins:
-            if r['year'] >= int(period[:4]) and r['YEAR'] <= int(period[5:]):
+            if int(r['YEAR']) >= int(period[:4]) and int(r['YEAR']) <= int(period[5:]):
                 period_col_data.append(period)
     discog['period'] = period_col_data
     return discog
@@ -305,16 +331,16 @@ def pirate_plot(discog, bin_size):
     data = add_period_column(discog, bin_size)
     sns.set_style("whitegrid")
     fig, ax = plt.subplots(figsize=(8,5))
-    ax = sns.boxplot(x="period", y="unique_words", data=data)
-    ax = sns.stripplot(x="period", y="unique_words", data=data, color=".25")
+    ax = sns.boxplot(x="period", y="LYRICS_CLEAN_UNIQUE_COUNT", data=data)
+    ax = sns.stripplot(x="period", y="LYRICS_CLEAN_UNIQUE_COUNT", data=data, color=".25")
     
 def violin_plot(discog, bin_size):
     data = add_period_column(discog, bin_size)
     # Draw Plot
     plt.figure(figsize=(8,5), dpi= 80)
-    sns.violinplot(x='period', y='unique_words', data=data, scale='width', inner='quartile', cut=0)
+    sns.violinplot(x='period', y='LYRICS_CLEAN_UNIQUE_COUNT', data=data, scale='width', inner='quartile', cut=0)
     # Decoration
-    plt.title('Lexical diversity', fontsize=22)
+    plt.title('Lexical diversity (excluding stopwords)', fontsize=22)
     plt.show()
 
 
@@ -334,11 +360,14 @@ def button_3_func(x):
     clear_output()
     # display UI
     UI()
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog[(discog['ARTIST_NAME']==artist)&(discog['ALBUMS'].isin(album_filter))].copy()
     #display chart using the new bin_size
     plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
-    #pirate_plot(discog_filtered, bin_size)
-    #violin_plot(discog_filtered, bin_size)
+    pirate_plot(discog_filtered, bin_size)
+    violin_plot(discog_filtered, bin_size)
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(
