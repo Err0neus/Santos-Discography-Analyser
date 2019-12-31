@@ -14,6 +14,7 @@ import pandas as pd
 import discogs_client
 import requests
 import time
+from tqdm import tnrange, tqdm_notebook, notebook
 
 # authenticate to DISCOGS.COM
 token = 'FBvXNlFYwMjpXpOkCBYtlyNdawVggJqXcQZJLoJC'
@@ -41,15 +42,16 @@ def getArtistID(artist_name):
 #
 ##
 def getTrack(df):
-    id_ls = dict(zip(df["ID"], df["TYPES"]))
+    reset_df = df.reset_index(drop = True)
     a_id, track_num, track_title = [], [], []
     track_info = pd.DataFrame()
-    for albums_id, albums_types in id_ls.items():
+    for i in notebook.tqdm(range(len(reset_df))):
+        album_id = reset_df["ID"][i]
         time.sleep(0.5)
-        release = discogs.master(int(albums_id))
+        release = discogs.master(int(album_id))
         m_release = release.tracklist
         for track in m_release:
-            a_id.append(albums_id)
+            a_id.append(album_id)
             track_num.append(track.position)
             track_title.append(track.title)
     track_info["ID"] = a_id
@@ -73,11 +75,11 @@ def extract(el, css_sel):
     return None if len(ms) != 1 else ms[0].text
 
 def cleaningTrackData(df, a_nam):
-    data = df[(df["TRACK_TITLE"] != "")|(df["TRACK_POSITION"] != "")]# filter any empty track title
+    data = df[(df["TRACK_TITLE"] != "") | (df["TRACK_POSITION"] != "")]# filter any empty track title
     data["ARTIST_NAME"] = (a_nam).title() # adding new column with given artist name
     
     #SONGS REPEATED WITH " ("
-    for i, r in data.iterrows():
+    for i, r in notebook.tqdm(data.iterrows()):
         data.loc[(data["TRACK_TITLE"].str.len() >= len(r["TRACK_TITLE"])+ 2)\
                      &(data["TRACK_TITLE"].str[:len(r["TRACK_TITLE"])+ 2]==r["TRACK_TITLE"]+" (")\
                        | (data.duplicated(subset=["TRACK_TITLE"], keep='first')),
@@ -101,15 +103,18 @@ def getArtistData(a_name):
     root = lxml.html.fromstring(r.text)
     albums_info = pd.DataFrame()
     album_id, types, title, formats, year = [], [], [], [], []
- 
-    for row in root.cssselect("#artist tr"):
+    print("Getting albums data for '%s'" %a_nam)
+    iterate = notebook.tqdm(range(len(root.cssselect("#artist tr"))))
+    for i in iterate:
+        row = root.cssselect("#artist tr")[i]
         section = extract(row, "td h3")
         if section is not None:
             if section == "Albums":
                 continue
             if section == "Singles & EPs":
                 break
- 
+        iterate.reset()
+            
         album_id.append(row.get("data-object-id"))
         types.append(row.get("data-object-type"))
         title.append(extract(row, ".title a"))
@@ -144,4 +149,3 @@ def getArtistData(a_name):
     #                 "EXCLUDE_SONG"] = True
         
     # final_data["EXCLUDE_SONG"].fillna(False, inplace = True) 
-    

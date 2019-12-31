@@ -1,6 +1,6 @@
 import lyricsgenius
 
-from tqdm import tnrange, tqdm_notebook
+from tqdm import tnrange, tqdm_notebook, notebook
 #from tqdm.notebook import trange, tqdm
 
 # authenticate to GENIUS.COM
@@ -13,7 +13,7 @@ def getLyrics(df):
     filter_data = df[(df["EXCLUDE_ALBUM"] == False) & (df["EXCLUDE_SONG"] == False)].copy(deep=True) 
     atrist_name = filter_data["ARTIST_NAME"].unique()[0]
     
-    for i in tqdm_notebook(range(len(filter_data.TRACK_TITLE))):
+    for i in notebook.tqdm(range(len(filter_data.TRACK_TITLE))):
     #for i in tqdm(range(len(filter_data.TRACK_TITLE))):
         track = filter_data.reset_index()["TRACK_TITLE"][i]
         song = genius.search_song(track, atrist_name)       
