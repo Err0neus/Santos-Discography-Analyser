@@ -173,7 +173,13 @@ def button_2_alt_func(x):
         else:
             discog_store = discog_store[discog_store['ARTIST_NAME'] != artist].append(discog, ignore_index=True, sort=False)
     
-    discog_store.to_csv('discog_store.csv', index = False)
+    try:
+        discog_store.to_csv('discog_store.csv', index = False)
+    except PermissionError:
+        clear_output()
+        display(widgets.HTML(value=f'''<b><font color="red">Permission denied: make sure 'discog_store.csv' is closed and try again </b>''',
+                           layout=widgets.Layout(width="100%")))
+        return UI()
         
     
     #get lyrics
@@ -216,7 +222,14 @@ def button_2_alt_func(x):
             
     
     # write the updated content
-    discog_store.to_csv('discog_store.csv', index = False)
+    try:
+        discog_store.to_csv('discog_store.csv', index = False)
+    except PermissionError:
+        clear_output()
+        display(widgets.HTML(value=f'''<b><font color="red">Permission denied: make sure 'discog_store.csv' is closed and try again </b>''',
+                           layout=widgets.Layout(width="100%")))
+        return UI()
+        
     
     clear_output()
     # select next tab    
