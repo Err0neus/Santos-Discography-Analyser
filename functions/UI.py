@@ -205,20 +205,16 @@ def button_2_alt_func(x):
         for i,r in lyrics_data.iterrows():
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS"] = r['LYRICS']
-            # add column with lyrics with removed stopwords
-            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in x.lower().split() if word not in stop_words)))
+        # add column with lyrics with removed stopwords
+        discog_store["LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in x.lower().split() if word not in stop_words)))
             
-            # remove punctuation
-            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN_+"] = discog_store['LYRICS_CLEAN'].str.replace('[^\w\s]','')
+        # remove punctuation
+        discog_store["LYRICS_CLEAN_+"] = discog_store['LYRICS_CLEAN'].str.replace('[^\w\s]','')
             
-            #list unique clean words
-            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN_UNIQUE"] = discog_store['LYRICS_CLEAN_+'].astype(str).apply(lambda x: list(set(x.split())))
-            #count unique clean words
-            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS_CLEAN_UNIQUE_COUNT"] =discog_store['LYRICS_CLEAN_UNIQUE'].apply(lambda x: len(i.split(',')) if type(i) == str else '')
+        #list unique clean words
+        discog_store["LYRICS_CLEAN_UNIQUE"] = discog_store['LYRICS_CLEAN_+'].astype(str).apply(lambda x: list(set(x.split())))
+        #count unique clean words
+        discog_store["LYRICS_CLEAN_UNIQUE_COUNT"] =discog_store['LYRICS_CLEAN_UNIQUE'].apply(lambda x: len(x))
             
     
     # write the updated content
@@ -375,7 +371,8 @@ def button_3_func(x):
     UI()
     #filter dataset
     global discog_filtered
-    discog_filtered = discog[(discog['ARTIST_NAME']==artist)&(discog['ALBUMS'].isin(album_filter))].copy()
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
+                                   &(discog_store['ALBUMS'].isin(album_filter))].copy()
     #display chart using the new bin_size
     plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
