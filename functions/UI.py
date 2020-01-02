@@ -1,3 +1,5 @@
+print('Loading...')
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
@@ -12,6 +14,7 @@ from functions import get_discogs
 from functions import get_lyrics
 
 # word processing
+import re
 import os
 import nltk
 nltk.download('punkt')
@@ -206,13 +209,13 @@ def button_2_alt_func(x):
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS"] = r['LYRICS']
         # add column with lyrics with removed stopwords
-        discog_store["LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in x.lower().split() if word not in stop_words)))
-            
+        #discog_store["LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in x.lower().split() if word not in stop_words)))
+        discog_store["LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in re.findall(r"[\w]+|[^\s\w]",x.lower()) if word not in stop_words)))       
         # remove punctuation
-        discog_store["LYRICS_CLEAN_+"] = discog_store['LYRICS_CLEAN'].str.replace('[^\w\s]','')
+        discog_store["LYRICS_CLEAN"] = discog_store['LYRICS_CLEAN'].str.replace('[^\w\s] ','')
             
         #list unique clean words
-        discog_store["LYRICS_CLEAN_UNIQUE"] = discog_store['LYRICS_CLEAN_+'].astype(str).apply(lambda x: list(set(x.split())))
+        discog_store["LYRICS_CLEAN_UNIQUE"] = discog_store['LYRICS_CLEAN'].astype(str).apply(lambda x: list(set(x.split())))
         #count unique clean words
         discog_store["LYRICS_CLEAN_UNIQUE_COUNT"] =discog_store['LYRICS_CLEAN_UNIQUE'].apply(lambda x: len(x))
             
@@ -303,6 +306,7 @@ def plot_albums_songs_per_period(discog, bin_size):
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax1.set_ylim(bottom=0)
     ax2.set_ylim(bottom=0)
+    plt.title('Albums and songs count by period', fontsize=18)
     plt.show()
 
 def plot_albums_songs_per_period_bar(discog, bin_size):
@@ -333,7 +337,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     data['TRACK_TITLE'].plot(kind='bar', color='blue', ax=ax2, width=width, position=0)
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-
+    plt.title('Albums and songs count by period', fontsize=18)
     plt.show()
     
 def pirate_plot(discog, bin_size):
@@ -342,14 +346,20 @@ def pirate_plot(discog, bin_size):
     fig, ax = plt.subplots(figsize=(8,5))
     ax = sns.boxplot(x="period", y="LYRICS_CLEAN_UNIQUE_COUNT", data=data)
     ax = sns.stripplot(x="period", y="LYRICS_CLEAN_UNIQUE_COUNT", data=data, color=".25")
-    
+    ax.set_xlabel('Period')
+    ax.set_ylabel('Number of unique words (excl. stopwords)')
+    plt.title('Lexical diversity', fontsize=18)
+    plt.show()
+
 def violin_plot(discog, bin_size):
     data = add_period_column(discog, bin_size)
     # Draw Plot
     plt.figure(figsize=(8,5), dpi= 80)
     sns.violinplot(x='period', y='LYRICS_CLEAN_UNIQUE_COUNT', data=data, scale='width', inner='quartile', cut=0)
     # Decoration
-    plt.title('Lexical diversity (excluding stopwords)', fontsize=22)
+    plt.title('Lexical diversity', fontsize=18)
+    plt.ylabel('Number of unique words (excl. stopwords)')
+    plt.xlabel('Period')
     plt.show()
 
 
