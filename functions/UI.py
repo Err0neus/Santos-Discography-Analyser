@@ -141,6 +141,21 @@ def set_album_selector_alt(options, options_filter):
 
 album_selector_alt = multi_checkbox_widget([],[])
 import time
+
+def button_2_1_func(x):
+    #clear previous output
+    clear_output() 
+    global album_selector_alt 
+    if album_selector_alt.children[0].children[0].value == True:
+        set_album_selector_alt(discog['YEAR_ALBUM'].unique().tolist(), [])
+    else:
+        set_album_selector_alt(discog['YEAR_ALBUM'].unique().tolist(), discog['YEAR_ALBUM'].unique().tolist())
+    # select this tab    
+    global selected_tab
+    selected_tab = 1
+    # display UI
+    UI()
+    
 def button_2_alt_func(x):
     global discog
     global discog_store
@@ -273,11 +288,8 @@ def add_period_column(discog, bin_size):
     '''adds column with period info without any other modifications'''
     period_col_data = []
     bins = generate_period_bins(discog, bin_size)
-    #print(bins)
     for i, r in discog.iterrows():
-     #   print(r['YEAR'])
         for period in bins:
-            #      print(period)
             if int(r['YEAR']) >= int(period[:4]) and int(r['YEAR']) <= int(period[5:]):
                 period_col_data.append(period)
     discog['period'] = period_col_data
@@ -434,7 +446,9 @@ def UI():
     label_2 = widgets.HTML(value=f'''<b><font size = "+1">Selected discography for <u>{artist}</u></b>''',
                            layout=widgets.Layout(width="100%"))
     text_2 = widgets.Label('Use checkboxes to toggle selection:', layout=widgets.Layout(width="80%"))
-    SECTION_2 = widgets.VBox([label_2, text_2, album_selector_alt, button_2,], 
+    button_2_1 = widgets.Button(description="Select/deselect all")
+    button_2_1.on_click(button_2_1_func)
+    SECTION_2 = widgets.VBox([label_2, text_2, button_2_1,album_selector_alt, button_2,], 
                              layout=widgets.Layout(width="80%", padding = "10px"))  
     
     # SECTION 3 = chart plots
