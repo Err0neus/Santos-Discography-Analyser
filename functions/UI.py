@@ -88,6 +88,7 @@ def button_1_func(x):
         discog = discog_store[discog_store['ARTIST_NAME'] == artist].copy()
     else:
         discog = get_discogs.getArtistData(artist)
+    discog['YEAR_ALBUM'] = "[" + discog['YEAR'].astype(str) + "] " + discog['ALBUMS']
     
     #clear previous output
     clear_output()
@@ -99,10 +100,11 @@ def button_1_func(x):
     
     #overwrite album_filter with current selection
     global album_filter    
-    set_album_filter(discog[discog['EXCLUDE_ALBUM'] != True]['ALBUMS'].unique().tolist())
+    set_album_filter(discog[discog['EXCLUDE_ALBUM'] != True]['YEAR_ALBUM'].unique().tolist())
                
     global album_selector_alt 
-    set_album_selector_alt(discog['ALBUMS'].unique().tolist(), album_filter)
+    
+    set_album_selector_alt(discog['YEAR_ALBUM'].unique().tolist(), album_filter)
     # display UI
     UI()
     
@@ -151,18 +153,18 @@ def button_2_alt_func(x):
     # read user input
     for album in album_selector_alt.children[0].children:
         # overwrite EXCLUDE_ALBUM flag
-        discog.loc[discog['ALBUMS'] == album.description, 'EXCLUDE_ALBUM'] = not album.value
+        discog.loc[discog['YEAR_ALBUM'] == album.description, 'EXCLUDE_ALBUM'] = not album.value
         #make a list of selected albums
         if album.value == True:
             selected.append(album.description)
     # set filter = list of selected albums
     set_album_filter(selected)
     # reset selector to keep the actual selections
-    set_album_selector_alt(discog['ALBUMS'].unique().tolist(), selected)
+    set_album_selector_alt(discog['YEAR_ALBUM'].unique().tolist(), selected)
     
     #filter dataset
     global discog_filtered
-    discog_filtered = discog[discog['ALBUMS'].isin(album_filter)].copy()
+    discog_filtered = discog[discog['YEAR_ALBUM'].isin(album_filter)].copy()
     #clear previous output
     clear_output() 
   
@@ -247,7 +249,7 @@ def generate_period_bins(discog, bin_size):
     start_year = int(str(discog['YEAR'].min())[:3]+'0')
     last_year = int(discog['YEAR'].max()) + int(str(100 - int(str(discog['YEAR'].max())[2:]))[-1])
     year = start_year
-    while year < last_year:
+    while year <= last_year:
         bins.append(str(year) + '-' + str(year + bin_size-1))
         year += bin_size
     return bins
@@ -271,8 +273,11 @@ def add_period_column(discog, bin_size):
     '''adds column with period info without any other modifications'''
     period_col_data = []
     bins = generate_period_bins(discog, bin_size)
+    #print(bins)
     for i, r in discog.iterrows():
+     #   print(r['YEAR'])
         for period in bins:
+            #      print(period)
             if int(r['YEAR']) >= int(period[:4]) and int(r['YEAR']) <= int(period[5:]):
                 period_col_data.append(period)
     discog['period'] = period_col_data
@@ -382,7 +387,7 @@ def button_3_func(x):
     #filter dataset
     global discog_filtered
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
-                                   &(discog_store['ALBUMS'].isin(album_filter))].copy()
+                                   &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     #display chart using the new bin_size
     plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
