@@ -45,6 +45,7 @@ def getTrack(df):
     reset_df = df.reset_index(drop = True)
     a_id, track_num, track_title = [], [], []
     track_info = pd.DataFrame()
+    print("Getting Track..")
     for i in notebook.tqdm(range(len(reset_df))):
         album_id = reset_df["ID"][i]
         time.sleep(0.5)
@@ -105,23 +106,22 @@ def getArtistData(a_name):
     root = lxml.html.fromstring(r.text)
     albums_info = pd.DataFrame()
     album_id, types, title, formats, year = [], [], [], [], []
+    section_value = 0
     print("Getting albums data for '%s'" %a_nam)
     iterate = notebook.tqdm(range(len(root.cssselect("#artist tr"))))
     for i in iterate:
         row = root.cssselect("#artist tr")[i]
         section = extract(row, "td h3")
+        
         if section is not None:
-            if section == "Albums":
-                continue
-            if section == "Singles & EPs":
-                break
-            iterate.reset()
-            
-        album_id.append(row.get("data-object-id"))
-        types.append(row.get("data-object-type"))
-        title.append(extract(row, ".title a"))
-        formats.append(extract(row, ".title .format"))
-        year.append(extract(row, "td[data-header=\"Year: \"]"))
+            section_value += 1
+        
+        if section_value == 0:
+            album_id.append(row.get("data-object-id"))
+            types.append(row.get("data-object-type"))
+            title.append(extract(row, ".title a"))
+            formats.append(extract(row, ".title .format"))
+            year.append(extract(row, "td[data-header=\"Year: \"]"))
     
     albums_info["ID"] = album_id
     albums_info['TYPES'] = types
