@@ -108,7 +108,7 @@ def getArtistData(a_name):
     album_id, types, title, formats, year = [], [], [], [], []
     section_value = 0
     print("Getting albums data for '%s'" %a_nam)
-    iterate = notebook.tqdm(range(len(root.cssselect("#artist tr"))))
+    iterate = notebook.tqdm(range(1, len(root.cssselect("#artist tr"))))
     for i in iterate:
         row = root.cssselect("#artist tr")[i]
         section = extract(row, "td h3")
