@@ -13,25 +13,25 @@ For any given artist name: <br>
 
 ## Dependencies:
 
-(APIs)
-lyricsgenius
-lxml.html
-cssselect
-discogs_client
-requests
+<i>APIs</i><br>
+lyricsgenius<br>
+lxml.html<br>
+cssselect<br>
+discogs_client<br>
+requests<br>
 
-(data processing and charts)
-matplotlib
-pandas
-time
-seaborn
+<i>data processing and charts</i><br>
+matplotlib<br>
+pandas<br>
+time<br>
+seaborn<br>
 
-(UI)
-ipywidgets
-IPython
+<i>UI</i><br>
+ipywidgets<br>
+IPython<br>
 
-(word processing)
-re
-os
-nltk
-string
+<i>word processing</i><br>
+re<br>
+os<br>
+nltk<br>
+string<br>
