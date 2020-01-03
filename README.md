@@ -11,3 +11,27 @@ For any given artist name: <br>
    - word distribution
 • analyzes sentiment of the lyrics
 
+## Dependencies:
+
+(APIs)
+lyricsgenius
+lxml.html
+cssselect
+discogs_client
+requests
+
+(data processing and charts)
+matplotlib
+pandas
+time
+seaborn
+
+(UI)
+ipywidgets
+IPython
+
+(word processing)
+re
+os
+nltk
+string
