@@ -129,7 +129,9 @@ def getArtistData(a_name):
     albums_info['ALBUMS_TYPES'] = formats
     albums_info['YEAR'] = year
     
+    albums_info = albums_info.sort_values("YEAR") #re-arranging date
     #data cleaning
+    
     update_df = dataCleaning(albums_info)
     
     #getting track for 
