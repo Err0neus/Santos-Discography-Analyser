@@ -23,3 +23,18 @@ def getLyrics(df):
             filter_data.loc[df["TRACK_TITLE"] == track, "LYRICS"] = song.lyrics
             
     return filter_data
+
+def getLyrics_V2(df):
+    filter_data = df[(df["EXCLUDE_ALBUM"] == False) & (df["EXCLUDE_SONG"] == False)].copy(deep=True)
+    filter_data = filter_data.reset_index(drop=True)
+    atrist_name = filter_data["ARTIST_NAME"].unique()[0]
+  
+    for i in tqdm_notebook(range(len(filter_data.TRACK_TITLE))):
+        albums = filter_data["ALBUMS"][i]
+        track = filter_data["TRACK_TITLE"][i]
+        fetch_lyric = provider.get_lyrics(atrist_name, album = albums, song = track)
+        for album in fetch_lyric:
+            for i_song in album:
+                filter_data.loc[filter_data["TRACK_TITLE"] == track, "LYRICS"] = i_song.lyrics
+    
+    return filter_data
