@@ -30,7 +30,7 @@ genius.remove_section_headers = True
 # from lyrics Master provider
 provider = LyricWiki()
 
-def getLyrics(df):
+def getLyrics_v0(df):
     filter_data = df[(df["EXCLUDE_ALBUM"] == False) & (df["EXCLUDE_SONG"] == False)].copy(deep=True) 
     atrist_name = filter_data["ARTIST_NAME"].unique()[0]
     
@@ -67,7 +67,7 @@ def getLyricsGenius(df, df2, atrist_name):
     return df2
 
 
-def getLyrics_V2(df):
+def getLyrics(df):
     '''
     Fetching lyric for each song using lyricsmaster
     If there are any song without any lyrics then fetch lyrics from lyricsgenius
