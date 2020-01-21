@@ -45,9 +45,21 @@ def getLyrics_v0(df):
             
     return filter_data
 
+def cleanLyrics(df):
+    '''
+    Cleaning lyrics from the dataframe
+    - Removing atrist name from the lyrics
+    '''
+    df["split_lyrics"] = df["LYRICS"].str.split("\n") # creating a list 
+    df["rem_item"] = df["split_lyrics"].apply(lambda row: [val for val in row if ":" not in val]) # removing ":" from the list item
+    df["CLEAN_LYRICS"] = df["rem_item"].str.join('\n')#.drop(["split_lyrics", "rem_item"], axis=1) # joining all str in the list
+    
+    return df.drop(["LYRICS", "split_lyrics", "rem_item"], axis=1).rename(columns={"CLEAN_LYRICS" : "LYRICS"}
 
 def getLyricsGenius(df, df2, atrist_name):
     '''
+    Using Lyrics Genius api to fetch lyrics
+    
     param: df-> filter dataframe
     param: df2-> master dataframe
     param: atrist_name-> name of particular atrist "String"
@@ -69,8 +81,8 @@ def getLyricsGenius(df, df2, atrist_name):
 
 def getLyrics(df):
     '''
-    Fetching lyric for each song using lyricsmaster
-    If there are any song without any lyrics then fetch lyrics from lyricsgenius
+    Fetching lyric for each song using lyricsmaster api
+    If there are any song without any lyrics then fetch lyrics from lyricsgenius api
     
     param: df-> dataframe
     
@@ -91,7 +103,9 @@ def getLyrics(df):
     if filter_data["LYRICS"].isnull:
         data = filter_data[filter_data["LYRICS"].isnull()]
         final_data = getLyricsGenius(data, filter_data, atrist_name)
-        return final_data
     
     else:
-        return filter_data
+        final_data = filter_data
+                                                                          
+    clean_data = cleanLyrics(final_data)
+    return clean_data
