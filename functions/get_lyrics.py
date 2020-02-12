@@ -54,7 +54,7 @@ def cleanLyrics(df):
     df["rem_item"] = df["split_lyrics"].apply(lambda row: [val for val in row if ":" not in val]) # removing ":" from the list item
     df["CLEAN_LYRICS"] = df["rem_item"].str.join('\n')#.drop(["split_lyrics", "rem_item"], axis=1) # joining all str in the list
     
-    return df.drop(["LYRICS", "split_lyrics", "rem_item"], axis=1).rename(columns={"CLEAN_LYRICS" : "LYRICS"}
+    return df.drop(["LYRICS", "split_lyrics", "rem_item"], axis=1).rename(columns={"CLEAN_LYRICS" : "LYRICS"})
 
 def getLyricsGenius(df, df2, atrist_name):
     '''
