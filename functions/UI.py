@@ -12,6 +12,7 @@ import ipywidgets as widgets
 # other fuctions
 from functions import get_discogs
 from functions import get_lyrics
+from functions import plot_wordcloud
 
 # word processing
 import re
@@ -401,10 +402,11 @@ def button_3_func(x):
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                                    &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     #display chart using the new bin_size
-    plot_albums_songs_per_period(discog_filtered, bin_size)
+    #plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
-    pirate_plot(discog_filtered, bin_size)
+    #pirate_plot(discog_filtered, bin_size)
     violin_plot(discog_filtered, bin_size)
+    plot_wordcloud.createWordCloud(discog_filtered[~discog_filtered['LYRICS_CLEAN'].isnull()], 'period')
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(

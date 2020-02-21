@@ -43,7 +43,7 @@ def grid(n):
 
 
 def createWordCloud(df, col):
-    data = createGroupDf(df, col, 'lyrics_cleaned')
+    data = createGroupDf(df, col, 'LYRICS_CLEAN')
     fig = plt.figure(figsize = (20, 15))
     col_list = data.columns
     y= grid(len(col_list))[0]
