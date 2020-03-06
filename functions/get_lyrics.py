@@ -1,7 +1,9 @@
 import lyricsgenius
+import requests
+import re
 
+from bs4 import BeautifulSoup as bs
 from tqdm import tnrange, tqdm_notebook, notebook
-
 from lyricsmaster import LyricWiki, TorController
 
 # pip install lyricsmaster
@@ -53,8 +55,8 @@ def cleanLyrics(df):
     df["split_lyrics"] = df["LYRICS"].str.split("\n") # creating a list 
     df["rem_item"] = df["split_lyrics"].apply(lambda row: [val for val in row if ":" not in val]) # removing ":" from the list item
     df["CLEAN_LYRICS"] = df["rem_item"].str.join('\n')#.drop(["split_lyrics", "rem_item"], axis=1) # joining all str in the list
-    
-    return df.drop(["LYRICS", "split_lyrics", "rem_item"], axis=1).rename(columns={"CLEAN_LYRICS" : "LYRICS"})
+
+    return df.drop(["LYRICS", "split_lyrics", "rem_item", "GENIUS_LINK"], axis=1).rename(columns={"CLEAN_LYRICS" : "LYRICS"})
 
 def getLyricsGenius(df, df2, atrist_name):
     '''
@@ -79,10 +81,10 @@ def getLyricsGenius(df, df2, atrist_name):
     return df2
 
 
-def getLyrics(df):
+def getLyrics_v1(df):
     '''
     Fetching lyric for each song using lyricsmaster api
-    If there are any song without any lyrics then fetch lyrics from lyricsgenius api
+    If there are any song without any lyrics then fetch from lyricsgenius api
     
     param: df-> dataframe
     
@@ -103,9 +105,46 @@ def getLyrics(df):
     if filter_data["LYRICS"].isnull:
         data = filter_data[filter_data["LYRICS"].isnull()]
         final_data = getLyricsGenius(data, filter_data, atrist_name)
-    
+   
     else:
         final_data = filter_data
-                                                                          
+        
     clean_data = cleanLyrics(final_data)
-    return clean_data
+    
+    return (clean_data)
+
+def getLyrics(df):
+    '''
+    Fetching lyric for each song using requests and Beautifulsoup libaries
+    If there are any song without any lyrics then fetch from lyricsgenius api
+    
+    param: df-> dataframe
+    
+    return: dataframe with LYRICS column
+    '''
+    filter_data = df[(df["EXCLUDE_ALBUM"] == False) & (df["EXCLUDE_SONG"] == False)].copy(deep=True)
+    filter_data = filter_data.reset_index(drop=True)
+    filter_data["GENIUS_LINK"] = ("https://genius.com/" + filter_data["ARTIST_NAME"] +" "+ filter_data["TRACK_TITLE"] + "-lyrics").replace(" ","-", regex=True)
+    atrist_name = filter_data["ARTIST_NAME"].unique()[0]
+
+    for i in notebook.tqdm(range(len(filter_data.GENIUS_LINK))):
+        page = requests.get(filter_data.GENIUS_LINK[i])
+        if page.status_code == 200:
+            html = bs(page.text, 'html.parser')
+            lyrics = html.find('div', class_='lyrics').get_text()
+            lyrics = re.sub(r'[\(\[].*?[\)\]]', '', lyrics)
+            filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics
+        else:
+            filter_data.loc[filter_data["GENIUS_LINK"] == filter_data.GENIUS_LINK[i], "LYRICS"] = None    
+  
+    # getting lyric for any null data
+    if filter_data["LYRICS"].isnull:
+        data = filter_data[filter_data["LYRICS"].isnull()]
+        final_data = getLyricsGenius(data, filter_data, atrist_name)
+   
+    else:
+        final_data = filter_data
+        
+    clean_data = cleanLyrics(final_data)
+    
+    return (clean_data)
