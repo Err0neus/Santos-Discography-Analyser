@@ -132,18 +132,22 @@ def getLyrics(df):
         if page.status_code == 200:
             html = bs(page.text, 'html.parser')
             lyrics = html.find('div', class_='lyrics').get_text()
-            lyrics = re.sub(r'[\(\[].*?[\)\]]', '', lyrics)
-            filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics
+            if find_class is not None:
+                lyrics = find_class.get_text()
+                lyrics = re.sub(r'[\(\[].*?[\)\]]', '', lyrics)
+                filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics            
+
         else:
-            filter_data.loc[filter_data["GENIUS_LINK"] == filter_data.GENIUS_LINK[i], "LYRICS"] = None    
+            filter_data.loc[filter_data["GENIUS_LINK"] == filter_data.GENIUS_LINK[i], "LYRICS"] = None
+            sleep(3)
   
     # getting lyric for any null data
-    if filter_data["LYRICS"].isnull:
-        data = filter_data[filter_data["LYRICS"].isnull()]
-        final_data = getLyricsGenius(data, filter_data, atrist_name)
+#     if filter_data["LYRICS"].isnull:
+#         data = filter_data[filter_data["LYRICS"].isnull()]
+#         final_data = getLyricsGenius(data, filter_data, atrist_name)
    
-    else:
-        final_data = filter_data
+#     else:
+#         final_data = filter_data
         
     clean_data = cleanLyrics(final_data)
     
