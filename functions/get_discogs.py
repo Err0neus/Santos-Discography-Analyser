@@ -140,12 +140,12 @@ def cleaning_track_data(df):
     data = data.reset_index(drop=True) 
     print("Cleaning Track Title...")
     #SONGS REPEATED WITH " ("
-    for i, r in notebook.tqdm(data.iterrows()):
-        data.loc[(data["TRACK_TITLE"].str.len() >= len(r["TRACK_TITLE"])+ 2)\
-                     &(data["TRACK_TITLE"].str[:len(r["TRACK_TITLE"])+ 2]==r["TRACK_TITLE"]+" (")\
-                       | (data.duplicated(subset=["TRACK_TITLE"], keep='first')),
-                    "EXCLUDE_SONG"] = True
-        
+#     for i, r in notebook.tqdm(data.iterrows()):
+#         data.loc[(data["TRACK_TITLE"].str.len() >= len(r["TRACK_TITLE"])+ 2)\
+#                      &(data["TRACK_TITLE"].str[:len(r["TRACK_TITLE"])+ 2]==r["TRACK_TITLE"]+" (")\
+#                        | (data.duplicated(subset=["TRACK_TITLE"], keep='first')),
+#                     "EXCLUDE_SONG"] = True
+    data.loc[data.duplicated(subset=["TRACK_TITLE"], keep='first'), "EXCLUDE_SONG"] = True    
     data["EXCLUDE_SONG"].fillna(False, inplace = True)
 
     return data
