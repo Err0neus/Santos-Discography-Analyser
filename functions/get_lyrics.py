@@ -18,7 +18,6 @@ def get_lyrics(df):
     filter_data = filter_data.reset_index(drop=True)
 
     for i in notebook.tqdm(range(len(filter_data.GENIUS_LINK))):
-        print(filter_data.GENIUS_LINK[i])
         page = requests.get(filter_data.GENIUS_LINK[i])
         if page.status_code == 200:
             html = bs(page.text, 'html.parser')
