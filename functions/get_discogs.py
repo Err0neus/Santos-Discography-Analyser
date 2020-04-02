@@ -1,10 +1,12 @@
 ##
 #### Discogs Projects ####
-# Getting data of any given artist using discogs api
+# Getting data of any given artist using Request on discogs website
     # connecting to discogs client using token
     # get artist id 
     # get artist data eg. Name, Albums, Songs, Year
-    # get tracks/song from each Albums and track position
+    
+# Getting artist track/song for each Albums from Genius Request
+
 # Final result-> Dataframe
 ##
 import lxml.html
@@ -124,41 +126,63 @@ def data_cleaning(df):
     '''
     Cleaning Discogs datafarme. Removing 
     '''
-    find_str = "Live|Best Of|Tour|Volume|Concert|Demo|Vol|Unplugged|Unreleased|Collection|Portrait"
-#     df["EXCLUDE_ALBUM"] = ((df["ALBUMS"].str.contains(find_str)) | (df.duplicated(subset=["ALBUMS"], keep='first'))).copy()
-    df["EXCLUDE_ALBUM"] = ((df["ALBUMS"].str.contains(find_str))).copy()
+    
     clean_data = df[(df["ALBUMS_TYPES"] != "(Comp)") & (df["ALBUMS_TYPES"] != "(Comp, Album)")\
                       & (df["TYPES"] != "release") & ~(df["ALBUMS"].isnull()) & ~(df["ALBUMS_TYPES"].isnull())]
 
-    return clean_data
+    return (clean_data.reset_index(drop = True))
 
+def flag_exclude_album(df):
+    '''
+    Flag True for any "Live, concert, Demo, Recording etc" in the Album 
+    '''
+    
+    find_str = "Live|Best Of|Tour|Volume|Concert|Demo|Vol|Unplugged|Unreleased|Collection|Portrait|Recordings"
+    df["EXCLUDE_ALBUM"] = (df["ALBUMS"].str.contains(find_str)).copy()
+    
+    return (df)
 
-
-def cleaning_track_data(df):
+def flag_track_title(df):
+    '''
+    Flag True for any duplicated track name.
+    '''
     data = df[~df["TRACK_TITLE"].isnull()]# filter any empty track title
-#     data = data[data["TRACK_POSITION"] != ""] # filter any empty track position
-    data = data.reset_index(drop=True) 
-    print("Cleaning Track Title...")
     #SONGS REPEATED WITH " ("
 #     for i, r in notebook.tqdm(data.iterrows()):
-#         data.loc[(data["TRACK_TITLE"].str.len() >= len(r["TRACK_TITLE"])+ 2)\
+#         data["TRACK_TITLE"].str.len() >= len(r["TRACK_TITLE"])+ 2)\
 #                      &(data["TRACK_TITLE"].str[:len(r["TRACK_TITLE"])+ 2]==r["TRACK_TITLE"]+" (")\
-#                        | (data.duplicated(subset=["TRACK_TITLE"], keep='first')),
-#                     "EXCLUDE_SONG"] = True
-    data.loc[data.duplicated(subset=["TRACK_TITLE"], keep='first'), "EXCLUDE_SONG"] = True    
-    data["EXCLUDE_SONG"].fillna(False, inplace = True)
-
+#                        | 
+    data.loc[data.duplicated(subset=["TRACK_TITLE"], keep='first'),"EXCLUDE_SONG"] = True
+    data["EXCLUDE_SONG"] = data["EXCLUDE_SONG"].fillna(False)
+    
     return data
 
 
 def getArtistID(artist_name):
-    #
+    '''
+    Getting Artist ID from discogs.
+    
+    @param: artist_name-> str 
+    
+    @return: ID-> int, Name-> str
+    '''
     artist_data = str(discogs.search(artist_name, type = 'artist')[0])
     artist_id = int(artist_data.split(' ')[1])
     artist_nam = artist_data.split("'")[1]
     return (artist_id, artist_nam)
 
+def extract(el, css_sel):
+    ms = el.cssselect(css_sel)
+    return None if len(ms) != 1 else ms[0].text
+
 def get_artist_albums(a_name):
+    '''
+    Getting album details for a particular artist name
+    
+    @param: a_name-> str (artist name)
+    
+    @return: dataframe
+    '''
     a_id, a_nam = getArtistID(a_name)
     url = "http://www.discogs.com/artist/" + str(a_id) + "?limit=500"
     r = requests.get(url)
@@ -206,11 +230,16 @@ def getArtistData(a_name):
     # getting track for None
     
     df_genius_none = genius_track[genius_track["TRACK_TITLE"].isnull()]
-    df_genius_none = data_cleaning(df_genius_none)
-    discog_track = get_track_discog(df_genius_none)
+    df_genius_none = data_cleaning(df_genius_none) # Removing any release from albums
     
-    final_data = pd.concat([genius_track, discog_track], ignore_index = True)
-    final_data = cleaning_track_data(data_cleaning(final_data))
-    
+    if df_genius_none is not None:
+        discog_track = get_track_discog(df_genius_none) # using discog API
+        full_data = pd.concat([genius_track, discog_track], ignore_index = True) # appending genius and discog data
+        flag_data = flag_exclude_album(full_data) # Creating flag column for an album
+        final_data = flag_track_title(flag_data) # Creating flag column for a track_title
+        
+    else:    
+        flag_data = flag_exclude_album(genius_track) # Creating flag column for an album
+        final_data = flag_track_title(flag_data) # Creating flag column for a track_title
+        
     return final_data
- 
