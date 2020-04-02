@@ -131,7 +131,7 @@ def getLyrics(df):
         page = requests.get(filter_data.GENIUS_LINK[i])
         if page.status_code == 200:
             html = bs(page.text, 'html.parser')
-            lyrics = html.find('div', class_='lyrics').get_text()
+            find_class = html.find('div', class_='lyrics')
             if find_class is not None:
                 lyrics = find_class.get_text()
                 lyrics = re.sub(r'[\(\[].*?[\)\]]', '', lyrics)
