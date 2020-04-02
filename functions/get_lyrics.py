@@ -5,7 +5,7 @@ import time
 from bs4 import BeautifulSoup as bs
 from tqdm import tnrange, tqdm_notebook, notebook
 
-def get_lyrics(df):
+def getLyrics(df):
     '''
     Fetching lyric for each song using requests and Beautifulsoup libaries
     If there are any song without any lyrics then fetch from lyricsgenius api
