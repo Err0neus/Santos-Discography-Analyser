@@ -150,6 +150,6 @@ def getLyrics(df):
 #     else:
 #         final_data = filter_data
         
-    clean_data = cleanLyrics(final_data)
+#    clean_data = cleanLyrics(filter_data)
     
-    return (clean_data)
+    return (filter_data)
