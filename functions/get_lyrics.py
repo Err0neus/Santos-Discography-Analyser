@@ -1,6 +1,7 @@
 import lyricsgenius
 import requests
 import re
+import time
 
 from bs4 import BeautifulSoup as bs
 from tqdm import tnrange, tqdm_notebook, notebook
@@ -139,7 +140,7 @@ def getLyrics(df):
 
         else:
             filter_data.loc[filter_data["GENIUS_LINK"] == filter_data.GENIUS_LINK[i], "LYRICS"] = None
-            sleep(3)
+            time.sleep(0.5)
   
     # getting lyric for any null data
 #     if filter_data["LYRICS"].isnull:
