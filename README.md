@@ -19,6 +19,7 @@ lxml.html<br>
 cssselect<br>
 discogs_client<br>
 requests<br>
+lyricsmaster<br>
 
 <i>data processing and charts</i><br>
 matplotlib<br>
