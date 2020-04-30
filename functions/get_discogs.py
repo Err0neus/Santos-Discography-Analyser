@@ -34,7 +34,7 @@ def get_track_genius(df):
     '''
     
     #Creating new columns -> removing any special char and replacing space by "-"
-    df["new_artist"] = (df['ARTIST_NAME'].str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
+    df["new_artist"] = ((df['ARTIST_NAME'].str.replace("&", "and", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
     df["new_albums"] = ((df['ALBUMS'].str.replace(".", "-", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], []
     artist_df = pd.DataFrame()
