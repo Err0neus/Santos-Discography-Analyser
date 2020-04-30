@@ -126,8 +126,8 @@ def get_track_discog(df):
     track_info["RATING_COUNT"] = ls_rating_count
     track_info['TRACK_TITLE'] = ls_track
     #Creating new columns to clean up any special char. 
-    track_info["new_artist"] = (track_info['ARTIST_NAME'].str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
-    track_info["new_track_tile"] = (track_info['TRACK_TITLE'].str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
+    track_info["new_artist"] = ((track_info['ARTIST_NAME'].str.replace("&", "and", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
+    track_info["new_track_tile"] = ((track_info['ALBUMS'].str.replace(".", "-", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     track_info['GENIUS_LINK'] = "https://genius.com/" + track_info["new_artist"].str.strip()+ "-" + track_info["new_track_tile"].str.strip()+"-lyrics"
     
     return track_info[["ID", "TYPES", "ARTIST_NAME", "ALBUMS", "YEAR", "ALBUMS_TYPES", "TRACK_TITLE", "GENIUS_LINK"]]
