@@ -34,8 +34,11 @@ def get_track_genius(df):
     '''
     
     #Creating new columns -> removing any special char and replacing space by "-"
-    df["new_artist"] = ((df['ARTIST_NAME'].str.replace("&", "and", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
-    df["new_albums"] = ((df['ALBUMS'].str.replace(".", "-", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
+    df["new_artist"] = ((df['ARTIST_NAME'].str.replace("&", "and", regex = True)
+                        ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
+                       ).replace(" ", "-", regex = True)
+    df["new_albums"] = ((df['ALBUMS']).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
+                       ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], []
     artist_df = pd.DataFrame()
     print("Getting Track titles for each albums from Genius..")
@@ -127,7 +130,7 @@ def get_track_discog(df):
     track_info['TRACK_TITLE'] = ls_track
     #Creating new columns to clean up any special char. 
     track_info["new_artist"] = ((track_info['ARTIST_NAME'].str.replace("&", "and", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
-    track_info["new_track_tile"] = ((track_info['ALBUMS'].str.replace(".", "-", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
+    track_info["new_track_tile"] = ((track_info['TRACK_TITLE'].str.replace("'", " ", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     track_info['GENIUS_LINK'] = "https://genius.com/" + track_info["new_artist"].str.strip()+ "-" + track_info["new_track_tile"].str.strip()+"-lyrics"
     
     return track_info[["ID", "TYPES", "ARTIST_NAME", "ALBUMS", "YEAR", "ALBUMS_TYPES", "TRACK_TITLE", "GENIUS_LINK"]]
@@ -220,10 +223,14 @@ def get_album_stat(url, df):
     for idx, row in df_stat_link.iterrows():
         stat_request = requests.get(row["STAT_LINK"])
         html_tags = bs(stat_request.text, 'html.parser')
-        rating = html_tags.find("span", class_="rating_value").get_text()
-        rating_count = html_tags.find("span", class_="rating_count").get_text()
-        df_stat_link.loc[df_stat_link["ID"] == row["ID"], "RATING_OUT_OF_5"] = rating
-        df_stat_link.loc[df_stat_link["ID"] == row["ID"], "RATING_COUNT"] = rating_count
+        
+        rating = html_tags.find("span", class_="rating_value")
+        rating_count = html_tags.find("span", class_="rating_count")
+        if rating is not None:
+            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "RATING_OUT_OF_5"] = rating.get_text()
+        
+        if rating_count is not None:
+            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "RATING_COUNT"] = rating_count.get_text()
     
     return df_stat_link.drop(['STAT_LINK'], axis=1)
 
