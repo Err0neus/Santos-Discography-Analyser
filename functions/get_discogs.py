@@ -32,43 +32,52 @@ def get_track_genius(df):
     
     @return: DataFrame containing track name for every albums and genius link for a lyrics
     '''
-    
+    reset_df = df.reset_index(drop = True)# re indexing dataframe
     #Creating new columns -> removing any special char and replacing space by "-"
-    df["new_artist"] = ((df['ARTIST_NAME'].str.replace("&", "and", regex = True)
-                        ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
-                       ).replace(" ", "-", regex = True)
-    df["new_albums"] = ((df['ALBUMS']).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
-                       ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
-    ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], []
+    reset_df["new_artist"] = ((reset_df['ARTIST_NAME'].str.replace("&", "and", regex = True).replace("/", " ", regex = True)
+                              ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
+                             ).replace(" ", "-", regex = True)
+    reset_df["new_albums"] = ((reset_df['ALBUMS'].str.replace(".", " ", regex = True)
+                              ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
+                             ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
+    ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], [], [], []
     artist_df = pd.DataFrame()
     print("Getting Track titles for each albums from Genius..")
-    for i in notebook.tqdm(range(len(df))):
-        page = requests.get("https://genius.com/albums/{0}/{1}".format(df["new_artist"][i], df["new_albums"][i]))
-        if page.status_code == 200: # on teh page status in 200 which means True.
+    for i in notebook.tqdm(range(len(reset_df))):
+        #creating url for genius
+        page = requests.get("https://genius.com/albums/{0}/{1}".format(reset_df["new_artist"][i]
+                                                                       , reset_df["new_albums"][i])
+                           )
+        # prcessing only the status with 200 (sucessfully connected)
+        if page.status_code == 200: 
             html = bs(page.text, 'html.parser')
             find_class = html.findAll('div', class_= "chart_row-content") # finding all the html tag "div" where the class name is "chart_row-content"
             for tags in find_class:
                 links = tags.find("a", class_= 'u-display_block')
                 # appending to the emply list
-                ls_a_id.append(df["ID"][i])
-                ls_type.append(df["TYPES"][i])
-                ls_artist_name.append(df["ARTIST_NAME"][i])
-                ls_albums.append(df["ALBUMS"][i])
-                ls_year.append(df["YEAR"][i])
-                ls_album_type.append(df["ALBUMS_TYPES"][i])
-                ls_rating.append(df["RATING_OUT_OF_5"][i])
-                ls_rating_count.append(df["RATING_COUNT"][i])
+                ls_a_id.append(reset_df["ID"][i])
+                ls_type.append(reset_df["TYPES"][i])
+                ls_artist_name.append(reset_df["ARTIST_NAME"][i])
+                ls_albums.append(reset_df["ALBUMS"][i])
+                ls_year.append(reset_df["YEAR"][i])
+                ls_album_type.append(reset_df["ALBUMS_TYPES"][i])
+                ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
+                ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
+                ls_rating.append(reset_df["AVG_RATING"][i])
+                ls_rating_count.append(reset_df["NUM_OF_RATING"][i])
                 ls_track.append((tags.get_text())) #appending track titles
                 ls_genius_link.append(links["href"]) # appending lyrics https links for each song title
         else:
-            ls_a_id.append(df["ID"][i])
-            ls_type.append(df["TYPES"][i])
-            ls_artist_name.append(df["ARTIST_NAME"][i])
-            ls_albums.append(df["ALBUMS"][i])
-            ls_year.append(df["YEAR"][i])
-            ls_album_type.append(df["ALBUMS_TYPES"][i])
-            ls_rating.append(df["RATING_OUT_OF_5"][i])
-            ls_rating_count.append(df["RATING_COUNT"][i])
+            ls_a_id.append(reset_df["ID"][i])
+            ls_type.append(reset_df["TYPES"][i])
+            ls_artist_name.append(reset_df["ARTIST_NAME"][i])
+            ls_albums.append(reset_df["ALBUMS"][i])
+            ls_year.append(reset_df["YEAR"][i])
+            ls_album_type.append(reset_df["ALBUMS_TYPES"][i])
+            ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
+            ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
+            ls_rating.append(reset_df["AVG_RATING"][i])
+            ls_rating_count.append(reset_df["NUM_OF_RATING"][i])
             ls_track.append((None))
             ls_genius_link.append(None)
     
@@ -79,12 +88,16 @@ def get_track_genius(df):
     artist_df['ALBUMS'] = ls_albums
     artist_df['YEAR'] = ls_year
     artist_df["ALBUMS_TYPES"] = ls_album_type
-    artist_df["RATING_OUT_OF_5"] = ls_rating
-    artist_df["RATING_COUNT"] = ls_rating_count
+    artist_df["NUM_OF_PPL_HAVING"] = ls_have
+    artist_df["NUM_OF_PPL_WANT"] = ls_want
+    artist_df["AVG_RATING"] = ls_rating
+    artist_df["NUM_OF_RATING"] = ls_rating_count
     artist_df['TRACK_TITLE'] = ls_track
     artist_df['GENIUS_LINK'] = ls_genius_link
     #Cleaning Track title
-    artist_df['TRACK_TITLE'] = (artist_df['TRACK_TITLE'].replace("\n", "", regex = True).replace("Lyrics", "", regex = True)).str.strip()
+    artist_df['TRACK_TITLE'] = (artist_df['TRACK_TITLE'].replace("\n", "", regex = True).replace("Lyrics"
+                                                                                                 , "", regex = True)
+                               ).str.strip()
 
     return (artist_df)
 
@@ -97,7 +110,7 @@ def get_track_discog(df):
     @return: Dataframe containing track name and genuis http links
     '''
     reset_df = df.reset_index(drop = True)
-    ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_rating, ls_rating_count, ls_track = [], [], [], [], [], [], [], [], []
+    ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track = [], [], [], [], [], [], [], [], [], [], []
     track_info = pd.DataFrame()
     print("Getting Track..")
     for i in notebook.tqdm(range(len(reset_df))):
@@ -113,8 +126,10 @@ def get_track_discog(df):
             ls_albums.append(reset_df["ALBUMS"][i])
             ls_year.append(reset_df["YEAR"][i])
             ls_album_type.append(reset_df["ALBUMS_TYPES"][i])
-            ls_rating.append(reset_df["RATING_OUT_OF_5"][i])
-            ls_rating_count.append(reset_df["RATING_COUNT"][i])
+            ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
+            ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
+            ls_rating.append(reset_df["AVG_RATING"][i])
+            ls_rating_count.append(reset_df["NUM_OF_RATING"][i])
             ls_track.append(track.title)
 #             ls_genius_link.append("https://genius.com/{0}-{1}-lyrics".format())
     
@@ -126,22 +141,44 @@ def get_track_discog(df):
     track_info['YEAR'] = ls_year
     track_info["ALBUMS_TYPES"] = ls_album_type
     track_info['TRACK_TITLE'] = ls_track
-    track_info["RATING_COUNT"] = ls_rating_count
-    track_info['TRACK_TITLE'] = ls_track
+    track_info["NUM_OF_PPL_HAVING"] = ls_have
+    track_info["NUM_OF_PPL_WANT"] = ls_want
+    track_info["AVG_RATING"] = ls_rating
+    track_info['NUM_OF_RATING'] = ls_rating_count
     #Creating new columns to clean up any special char. 
-    track_info["new_artist"] = ((track_info['ARTIST_NAME'].str.replace("&", "and", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True)
-    track_info["new_track_tile"] = ((track_info['TRACK_TITLE'].str.replace("'", " ", regex = True)).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})).replace(" ", "-", regex = True).replace("--", "-", regex = True)
+    track_info["new_artist"] = ((track_info['ARTIST_NAME'].str.replace("&", "and", regex = True
+                                                                      ).replace("/", " ", regex = True)
+                                ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
+                               ).replace(" ", "-", regex = True)
+    track_info["new_track_tile"] = ((track_info['TRACK_TITLE'].str.replace("'", " ", regex = True)
+                                    ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
+                                   ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     track_info['GENIUS_LINK'] = "https://genius.com/" + track_info["new_artist"].str.strip()+ "-" + track_info["new_track_tile"].str.strip()+"-lyrics"
     
-    return track_info[["ID", "TYPES", "ARTIST_NAME", "ALBUMS", "YEAR", "ALBUMS_TYPES", "TRACK_TITLE", "GENIUS_LINK"]]
+    return track_info[["ID"
+                       , "TYPES"
+                       , "ARTIST_NAME"
+                       , "ALBUMS"
+                       , "YEAR"
+                       , "ALBUMS_TYPES"
+                       , "TRACK_TITLE"
+                       , "NUM_OF_PPL_HAVING"
+                       , "NUM_OF_PPL_WANT"
+                       , "AVG_RATING"
+                       , 'NUM_OF_RATING'
+                       , "GENIUS_LINK"]]
 
 def data_cleaning(df):
     '''
     Cleaning Discogs datafarme. Removing 
     '''
     
-    clean_data = df[(df["ALBUMS_TYPES"] != "(Comp)") & (df["ALBUMS_TYPES"] != "(Comp, Album)")\
-                      & (df["TYPES"] != "release") & ~(df["ALBUMS"].isnull()) & ~(df["ALBUMS_TYPES"].isnull())]
+    clean_data = df[(df["ALBUMS_TYPES"] != "(Comp)") 
+                    & (df["ALBUMS_TYPES"] != "(Comp, Album)") 
+                    & (df["TYPES"] != "release") 
+                    & ~(df["ALBUMS"].isnull()) 
+                    & ~(df["ALBUMS_TYPES"].isnull())
+                   ]
 
     return (clean_data.reset_index(drop = True))
 
@@ -211,7 +248,7 @@ def get_stat_link(url, df):
 def get_album_stat(url, df):
     '''
     webscrapping album page
-    Getting rate value and rate count of the albums
+    Getting AVG RATING, RATING, HAVE and WANT of the albums
     
     @param: url-> string [http link]
     @param: df-> DataFrame
@@ -224,13 +261,22 @@ def get_album_stat(url, df):
         stat_request = requests.get(row["STAT_LINK"])
         html_tags = bs(stat_request.text, 'html.parser')
         
-        rating = html_tags.find("span", class_="rating_value")
-        rating_count = html_tags.find("span", class_="rating_count")
-        if rating is not None:
-            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "RATING_OUT_OF_5"] = rating.get_text()
+        avg_rating = html_tags.find("span", class_="rating_value")
+        num_rating = html_tags.find("span", class_="rating_count")
+        num_have = html_tags.find("a", class_="coll_num")
+        num_want = html_tags.find("a", class_="want_num")
         
-        if rating_count is not None:
-            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "RATING_COUNT"] = rating_count.get_text()
+        if avg_rating is not None:
+            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "AVG_RATING"] = avg_rating.get_text()
+        
+        if num_rating is not None:
+            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "NUM_OF_RATING"] = num_rating.get_text()
+        
+        if num_have is not None:
+            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "NUM_OF_PPL_HAVING"] = num_have.get_text()
+        
+        if num_want is not None:
+            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "NUM_OF_PPL_WANT"] = num_want.get_text()
     
     return df_stat_link.drop(['STAT_LINK'], axis=1)
 
@@ -277,8 +323,10 @@ def get_artist_albums(a_name):
     albums_info['ALBUMS'] = title
     albums_info['ALBUMS_TYPES'] = formats
     albums_info['YEAR'] = year
+    # Only getting albums tiltes which are not None
+    filter_albums = albums_info[~(albums_info["ALBUMS"].isnull())]
     
-    update_albums_info = get_album_stat(url, albums_info)
+    update_albums_info = get_album_stat(url, filter_albums)
     
     return update_albums_info
 
@@ -308,4 +356,4 @@ def getArtistData(a_name):
         flag_data = flag_exclude_album(genius_track) # Creating flag column for an album
         final_data = flag_track_title(flag_data) # Creating flag column for a track_title
         
-    return final_data      
+    return final_data
