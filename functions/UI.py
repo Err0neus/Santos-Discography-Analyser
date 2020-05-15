@@ -276,8 +276,39 @@ def unique_per_period(discog, column, bin_size):
             column : []}
     for period in data['period']:
         data[column].append(len(discog[(discog['YEAR'].astype(int) >= int(period[:4])) \
-                                       & (discog['YEAR'].astype(int) <= int(period[5:]))][column].unique()))   
-    return pd.DataFrame.from_dict(data)
+                                       & (discog['YEAR'].astype(int) <= int(period[5:]))][column].unique()))  
+    
+    # filter out all but one of periods that are empty before first and after last record
+    output = pd.DataFrame.from_dict(data)
+    # flag record with and without data
+    output.loc[output[column] == 0, 'data_flag'] = 0
+    output.loc[output[column] > 0, 'data_flag'] = 1
+    # chronological counter
+    counter1=[]
+    counter = 0
+    for i in range(output.shape[0]):
+        if i == output.shape[0]-1:
+            counter1.append(counter + output.iloc[i]['data_flag'])
+        else:
+            counter = counter + output.iloc[i+1]['data_flag']
+            counter1.append(counter)
+        output['counter1'] = pd.Series(counter1)
+    # reverse - anti chronological counter
+    output = output.iloc[::-1].reset_index(drop=True)
+    counter2=[]
+    counter = 0
+    for i in range(output.shape[0]):
+        if i == output.shape[0]-1:
+            counter2.append(counter + output.iloc[i]['data_flag'])
+        else:
+            counter = counter + output.iloc[i+1]['data_flag']
+            counter2.append(counter)
+        output['counter2'] = pd.Series(counter2)
+    # reverse back
+    output = output.iloc[::-1].reset_index(drop=True)
+    # return filtered data
+    return output[(output.counter1 > 0) & (output.counter2 > 0)]
+
 
 def album_song_count_per_period(discog, bin_size):
     '''returns a merged dataframe by period with counts of albums and songs per period'''
