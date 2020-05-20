@@ -288,7 +288,11 @@ def unique_per_period(discog, column, bin_size):
     counter = 0
     for i in range(output.shape[0]):
         if i == output.shape[0]-1:
-            counter1.append(counter + output.iloc[i]['data_flag'])
+            counter = counter + output.iloc[i]['data_flag']
+            counter1.append(counter)
+        elif i == 0:
+            counter = counter + output.iloc[i]['data_flag'] + output.iloc[i+1]['data_flag']
+            counter1.append(counter)            
         else:
             counter = counter + output.iloc[i+1]['data_flag']
             counter1.append(counter)
@@ -299,7 +303,11 @@ def unique_per_period(discog, column, bin_size):
     counter = 0
     for i in range(output.shape[0]):
         if i == output.shape[0]-1:
-            counter2.append(counter + output.iloc[i]['data_flag'])
+            counter = counter + output.iloc[i]['data_flag']
+            counter2.append(counter)
+        elif i == 0:
+            counter = counter + output.iloc[i]['data_flag'] + output.iloc[i+1]['data_flag']
+            counter2.append(counter)            
         else:
             counter = counter + output.iloc[i+1]['data_flag']
             counter2.append(counter)
