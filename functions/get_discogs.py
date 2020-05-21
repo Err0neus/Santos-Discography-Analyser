@@ -355,5 +355,26 @@ def getArtistData(a_name):
     else:    
         flag_data = flag_exclude_album(genius_track) # Creating flag column for an album
         final_data = flag_track_title(flag_data) # Creating flag column for a track_title
-        
-    return final_data
+    
+    #sorting data by its years
+    final_data_sort = final_data.sort_values(by = ["YEAR"]).rename(columns={"NUM_OF_PPL_HAVING" : "DISCOG_PPL_HAVING"
+                                                                            , "NUM_OF_PPL_WANT" : "DISCOG_PPL_WANT"
+                                                                            , "NUM_OF_RATING" : "DISCOG_RATING"
+                                                                            , "AVG_RATING" : "DISCOG_AVG_RATING"
+                                                                           }
+                                                                  ).reset_index(drop = True)
+
+    return final_data_sort[["ID"
+                           , "ARTIST_NAME"
+                           , "ALBUMS"
+                           , "YEAR"
+                           , "TRACK_TITLE"
+                           , "DISCOG_PPL_HAVING"
+                           , "DISCOG_PPL_WANT"
+                           , "DISCOG_RATING"                       
+                           , "DISCOG_AVG_RATING"
+                           , "EXCLUDE_ALBUM"
+                           , "EXCLUDE_SONG"
+                           , "GENIUS_LINK"                            
+                          ]
+                         ] 
