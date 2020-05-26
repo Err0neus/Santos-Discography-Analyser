@@ -434,6 +434,9 @@ def button_3_func(x):
     set_bin_size(slider_1.value)
     #clear previous output
     clear_output()
+    # select next tab    
+    global selected_tab
+    selected_tab = 3
     # display UI
     UI()
     #filter dataset
@@ -445,7 +448,7 @@ def button_3_func(x):
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
     #pirate_plot(discog_filtered, bin_size)
     violin_plot(discog_filtered, bin_size)
-    plot_wordcloud.createWordCloud(discog_filtered[~discog_filtered['LYRICS_CLEAN'].isnull()], 'period')
+
 
 #defining a slider for bin_size selector
 slider_1 = widgets.IntSlider(
@@ -463,6 +466,91 @@ slider_1 = widgets.IntSlider(
     )
 
 
+    
+    
+
+#----------------------------------------------------------------------------------------
+# UI SECTION 4  
+        
+# function to run at click of the button_4
+def button_4_func(x):
+    global bin_size
+    #overwrite bin_size with current selection of the slider
+    set_bin_size(slider_1.value)
+    #clear previous output
+    clear_output()
+    # select next tab    
+    global selected_tab
+    selected_tab = 4
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
+                                   &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    
+    data = add_period_column(discog_filtered, bin_size)
+    
+    if dropdown_1.value == 'period':
+        plot_wordcloud.createWordCloud(data[~data['LYRICS_CLEAN'].isnull()], 'period')
+    elif dropdown_1.value ==  'album':
+        plot_wordcloud.createWordCloud(data[~data['LYRICS_CLEAN'].isnull()], 'YEAR_ALBUM')
+    
+
+dropdown_1 = widgets.Dropdown(options=['period', 'album',],
+                              value='period',
+                              description='Display by:',
+                              disabled=False,)  
+
+#----------------------------------------------------------------------------------------
+# UI SECTION 5 
+        
+def plot_albums_discogs_popularity(discog):
+    '''plots Discogs registered owners and average ratings'''
+    
+    width = 0.2
+    data = pd.pivot_table(discog, 
+                          index = 'YEAR_ALBUM', 
+                          values = ['DISCOG_PPL_HAVING', 'DISCOG_AVG_RATING'],
+                          aggfunc = 'max')
+    
+    fig, ax1 = plt.subplots(figsize=(8,5))
+
+    color = 'y'
+
+    ax1.set_ylabel('Discogs owners', color=color)
+    #ax1.plot(data.period, data.album, color=color)
+    data['DISCOG_PPL_HAVING'].plot(kind='bar', color=color, ax=ax1, width=width, position=1)
+    ax1.tick_params(axis='y', labelcolor=color)
+    ax1.tick_params(axis='x', labelrotation=45)
+    ax1.set_xlabel('Year/Album')
+    
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+    color = 'g'
+    ax2.set_ylabel('Discogs average rating', color=color)  # we already handled the x-label with ax1
+    #ax2.plot(data.index.tolist(), data.track_title, color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()  # otherwise the right y-label may be slightly clipped
+    data['DISCOG_AVG_RATING'].plot(kind='bar', color=color, ax=ax2, width=width, position=0)
+    ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+    ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+    plt.title('Discogs users - owners and average ratings', fontsize=18)
+    plt.show()
+    
+# function to run at click of the button_5
+def button_5_func(x):
+    global bin_size
+    #clear previous output
+    clear_output()
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
+                                   &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    plot_albums_discogs_popularity(discog_filtered)
 
 #----------------------------------------------------------------------------------------
 # display UI
@@ -496,17 +584,38 @@ def UI():
     # chart 1
     global slider_1
     # button to update chart
-    button_3 = widgets.Button(description="Show/refresh chart")
+    button_3 = widgets.Button(description="Show/refresh charts")
     button_3.on_click(button_3_func)
     
     # vertical block
     SECTION_3 = widgets.VBox([slider_1, button_3,])
-       
+ 
+    # SECTION 4 = wordclouds
+    # dropdown
+    global dropdown_1
+    # button to update chart
+    button_4 = widgets.Button(description="Show")
+    button_4.on_click(button_4_func)
+    
+    # vertical block
+    SECTION_4 = widgets.VBox([dropdown_1, button_4,])
+    
+    # SECTION 5 = wordclouds
+    # button to update chart
+    button_5 = widgets.Button(description="Show")
+    button_5.on_click(button_5_func)
+    
+    # vertical block
+    SECTION_5 = widgets.VBox([button_5,])
+    
+    
     #tab_contents = ['Chart_1',]
-    children = [SECTION_1, SECTION_2, SECTION_3,]    
+    children = [SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5,]    
     accordion = widgets.Accordion(children=children)
     accordion.set_title(0, 'Get Discography')
     accordion.set_title(1, 'Select albums')
-    accordion.set_title(2, 'Show Stats')
+    accordion.set_title(2, 'Basic Charts')
+    accordion.set_title(3, 'Wordclouds')
+    accordion.set_title(4, 'Users and ratings')
     accordion.selected_index = selected_tab
     display(accordion)
