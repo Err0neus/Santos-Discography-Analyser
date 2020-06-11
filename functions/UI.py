@@ -32,6 +32,8 @@ import string
 
 # default selected tab in the UI
 selected_tab = 0
+selected_sub_tab_1 = 0
+selected_sub_tab_2 = 0
 
 #----------------------------------------------------------------------------------------
 # UI SECTION 1
@@ -94,9 +96,13 @@ def button_1_func(x):
     #clear previous output
     clear_output()
     
-    # select next tab
+    #select tab
     global selected_tab
-    selected_tab = 1
+    selected_tab = 0
+    # select next sub tab
+    global selected_sub_tab_1
+    selected_sub_tab_1 = 1
+    
     # set album selecor content
     
     #overwrite album_filter with current selection
@@ -154,6 +160,10 @@ def button_2_1_func(x):
     # select this tab    
     global selected_tab
     selected_tab = 1
+    # select sub tab
+    global selected_sub_tab_2
+    selected_sub_tab_2 = 0
+    
     # display UI
     UI()
     
@@ -249,9 +259,13 @@ def button_2_alt_func(x):
         
     
     clear_output()
-    # select next tab    
+    # select tab
     global selected_tab
-    selected_tab = 2
+    selected_tab = 1
+    # select sub tab
+    global selected_sub_tab_2
+    selected_sub_tab_2 = 0
+    
     # display UI
     UI()    
     
@@ -434,9 +448,13 @@ def button_3_func(x):
     set_bin_size(slider_1.value)
     #clear previous output
     clear_output()
-    # select next tab    
+    # select current tab    
     global selected_tab
-    selected_tab = 3
+    selected_tab = 1
+    # select sub tab
+    global selected_sub_tab_2
+    selected_sub_tab_2 = 0
+    
     # display UI
     UI()
     #filter dataset
@@ -479,9 +497,13 @@ def button_4_func(x):
     set_bin_size(slider_1.value)
     #clear previous output
     clear_output()
-    # select next tab    
+    # select current tab    
     global selected_tab
-    selected_tab = 4
+    selected_tab = 1
+    # select sub tab
+    global selected_sub_tab_2
+    selected_sub_tab_2 = 1
+    
     # display UI
     UI()
     #filter dataset
@@ -524,7 +546,9 @@ def plot_albums_discogs_popularity(discog):
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45)
     ax1.set_xlabel('Year/Album')
-    
+    xlabels = data.index.tolist()
+    ax1.set_xticklabels(xlabels, ha='right')
+
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
     color = 'g'
@@ -536,12 +560,21 @@ def plot_albums_discogs_popularity(discog):
     data['DISCOG_AVG_RATING'].plot(kind='bar', color=color, ax=ax2, width=width, position=0)
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+    #ax1.xticks(ha='right')
     plt.title('Discogs users - owners and average ratings', fontsize=18)
     plt.show()
     
 # function to run at click of the button_5
 def button_5_func(x):
     global bin_size
+
+    # select current tab    
+    global selected_tab
+    selected_tab = 1
+    # select sub tab
+    global selected_sub_tab_2
+    selected_sub_tab_2 = 2
+    
     #clear previous output
     clear_output()
     # display UI
@@ -610,12 +643,46 @@ def UI():
     
     
     #tab_contents = ['Chart_1',]
-    children = [SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5,]    
-    accordion = widgets.Accordion(children=children)
-    accordion.set_title(0, 'Get Discography')
-    accordion.set_title(1, 'Select albums')
-    accordion.set_title(2, 'Basic Charts')
-    accordion.set_title(3, 'Wordclouds')
-    accordion.set_title(4, 'Users and ratings')
-    accordion.selected_index = selected_tab
-    display(accordion)
+    #children = [SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5,]    
+    #accordion = widgets.Accordion(children=children)
+    #accordion.set_title(0, 'Get Discography')
+    #accordion.set_title(1, 'Select albums')
+    #accordion.set_title(2, 'Basic Charts')
+    #accordion.set_title(3, 'Wordclouds')
+    #accordion.set_title(4, 'Users and ratings')
+    #accordion.selected_index = selected_tab
+    #display(accordion)
+    
+    #children = [SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5,] 
+    #tab = widgets.Tab()
+    #tab.children = children
+    #tab.set_title(0, 'Get Discography')
+    #tab.set_title(1, 'Select albums')
+    #tab.set_title(2, 'Basic Charts')
+    #tab.set_title(3, 'Wordclouds')
+    #tab.set_title(4, 'Users and ratings')
+    #tab.selected_index = selected_tab
+    #display(tab)
+
+    #tab_contents = ['Chart_1',]
+    children_1 = [SECTION_1, SECTION_2]    
+    tab1 = widgets.Tab(children=children_1)
+    tab1.set_title(0, 'Artist')
+    tab1.set_title(1, 'Albums')
+    tab1.selected_index = selected_sub_tab_1
+    #display(accordion)
+    
+    children_2 = [SECTION_3, SECTION_4, SECTION_5,] 
+    tab2 = widgets.Tab()
+    tab2.children = children_2
+    tab2.set_title(0, 'Basic Charts')
+    tab2.set_title(1, 'Wordclouds')
+    tab2.set_title(2, 'Users and ratings')
+    tab2.selected_index = selected_sub_tab_2
+
+    UI = widgets.Accordion(children=[tab1,tab2])
+    UI.set_title(0, 'Get Data')
+    UI.set_title(1, 'Visualisations')
+    UI.selected_index = selected_tab
+    display(UI)
+    
