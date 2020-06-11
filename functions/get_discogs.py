@@ -377,4 +377,76 @@ def getArtistData(a_name):
                            , "EXCLUDE_SONG"
                            , "GENIUS_LINK"                            
                           ]
-                         ] 
+                         ]
+
+
+def getBillBoardPeak(artist_name, flag:int = 1):
+    '''
+    Gets Artist billboard 100 using request & beautifulSoup
+    By Default gets Album
+    
+    @param: artist_name -> string
+    @param: flag -> int 0 or 1[by default 1]
+    
+        flag type = 1 -> gets albums
+        flag type = 0 -> gets track titles
+            
+    @return: Dataframe    
+    '''
+    #getting discogs artist name
+    artist_id, artist_nam = get_discogs.getArtistID(artist_name)
+    
+    ls_al_tr, ls_peak, ls_date = [], [], []
+    #TLP -> albums & HSI -> billboard 100 songs/track title
+    if flag == 1:
+        x = "TLP"
+        
+    else:
+        x = "HSI"
+        
+    for i in range(1, 60):
+        url = "https://www.billboard.com/music/{0}/chart-history/{1}/{2}".format(artist_nam, x, i)
+        page = requests.get(url)
+
+        if page.status_code == 200:
+            html = bs(page.text, 'html.parser')
+
+            find_chart_his = html.findAll("div", class_= "chart-history__item")
+
+        else:
+            break
+
+
+        for tags in find_chart_his:
+            # getting track 
+            find_track = tags.find("p", class_= "chart-history__titles__list__item__title color--primary font--semi-bold")
+            album_track = find_track.get_text()
+            ls_al_tr.append(album_track)
+
+            # getting Billborad Rank 
+            find_bb_number = tags.find("p", class_ = "chart-history__titles__list__item__peak")
+            number = find_bb_number.get_text()
+            num = re.findall(r'#(\d+)', number)[0]
+            ls_peak.append(num)
+
+            # getting date
+            find_date = tags.find("a", class_ = "color--secondary font--bold")
+            date = find_date.get_text()
+            ls_date.append(date)
+
+    # Creating Dataframe
+    if x == 'TLP':
+        df_billboard = pd.DataFrame({"ALBUM" : ls_al_tr, "BILLBOARD_RANK" : ls_peak, "DATE" : ls_date})
+        df_billboard["ARTIST_NAME"] = artist_nam
+        df_billboard["DATE"] = pd.to_datetime(df_billboard["DATE"], format = "%d.%m.%Y")
+        df_final_billboard = df_billboard.sort_values(by = ["DATE"]).reset_index(drop = True)
+        #return datafram with album for a particular artist
+        return df_final_billboard[["ARTIST_NAME", "ALBUM", "BILLBOARD_RANK", "DATE"]]
+    
+    else:
+        df_billboard = pd.DataFrame({"TRACK_TITLE" : ls_al_tr, "BILLBOARD_RANK" : ls_peak, "DATE" : ls_date})
+        df_billboard["ARTIST_NAME"] = artist_nam
+        df_billboard["DATE"] = pd.to_datetime(df_billboard["DATE"], format = "%d.%m.%Y")
+        df_final_billboard = df_billboard.sort_values(by = ["DATE"]).reset_index(drop = True)
+        #return dataframe with track titles for a particular artist
+        return df_final_billboard[["ARTIST_NAME", "TRACK_TITLE", "BILLBOARD_RANK", "DATE"]]
