@@ -345,7 +345,7 @@ def getArtistData(a_name):
     df_genius_none = genius_track[genius_track["TRACK_TITLE"].isnull()]
     df_genius_none = data_cleaning(df_genius_none) # Removing any release from albums
     
-    if df_genius_none is not None:
+    if df_genius_none.empty == False:
         discog_track = get_track_discog(df_genius_none) # using discog API
         full_data = pd.concat([genius_track, discog_track], ignore_index = True) # appending genius and discog data
         flag_data = flag_exclude_album(full_data) # Creating flag column for an album
