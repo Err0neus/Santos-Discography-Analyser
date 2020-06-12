@@ -132,7 +132,6 @@ def get_track_discog(df):
             ls_rating_count.append(reset_df["NUM_OF_RATING"][i])
             ls_track.append(track.title)
 #             ls_genius_link.append("https://genius.com/{0}-{1}-lyrics".format())
-    
     #Adding columns into empty Dataframe
     track_info["ID"] = ls_a_id
     track_info["TYPES"] = ls_type
@@ -324,7 +323,7 @@ def get_artist_albums(a_name):
     albums_info['ALBUMS_TYPES'] = formats
     albums_info['YEAR'] = year
     # Only getting albums tiltes which are not None
-    filter_albums = albums_info[~(albums_info["ALBUMS"].isnull())]
+    filter_albums = albums_info[~(albums_info["ALBUMS"].isnull())].copy()
     
     update_albums_info = get_album_stat(url, filter_albums)
     
