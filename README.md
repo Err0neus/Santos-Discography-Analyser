@@ -24,6 +24,7 @@ lyricsmaster<br>
 <i>data processing and charts</i><br>
 matplotlib<br>
 pandas<br>
+numpy<br>
 time<br>
 seaborn<br>
 
