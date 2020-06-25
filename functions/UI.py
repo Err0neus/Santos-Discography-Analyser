@@ -2,6 +2,7 @@ print('Loading...')
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import time
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
@@ -536,7 +537,7 @@ def plot_albums_discogs_popularity(discog):
                           values = ['DISCOG_PPL_HAVING', 'DISCOG_AVG_RATING'],
                           aggfunc = 'max')
     
-    fig, ax1 = plt.subplots(figsize=(8,5))
+    fig, ax1 = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
 
     color = 'y'
 
@@ -564,8 +565,32 @@ def plot_albums_discogs_popularity(discog):
     plt.title('Discogs users - owners and average ratings', fontsize=18)
     plt.show()
     
+def plot_albums_ratings(discog):
+    threshold = discog['DISCOG_AVG_RATING'].mean()
+    data = pd.pivot_table(discog,index='YEAR_ALBUM',values=['DISCOG_AVG_RATING'],aggfunc = 'max')
+    values = np.array(data['DISCOG_AVG_RATING'].tolist())
+
+    # plot it
+    fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
+
+    data['DISCOG_AVG_RATING'].plot(kind='bar', color='y', ax=ax, width=0.5, position=1)
+    ax.set_ylabel('Avg. Discogs user rating')
+    ax.set_xlabel('Year/Album')
+
+    ax.tick_params(axis='x', labelrotation=45)
+    xlabels = data.index.tolist()
+    ax.set_xticklabels(xlabels, ha='right')
+
+    # horizontal line indicating the threshold
+    ax.plot([-1, len(data)], [threshold, threshold], "k--", color = 'b')
+    
+    plt.title('Average Discogs users rating by album vs index', fontsize=18)
+    plt.show()
+    
 # function to run at click of the button_5
 def button_5_func(x):
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
     global bin_size
 
     # select current tab    
@@ -581,9 +606,11 @@ def button_5_func(x):
     UI()
     #filter dataset
     global discog_filtered
+    
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                                    &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     plot_albums_discogs_popularity(discog_filtered)
+    plot_albums_ratings(discog_filtered)
 
 #----------------------------------------------------------------------------------------
 # display UI
