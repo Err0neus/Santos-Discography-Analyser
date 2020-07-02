@@ -28,14 +28,20 @@ def getLyrics(df):
             
             if find_class is not None:
                 lyrics = find_class.get_text() # getting text from the given class
-                lyrics = re.sub(r'[\(\[].*?[\)\]]', '', lyrics)
-                filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics.lstrip()
+#                 lyrics2 = re.sub(r'\([^)]*\)', '', lyrics) #Removes any character within ()
+                lyrics2 = re.sub(r"\[.*?\]", '', lyrics) #Removes any character within []
+                lyrics3 = re.sub(r'.*?Lyrics\n\n\n\n', '', lyrics2) #Removes any character before Lyrics
+                lyrics4 = re.sub(r' ?\[[^)]+\]', '', lyrics3) #Remove '[adfaf\nadfa\n]' where there are line break
+                filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics4.lstrip()
             else:
                 find_class2 = html.find('div', class_= regex2) # Something lyrics are in different class
                 if find_class2 is not None:
-                    lyrics = "\n".join(find_class2.strings)
-                    lyrics = re.sub(r'[\(\[].*?[\)\]]', '', lyrics)
-                    filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics.lstrip()
+                    lyrics = "\n".join(find_class2.strings) 
+                    lyrics2 = re.sub(r"\[.*?\]", '', lyrics) # Remove any character within []
+                    lyrics3 = re.sub(r"(\w)([A-Z])", r'\1\n\2', lyrics2) # Insert line break between small and capital letter 
+                    lyrics4 = re.sub(r"(')([A-Z])", r'\1\n\2', lyrics3) # Insert line break between chart ' and capital letter
+                    lyrics5 = re.sub(r' ?\[[^)]+\]', '', lyrics4)
+                    filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics5.lstrip()
                 
         else:
             filter_data.loc[filter_data["GENIUS_LINK"] == filter_data.GENIUS_LINK[i], "LYRICS"] = None # If Url not found
