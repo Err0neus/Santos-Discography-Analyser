@@ -586,6 +586,34 @@ def plot_albums_ratings(discog):
     
     plt.title('Average Discogs users rating by album vs index', fontsize=18)
     plt.show()
+
+    
+def plot_albums_ratings_indexing(discog):
+    threshold = discog['DISCOG_AVG_RATING'].mean()
+    data = pd.pivot_table(discog,index='YEAR_ALBUM',values=['DISCOG_AVG_RATING'],aggfunc = 'max')
+    values = (np.array(data['DISCOG_AVG_RATING'])-threshold).tolist()
+    data['indexing'] = values
+
+    # plot it
+    fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
+    data['positive'] = data['indexing'] > 0
+    data['indexing'].plot(kind='bar', 
+                          color=data.positive.map({True: 'g', False: 'r'}), 
+                          ax=ax, width=0.5, position=1)
+    
+    ax.set_ylabel('Album Discogs rating vs. average')
+    ax.set_xlabel('Year/Album')
+
+    ax.tick_params(axis='x', labelrotation=45)
+    xlabels = data.index.tolist()
+    ax.set_xticklabels(xlabels, ha='right')
+    
+    # horizontal line indicating the threshold
+    ax.plot([-1, len(data)], [0, 0], "k--", color = 'b')
+    
+    plt.title('Average Discogs users rating by album vs index', fontsize=18)
+    plt.show()
+    
     
 # function to run at click of the button_5
 def button_5_func(x):
@@ -611,6 +639,7 @@ def button_5_func(x):
                                    &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     plot_albums_discogs_popularity(discog_filtered)
     plot_albums_ratings(discog_filtered)
+    plot_albums_ratings_indexing(discog_filtered)
 
 #----------------------------------------------------------------------------------------
 # display UI
