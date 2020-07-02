@@ -736,9 +736,19 @@ def UI():
     tab2.set_title(2, 'Users and ratings')
     tab2.selected_index = selected_sub_tab_2
 
-    UI = widgets.Accordion(children=[tab1,tab2])
+    
+    tab2_wrapper_label = widgets.HTML(value=f'''Current artist: <b>{artist}</b>''',
+                           layout=widgets.Layout(width="100%"))
+
+    tab2_wrapper = widgets.VBox([tab2_wrapper_label, tab2,])  
+    
+    
+    tab3 = widgets.Tab()
+    
+    UI = widgets.Accordion(children=[tab1,tab2_wrapper,tab3])
     UI.set_title(0, 'Get Data')
-    UI.set_title(1, 'Visualisations')
+    UI.set_title(1, 'Visualisations - single artist')
+    UI.set_title(2, 'Visualisations - compare artists')
     UI.selected_index = selected_tab
     display(UI)
     
