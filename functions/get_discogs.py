@@ -196,15 +196,10 @@ def flag_track_title(df):
     Flag True for any duplicated track name.
     '''
     data = df[~df["TRACK_TITLE"].isnull()]# filter any empty track title
-    #SONGS REPEATED WITH " ("
-#     for i, r in notebook.tqdm(data.iterrows()):
-#         data["TRACK_TITLE"].str.len() >= len(r["TRACK_TITLE"])+ 2)\
-#                      &(data["TRACK_TITLE"].str[:len(r["TRACK_TITLE"])+ 2]==r["TRACK_TITLE"]+" (")\
-#                        | 
-    data.loc[data.duplicated(subset=["TRACK_TITLE"], keep='first'),"EXCLUDE_SONG"] = True
-    data["EXCLUDE_SONG"] = data["EXCLUDE_SONG"].fillna(False)
+    data_sort = data.sort_values(by = ["YEAR", "ALBUMS"]).copy()
+    data_sort["EXCLUDE_SONG"] = data_sort.duplicated(subset=["TRACK_TITLE"], keep='first')
     
-    return data
+    return data_sort
 
 
 def getArtistID(artist_name):
