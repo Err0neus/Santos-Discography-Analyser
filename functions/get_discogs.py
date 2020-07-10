@@ -213,7 +213,7 @@ def getArtistID(artist_name):
     artist_data = str(discogs.search(artist_name, type = 'artist')[0])
     artist_id = int(artist_data.split(' ')[1])
     artist_nam = artist_data.split("'")[1]
-    return (artist_id, artist_nam)
+    return (artist_id, re.sub('[\(\[]\d[\)\]]',"", artist_nam).strip())
 
 
 def get_stat_link(url, df):
@@ -313,7 +313,7 @@ def get_artist_albums(a_name):
     
     albums_info["ID"] = album_id
     albums_info['TYPES'] = types
-    albums_info["ARTIST_NAME"] = re.sub('[\(\[]\d*[\)\]]',"", artist_name).strip()
+    albums_info["ARTIST_NAME"] = artist_name
     albums_info['ALBUMS'] = title
     albums_info['ALBUMS_TYPES'] = formats
     albums_info['YEAR'] = year
