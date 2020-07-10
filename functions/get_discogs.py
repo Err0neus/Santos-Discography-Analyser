@@ -313,7 +313,7 @@ def get_artist_albums(a_name):
     
     albums_info["ID"] = album_id
     albums_info['TYPES'] = types
-    albums_info["ARTIST_NAME"] = artist_name
+    albums_info["ARTIST_NAME"] = re.sub('[\(\[]\d*[\)\]]',"", artist_name).strip()
     albums_info['ALBUMS'] = title
     albums_info['ALBUMS_TYPES'] = formats
     albums_info['YEAR'] = year
