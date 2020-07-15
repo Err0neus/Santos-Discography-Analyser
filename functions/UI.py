@@ -698,6 +698,14 @@ def UI():
     SECTION_5 = widgets.VBox([button_5,])
     
     
+    # SECTION 6 - multiartist - select artist
+    
+    SECTION_6 = widgets.VBox()
+    
+    # SECTION 7 - multiartist - basic charts
+    
+    SECTION_7 = widgets.VBox()
+    
     #tab_contents = ['Chart_1',]
     #children = [SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5,]    
     #accordion = widgets.Accordion(children=children)
@@ -739,11 +747,13 @@ def UI():
     
     tab2_wrapper_label = widgets.HTML(value=f'''Current artist: <b>{artist}</b>''',
                            layout=widgets.Layout(width="100%"))
-
     tab2_wrapper = widgets.VBox([tab2_wrapper_label, tab2,])  
     
-    
+    children_3 = [SECTION_6, SECTION_7,]
     tab3 = widgets.Tab()
+    tab3.children = children_3
+    tab3.set_title(0, 'Select Artists')
+    tab3.set_title(1, 'Basic Charts')
     
     UI = widgets.Accordion(children=[tab1,tab2_wrapper,tab3])
     UI.set_title(0, 'Get Data')
