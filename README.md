@@ -13,7 +13,7 @@ For any given artist name: <br>
 
 ## Dependencies:
 
-<p style="text-decoration: underline;"><i>APIs</i></p><br>
+<i>APIs</i><br>
 lyricsgenius<br>
 lxml.html<br>
 cssselect<br>
