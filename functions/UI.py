@@ -9,11 +9,13 @@ import seaborn as sns
 from IPython.display import clear_output, display
 # UI
 import ipywidgets as widgets
+from tqdm import tnrange, tqdm_notebook, notebook
 
 # other fuctions
 from functions import get_discogs
 from functions import get_lyrics
 from functions import plot_wordcloud
+from functions import sentiment_analysis
 
 # word processing
 import re
@@ -216,27 +218,52 @@ def button_2_alt_func(x):
     
     #get lyrics
     print('Getting the lyrics, please hold on')
-    
+    # if there are any albums and songs to be included
     if len(discog_store[(discog_store['ARTIST_NAME'] == artist)
                     & (discog_store["EXCLUDE_ALBUM"] == False) 
                     & (discog_store["EXCLUDE_SONG"] == False)]) > 0:
+        # and LYRICS colum does not exist yet
         if "LYRICS" not in discog_store.columns:
+            # get lyrics for all records of the artist (flags considered within the called function)
             lyrics_data = get_lyrics.getLyrics(discog_store[discog_store['ARTIST_NAME'] == artist])
+        # otherwise if there are any lyrics in current selection that are empty
         elif len(discog_store[(discog_store['ARTIST_NAME'] == artist)
                               & (discog_store["EXCLUDE_ALBUM"] == False)
                               & (discog_store["EXCLUDE_SONG"] == False)
                               &(~discog_store['LYRICS'].notnull())]) > 0:
+            # look only for lyrics that have not yet been collected
             lyrics_data = get_lyrics.getLyrics(discog_store[(discog_store['ARTIST_NAME'] == artist) \
                                                             &(~discog_store['LYRICS'].notnull())])
         else:
             lyrics_data = []
     else:
         lyrics_data = []
-    print('processing and cleaning, please hold on')
+    
+    # if any new lyrics were retrieved
     if len(lyrics_data) != 0:
+        # do sentiment analysis
+        print('Analyzing lyrics sentiment...')
+        sentiment_data = sentiment_analysis.sentimentAnalyser(lyrics_data, artist)
+        print('processing and cleaning, please hold on')
+        # iterate through the results and populate the columns in the main discog store
+        # add lyrics
         for i,r in lyrics_data.iterrows():
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), "LYRICS"] = r['LYRICS']
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), 
+                             "LYRICS"] = r['LYRICS']
+        # add sentiment data
+        for i,r in sentiment_data.iterrows():
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
+                             "SENTIMENT_PCT_NEGATIVE"] = r['percentage_negative']  
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
+                             "SENTIMENT_PCT_NEUTRAL"] = r['percentage_neutral']
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
+                             "SENTIMENT_PCT_POSITIVE"] = r['percentage_positive'] 
+            
+
         # add column with lyrics with removed stopwords
         #discog_store["LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in x.lower().split() if word not in stop_words)))
         discog_store["LYRICS_CLEAN"] = discog_store['LYRICS'].astype(str).apply(lambda x: ' '.join(list(word for word in re.findall(r"[\w]+|[^\s\w]",x.lower()) if word not in stop_words)))       
