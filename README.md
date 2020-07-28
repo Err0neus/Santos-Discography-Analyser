@@ -31,6 +31,7 @@ seaborn<br>
 <i>UI</i><br>
 ipywidgets<br>
 IPython<br>
+tqdm<br>
 
 <i>word processing</i><br>
 re<br>
