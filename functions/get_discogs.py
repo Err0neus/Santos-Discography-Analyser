@@ -26,7 +26,7 @@ discogs = discogs_client.Client('myApp',  user_token= token)
 
 def get_track_genius(df):
     '''
-    Getting track name from each albums for a particular atrist name using request from "https://genius.com" 
+    Getting track name from each album for a particular atrist name using request from "https://genius.com" 
     
     @param: df-> DataFrame
     
@@ -42,7 +42,7 @@ def get_track_genius(df):
                              ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], [], [], []
     artist_df = pd.DataFrame()
-    print("Getting Track titles for each albums from Genius..")
+    print("Getting Track titles from Genius Lyrics..")
     for i in notebook.tqdm(range(len(reset_df))):
         #creating url for genius
         page = requests.get("https://genius.com/albums/{0}/{1}".format(reset_df["new_artist"][i]
@@ -112,7 +112,7 @@ def get_track_discog(df):
     reset_df = df.reset_index(drop = True)
     ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track = [], [], [], [], [], [], [], [], [], [], []
     track_info = pd.DataFrame()
-    print("Getting Track..")
+    print("Getting Tracks..")
     for i in notebook.tqdm(range(len(reset_df))):
         album_id = reset_df["ID"][i]
         time.sleep(0.5)
@@ -230,7 +230,7 @@ def get_stat_link(url, df):
     html = bs(r_get.text, 'html.parser')
     find_class = html.findAll('td', class_= "title")
     
-    print("Getting Albums links in Discog..")
+    print("Getting Albums links in Discogs..")
     # getting the links for the stat page
     for i in notebook.tqdm(range(len(find_class))):
         links = find_class[i].find("a")
