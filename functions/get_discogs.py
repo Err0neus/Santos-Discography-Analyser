@@ -357,7 +357,11 @@ def getArtistData(a_name):
                                                                             , "AVG_RATING" : "DISCOG_AVG_RATING"
                                                                            }
                                                                   ).reset_index(drop = True)
-
+    
+    # Converting discog columns to integer
+    cols = ["DISCOG_PPL_HAVING", "DISCOG_PPL_WANT", "DISCOG_RATING", "DISCOG_AVG_RATING"]
+    final_data_sort[cols] = final_data_sort[cols].apply(pd.to_numeric, errors='coerce').fillna(0)
+    
     return final_data_sort[["ID"
                            , "ARTIST_NAME"
                            , "ALBUMS"
