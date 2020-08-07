@@ -55,7 +55,7 @@ def get_track_genius(df):
             for tags in find_class:
                 links = tags.find("a", class_= 'u-display_block')
                 # appending to the emply list
-                ls_a_id.append(reset_df["ID"][i])
+                ls_a_id.append(reset_df["ARTIST_ID"][i])
                 ls_type.append(reset_df["TYPES"][i])
                 ls_artist_name.append(reset_df["ARTIST_NAME"][i])
                 ls_albums.append(reset_df["ALBUMS"][i])
@@ -68,7 +68,7 @@ def get_track_genius(df):
                 ls_track.append((tags.get_text())) #appending track titles
                 ls_genius_link.append(links["href"]) # appending lyrics https links for each song title
         else:
-            ls_a_id.append(reset_df["ID"][i])
+            ls_a_id.append(reset_df["ARTIST_ID"][i])
             ls_type.append(reset_df["TYPES"][i])
             ls_artist_name.append(reset_df["ARTIST_NAME"][i])
             ls_albums.append(reset_df["ALBUMS"][i])
@@ -82,7 +82,7 @@ def get_track_genius(df):
             ls_genius_link.append(None)
     
     # Creating a dataframe 
-    artist_df["ID"] = ls_a_id
+    artist_df["ARTIST_ID"] = ls_a_id
     artist_df["TYPES"] = ls_type
     artist_df['ARTIST_NAME'] = ls_artist_name
     artist_df['ALBUMS'] = ls_albums
@@ -114,7 +114,7 @@ def get_track_discog(df):
     track_info = pd.DataFrame()
     print("Getting Tracks..")
     for i in notebook.tqdm(range(len(reset_df))):
-        album_id = reset_df["ID"][i]
+        album_id = reset_df["ARTIST_ID"][i]
         time.sleep(0.5)
         release = discogs.master(int(album_id)) # discogs API
         m_release = release.tracklist
@@ -133,7 +133,7 @@ def get_track_discog(df):
             ls_track.append(track.title)
 #             ls_genius_link.append("https://genius.com/{0}-{1}-lyrics".format())
     #Adding columns into empty Dataframe
-    track_info["ID"] = ls_a_id
+    track_info["ARTIST_ID"] = ls_a_id
     track_info["TYPES"] = ls_type
     track_info['ARTIST_NAME'] = ls_artist_name
     track_info['ALBUMS'] = ls_albums
@@ -154,7 +154,7 @@ def get_track_discog(df):
                                    ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     track_info['GENIUS_LINK'] = "https://genius.com/" + track_info["new_artist"].str.strip()+ "-" + track_info["new_track_tile"].str.strip()+"-lyrics"
     
-    return track_info[["ID"
+    return track_info[["ARTIST_ID"
                        , "TYPES"
                        , "ARTIST_NAME"
                        , "ALBUMS"
@@ -235,7 +235,7 @@ def get_stat_link(url, df):
     for i in notebook.tqdm(range(len(find_class))):
         links = find_class[i].find("a")
         album_ids = links["href"][links["href"].rfind("/")+1:]
-        df.loc[df["ID"] == album_ids, "STAT_LINK"] = "https://www.discogs.com" + links["href"]
+        df.loc[df["ARTIST_ID"] == album_ids, "STAT_LINK"] = "https://www.discogs.com" + links["href"]
     
     return df
 
@@ -261,16 +261,16 @@ def get_album_stat(url, df):
         num_want = html_tags.find("a", class_="want_num")
         
         if avg_rating is not None:
-            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "AVG_RATING"] = avg_rating.get_text()
+            df_stat_link.loc[df_stat_link["ARTIST_ID"] == row["ARTIST_ID"], "AVG_RATING"] = avg_rating.get_text()
         
         if num_rating is not None:
-            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "NUM_OF_RATING"] = num_rating.get_text()
+            df_stat_link.loc[df_stat_link["ARTIST_ID"] == row["ARTIST_ID"], "NUM_OF_RATING"] = num_rating.get_text()
         
         if num_have is not None:
-            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "NUM_OF_PPL_HAVING"] = num_have.get_text()
+            df_stat_link.loc[df_stat_link["ARTIST_ID"] == row["ARTIST_ID"], "NUM_OF_PPL_HAVING"] = num_have.get_text()
         
         if num_want is not None:
-            df_stat_link.loc[df_stat_link["ID"] == row["ID"], "NUM_OF_PPL_WANT"] = num_want.get_text()
+            df_stat_link.loc[df_stat_link["ARTIST_ID"] == row["ARTIST_ID"], "NUM_OF_PPL_WANT"] = num_want.get_text()
     
     return df_stat_link.drop(['STAT_LINK'], axis=1)
 
@@ -311,7 +311,7 @@ def get_artist_albums(a_name):
             formats.append(extract(row, ".title .format"))
             year.append(extract(row, "td[data-header=\"Year: \"]"))
     
-    albums_info["ID"] = album_id
+    albums_info["ARTIST_ID"] = album_id
     albums_info['TYPES'] = types
     albums_info["ARTIST_NAME"] = artist_name
     albums_info['ALBUMS'] = title
@@ -362,7 +362,7 @@ def getArtistData(a_name):
     cols = ["DISCOG_PPL_HAVING", "DISCOG_PPL_WANT", "DISCOG_RATING", "DISCOG_AVG_RATING"]
     final_data_sort[cols] = final_data_sort[cols].apply(pd.to_numeric, errors='coerce').fillna(0)
     
-    return final_data_sort[["ID"
+    return final_data_sort[["ARTIST_ID"
                            , "ARTIST_NAME"
                            , "ALBUMS"
                            , "YEAR"
