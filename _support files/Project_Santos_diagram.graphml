@@ -351,7 +351,7 @@ Click - show analysis
     <node id="n24">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.entityRelationship.small_entity">
-          <y:Geometry height="340.95024146848823" width="234.92080514658562" x="593.9410238007827" y="563.1961416929372"/>
+          <y:Geometry height="363.0635637825378" width="234.92080514658562" x="593.9410238007827" y="563.1961416929372"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="left" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="224.517578125" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="tl" textColor="#000000" verticalTextPosition="bottom" visible="true" width="225.07421875" x="4.0" xml:space="preserve" y="4.0">+ ID,
@@ -379,10 +379,10 @@ Click - show analysis
     <node id="n25">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.entityRelationship.small_entity">
-          <y:Geometry height="340.95024146848823" width="234.92080514658574" x="878.9971217105266" y="563.1961416929372"/>
+          <y:Geometry height="363.0635637825378" width="234.92080514658574" x="878.9971217105266" y="563.1961416929372"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="327.42578125" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="tl" textColor="#000000" verticalTextPosition="bottom" visible="true" width="224.734375" x="4.0" xml:space="preserve" y="4.0">   ID,
+          <y:NodeLabel alignment="left" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="342.126953125" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="tl" textColor="#000000" verticalTextPosition="bottom" visible="true" width="224.734375" x="4.0" xml:space="preserve" y="4.0">   ID,
    ARTIST_NAME,
    ALBUMS,
    YEAR,
@@ -401,6 +401,7 @@ Click - show analysis
 + SENTIMENT_PCT_POSITIVE,
 + SENTIMENT_PCT_NEUTRAL,
 + SENTIMENT_PCT_NEGATIVE,
++ SENTIMENT_COMPOUND_SCORE
 + LYRICS_CLEAN,
 + LYRICS_CLEAN_UNIQUE,
 + LYRICS_CLEAN_UNIQUE_COUNT</y:NodeLabel>
