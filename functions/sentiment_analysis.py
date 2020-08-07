@@ -30,9 +30,11 @@ def sentimentAnalyser(df, artist):
             num_negative=0
             num_neutral =0
             num_positive =0
+            compound = 0
             for sentence in lyrics_list:
                 ss = sid.polarity_scores(sentence)
                 comp = ss['compound']
+                compound += comp
                 if comp >= 0.2:
                     num_positive += 1
                 elif comp > -0.2 and comp < 0.2:
@@ -43,17 +45,22 @@ def sentimentAnalyser(df, artist):
             df.loc[
                 (df['ARTIST_NAME'] == artist) & \
                 (df['TRACK_TITLE'] == song), \
-                "percentage_negative"
+                "SENTIMENT_PCT_NEGATIVE"
             ] = num_negative/num_lines*100
             df.loc[
                 (df['ARTIST_NAME'] == artist) & \
                 (df['TRACK_TITLE'] == song), \
-                "percentage_neutral"
+                "SENTIMENT_PCT_NEUTRAL"
             ] = num_neutral/num_lines*100
             df.loc[
                 (df['ARTIST_NAME'] == artist) & \
                 (df['TRACK_TITLE'] == song), \
-                "percentage_positive"
+                "SENTIMENT_PCT_POSITIVE"
             ] = num_positive/num_lines*100
+            df.loc[
+                (df['ARTIST_NAME'] == artist) & \
+                (df['TRACK_TITLE'] == song), \
+                "SENTIMENT_COMPOUND_SCORE"
+            ] = compound/num_lines        
     
     return df
