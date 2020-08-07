@@ -162,10 +162,10 @@ def button_2_1_func(x):
         set_album_selector_alt(discog['YEAR_ALBUM'].unique().tolist(), discog['YEAR_ALBUM'].unique().tolist())
     # select this tab    
     global selected_tab
-    selected_tab = 1
+    selected_tab = 0
     # select sub tab
-    global selected_sub_tab_2
-    selected_sub_tab_2 = 0
+    global selected_sub_tab_1
+    selected_sub_tab_1 = 1
     
     # display UI
     UI()
@@ -255,13 +255,16 @@ def button_2_alt_func(x):
         for i,r in sentiment_data.iterrows():
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
-                             "SENTIMENT_PCT_NEGATIVE"] = r['percentage_negative']  
+                             "SENTIMENT_PCT_NEGATIVE"] = r['SENTIMENT_PCT_NEGATIVE']  
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
-                             "SENTIMENT_PCT_NEUTRAL"] = r['percentage_neutral']
+                             "SENTIMENT_PCT_NEUTRAL"] = r['SENTIMENT_PCT_NEUTRAL']
             discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                              (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
-                             "SENTIMENT_PCT_POSITIVE"] = r['percentage_positive'] 
+                             "SENTIMENT_PCT_POSITIVE"] = r['SENTIMENT_PCT_POSITIVE'] 
+            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
+                             "SENTIMENT_COMPOUND_SCORE"] = r['SENTIMENT_COMPOUND_SCORE']            
             
 
         # add column with lyrics with removed stopwords
