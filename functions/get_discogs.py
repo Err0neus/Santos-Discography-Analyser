@@ -16,8 +16,9 @@ import discogs_client
 import time
 import requests
 import re
+import fuzzy_pandas as fpd
 from bs4 import BeautifulSoup as bs
-from tqdm import tnrange, tqdm_notebook, notebook
+from tqdm import tqdm, tqdm_notebook
 
 # authenticate to DISCOGS.COM
 token = 'FBvXNlFYwMjpXpOkCBYtlyNdawVggJqXcQZJLoJC'
@@ -43,7 +44,7 @@ def get_track_genius(df):
     ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], [], [], []
     artist_df = pd.DataFrame()
     print("Getting Track titles from Genius Lyrics..")
-    for i in notebook.tqdm(range(len(reset_df))):
+    for i in tqdm_notebook(range(len(reset_df))):
         #creating url for genius
         page = requests.get("https://genius.com/albums/{0}/{1}".format(reset_df["new_artist"][i]
                                                                        , reset_df["new_albums"][i])
@@ -113,7 +114,7 @@ def get_track_discog(df):
     ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track = [], [], [], [], [], [], [], [], [], [], []
     track_info = pd.DataFrame()
     print("Getting Tracks..")
-    for i in notebook.tqdm(range(len(reset_df))):
+    for i in tqdm_notebook(range(len(reset_df))):
         album_id = reset_df["ARTIST_ID"][i]
         time.sleep(0.5)
         release = discogs.master(int(album_id)) # discogs API
@@ -232,7 +233,7 @@ def get_stat_link(url, df):
     
     print("Getting Albums links in Discogs..")
     # getting the links for the stat page
-    for i in notebook.tqdm(range(len(find_class))):
+    for i in tqdm_notebook(range(len(find_class))):
         links = find_class[i].find("a")
         album_ids = links["href"][links["href"].rfind("/")+1:]
         df.loc[df["ARTIST_ID"] == album_ids, "STAT_LINK"] = "https://www.discogs.com" + links["href"]
@@ -295,7 +296,7 @@ def get_artist_albums(a_name):
     album_id, artist_name, types, title, formats, year = [], [], [], [], [], []
     section_value = 0
     print("Getting albums data for '%s'" %a_nam)
-    iterate = notebook.tqdm(range(1, len(root.cssselect("#artist tr"))))
+    iterate = tqdm_notebook(range(1, len(root.cssselect("#artist tr"))))
     for i in iterate:
         row = root.cssselect("#artist tr")[i]
         section = extract(row, "td h3")
@@ -358,24 +359,56 @@ def getArtistData(a_name):
                                                                            }
                                                                   ).reset_index(drop = True)
     
-    # Converting discog columns to integer
-    cols = ["DISCOG_PPL_HAVING", "DISCOG_PPL_WANT", "DISCOG_RATING", "DISCOG_AVG_RATING"]
-    final_data_sort[cols] = final_data_sort[cols].apply(pd.to_numeric, errors='coerce').fillna(0)
+    # Creating new album column & track without any brackets
+    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUMS"].str.replace(r"\s+\(.*\)","")
+    final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
     
-    return final_data_sort[["ARTIST_ID"
-                           , "ARTIST_NAME"
-                           , "ALBUMS"
-                           , "YEAR"
-                           , "TRACK_TITLE"
-                           , "DISCOG_PPL_HAVING"
-                           , "DISCOG_PPL_WANT"
-                           , "DISCOG_RATING"                       
-                           , "DISCOG_AVG_RATING"
-                           , "EXCLUDE_ALBUM"
-                           , "EXCLUDE_SONG"
-                           , "GENIUS_LINK"                            
-                          ]
-                         ]
+    # Get billboard ranking for albums and tracks
+    df_billboard_albums = getBillBoardPeak(a_name)
+    df_billboard_tracks = getBillBoardPeak(a_name, 0)
+    
+    #Merge discog data with billboard data
+    df_discog_album = fpd.fuzzy_merge(final_data_sort, df_billboard_albums, 
+                          left_on = ['ARTIST_NAME', 'CLEAN_ALBUM_COL'], 
+                          right_on = ['BILLBOARD_ARTIST_NAME', 'BILLBOARD_ALBUM'],
+                          method = 'levenshtein', 
+                          threshold = 0.85,
+                          join = 'left-outer').drop(['BILLBOARD_ARTIST_NAME'], axis = 1)
+
+    full_data = fpd.fuzzy_merge(df_discog_album, df_billboard_tracks, 
+                          left_on = ['ARTIST_NAME', 'CLEAN_TRACK_COL'], 
+                          right_on = ['BILLBOARD_ARTIST_NAME', 'BILLBOARD_TRACK_TITLE'],
+                          method = 'levenshtein', 
+                          threshold = 0.85,
+                          join = 'left-outer')
+    
+    # Converting list of columns to integer
+    cols = ["DISCOG_PPL_HAVING"
+            , "DISCOG_PPL_WANT"
+            , "DISCOG_RATING"
+            , "DISCOG_AVG_RATING"
+            , "BILLBOARD_ALBUM_RANK"
+            , "BILLBOARD_TRACK_RANK"
+           ]
+    
+    full_data[cols] = full_data[cols].apply(pd.to_numeric, errors='coerce')
+    
+    return full_data[["ARTIST_ID"
+                       , "ARTIST_NAME"
+                       , "ALBUMS"
+                       , "YEAR"
+                       , "TRACK_TITLE"
+                       , "DISCOG_PPL_HAVING"
+                       , "DISCOG_PPL_WANT"
+                       , "DISCOG_RATING"                       
+                       , "DISCOG_AVG_RATING"
+                       , "EXCLUDE_ALBUM"
+                       , "EXCLUDE_SONG"
+                       , "GENIUS_LINK"
+                       , "BILLBOARD_ALBUM_RANK"
+                       , "BILLBOARD_TRACK_RANK"
+                      ]
+                     ].sort_values(by = ["YEAR", "ARTIST_ID"]).drop_duplicates()
 
 
 def getBillBoardPeak(artist_name, flag:int = 1):
@@ -392,7 +425,7 @@ def getBillBoardPeak(artist_name, flag:int = 1):
     @return: Dataframe    
     '''
     #getting discogs artist name
-    artist_id, artist_nam = get_discogs.getArtistID(artist_name)
+    artist_id, artist_nam = getArtistID(artist_name)
     
     ls_al_tr, ls_peak, ls_date = [], [], []
     #TLP -> albums & HSI -> billboard 100 songs/track title
@@ -434,17 +467,37 @@ def getBillBoardPeak(artist_name, flag:int = 1):
 
     # Creating Dataframe
     if x == 'TLP':
-        df_billboard = pd.DataFrame({"ALBUM" : ls_al_tr, "BILLBOARD_RANK" : ls_peak, "DATE" : ls_date})
-        df_billboard["ARTIST_NAME"] = artist_nam
-        df_billboard["DATE"] = pd.to_datetime(df_billboard["DATE"], format = "%d.%m.%Y")
-        df_final_billboard = df_billboard.sort_values(by = ["DATE"]).reset_index(drop = True)
+        df_billboard = pd.DataFrame({"BILLBOARD_ALBUM" : ls_al_tr
+                                     , "BILLBOARD_ALBUM_RANK" : ls_peak
+                                     , "BILLBOARD_ALBUM_DATE" : ls_date}
+                                   )
+        df_billboard["BILLBOARD_ARTIST_NAME"] = artist_nam
+        df_billboard["BILLBOARD_ALBUM_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_ALBUM_DATE"], format = "%d.%m.%Y")
+        df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].str.replace(r"\s+\(.*\)","")
+        df_final_billboard = df_billboard.sort_values(by = ["BILLBOARD_ALBUM_DATE"]).reset_index(drop = True)
         #return datafram with album for a particular artist
-        return df_final_billboard[["ARTIST_NAME", "ALBUM", "BILLBOARD_RANK", "DATE"]]
+        return df_final_billboard[
+                                  ["BILLBOARD_ARTIST_NAME"
+                                   , "BILLBOARD_ALBUM"
+                                   , "BILLBOARD_ALBUM_RANK"
+                                   , "BILLBOARD_ALBUM_DATE"
+                                  ]
+                                 ]
     
     else:
-        df_billboard = pd.DataFrame({"TRACK_TITLE" : ls_al_tr, "BILLBOARD_RANK" : ls_peak, "DATE" : ls_date})
-        df_billboard["ARTIST_NAME"] = artist_nam
-        df_billboard["DATE"] = pd.to_datetime(df_billboard["DATE"], format = "%d.%m.%Y")
-        df_final_billboard = df_billboard.sort_values(by = ["DATE"]).reset_index(drop = True)
+        df_billboard = pd.DataFrame({"BILLBOARD_TRACK_TITLE" : ls_al_tr
+                                     , "BILLBOARD_TRACK_RANK" : ls_peak
+                                     , "BILLBOARD_TRACK_DATE" : ls_date}
+                                   )
+        df_billboard["BILLBOARD_ARTIST_NAME"] = artist_nam
+        df_billboard["BILLBOARD_TRACK_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_TRACK_DATE"], format = "%d.%m.%Y")
+        df_billboard["BILLBOARD_TRACK_TITLE"] = df_billboard["BILLBOARD_TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
+        df_final_billboard = df_billboard.sort_values(by = ["BILLBOARD_TRACK_DATE"]).reset_index(drop = True)
         #return dataframe with track titles for a particular artist
-        return df_final_billboard[["ARTIST_NAME", "TRACK_TITLE", "BILLBOARD_RANK", "DATE"]]
+        return df_final_billboard[
+                                  ["BILLBOARD_ARTIST_NAME"
+                                   , "BILLBOARD_TRACK_TITLE"
+                                   , "BILLBOARD_TRACK_RANK"
+                                   , "BILLBOARD_TRACK_DATE"
+                                  ]
+                                 ]
