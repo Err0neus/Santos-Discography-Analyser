@@ -27,6 +27,7 @@ pandas<br>
 numpy<br>
 time<br>
 seaborn<br>
+fuzzy_pandas<br>
 
 <u><i>UI</i></u><br>
 ipywidgets<br>
