@@ -9,7 +9,7 @@ import seaborn as sns
 from IPython.display import clear_output, display
 # UI
 import ipywidgets as widgets
-from tqdm import tnrange, tqdm_notebook, notebook
+from tqdm import tnrange, tqdm_notebook
 
 # other fuctions
 from functions import get_discogs
@@ -244,6 +244,7 @@ def button_2_alt_func(x):
         # do sentiment analysis
         print('Analyzing lyrics sentiment...')
         sentiment_data = sentiment_analysis.sentimentAnalyser(lyrics_data, artist)
+        
         print('processing and cleaning, please hold on')
         # iterate through the results and populate the columns in the main discog store
         # add lyrics
@@ -523,11 +524,12 @@ slider_1 = widgets.IntSlider(
         
 # function to run at click of the button_4
 def button_4_func(x):
+    #clear previous output
+    clear_output()
+    print("WordClouds are rolling in...")
     global bin_size
     #overwrite bin_size with current selection of the slider
     set_bin_size(slider_1.value)
-    #clear previous output
-    clear_output()
     # select current tab    
     global selected_tab
     selected_tab = 1
@@ -535,8 +537,6 @@ def button_4_func(x):
     global selected_sub_tab_2
     selected_sub_tab_2 = 1
     
-    # display UI
-    UI()
     #filter dataset
     global discog_filtered
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
@@ -544,6 +544,9 @@ def button_4_func(x):
     
     data = add_period_column(discog_filtered, bin_size)
     
+    clear_output()
+    # display UI
+    UI()
     if dropdown_1.value == 'period':
         plot_wordcloud.createWordCloud(data[~data['LYRICS_CLEAN'].isnull()], 'period')
     elif dropdown_1.value ==  'album':
@@ -719,7 +722,7 @@ def UI():
     # vertical block
     SECTION_4 = widgets.VBox([dropdown_1, button_4,])
     
-    # SECTION 5 = wordclouds
+    # SECTION 5 = User and Rating
     # button to update chart
     button_5 = widgets.Button(description="Show")
     button_5.on_click(button_5_func)
