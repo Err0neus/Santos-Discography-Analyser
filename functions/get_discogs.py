@@ -343,7 +343,7 @@ def getArtistData(a_name):
     
     if df_genius_none.empty == False:
         discog_track = get_track_discog(df_genius_none) # using discog API
-        full_data = pd.concat([genius_track, discog_track], ignore_index = True) # appending genius and discog data
+        full_data = pd.concat([genius_track, discog_track], ignore_index = True, sort = True) # appending genius and discog data
         flag_data = flag_exclude_album(full_data) # Creating flag column for an album
         final_data = flag_track_title(flag_data) # Creating flag column for a track_title
         
@@ -407,6 +407,7 @@ def getArtistData(a_name):
                        , "GENIUS_LINK"
                        , "BILLBOARD_ALBUM_RANK"
                        , "BILLBOARD_TRACK_RANK"
+                       , "BILLBOARD_TRACK_TITLE"
                       ]
                      ].sort_values(by = ["YEAR", "ARTIST_ID"]).drop_duplicates()
 
@@ -473,6 +474,7 @@ def getBillBoardPeak(artist_name, flag:int = 1):
                                    )
         df_billboard["BILLBOARD_ARTIST_NAME"] = artist_nam
         df_billboard["BILLBOARD_ALBUM_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_ALBUM_DATE"], format = "%d.%m.%Y")
+        df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].astype(str)
         df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].str.replace(r"\s+\(.*\)","")
         df_final_billboard = df_billboard.sort_values(by = ["BILLBOARD_ALBUM_DATE"]).reset_index(drop = True)
         #return datafram with album for a particular artist
@@ -491,6 +493,7 @@ def getBillBoardPeak(artist_name, flag:int = 1):
                                    )
         df_billboard["BILLBOARD_ARTIST_NAME"] = artist_nam
         df_billboard["BILLBOARD_TRACK_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_TRACK_DATE"], format = "%d.%m.%Y")
+        df_billboard["BILLBOARD_TRACK_TITLE"] = df_billboard["BILLBOARD_TRACK_TITLE"].astype(str)
         df_billboard["BILLBOARD_TRACK_TITLE"] = df_billboard["BILLBOARD_TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
         df_final_billboard = df_billboard.sort_values(by = ["BILLBOARD_TRACK_DATE"]).reset_index(drop = True)
         #return dataframe with track titles for a particular artist
