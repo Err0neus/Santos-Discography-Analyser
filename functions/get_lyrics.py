@@ -3,7 +3,7 @@ import re
 import time
 
 from bs4 import BeautifulSoup as bs
-from tqdm import tnrange, tqdm_notebook, notebook
+from tqdm import tnrange, tqdm_notebook
 
 def getLyrics(df):
     '''
@@ -19,7 +19,7 @@ def getLyrics(df):
     # Regular Expression that matches the class in HTML 
     regex1 = re.compile('.*Lyrics*')
 
-    for i in notebook.tqdm(range(len(filter_data.GENIUS_LINK))):
+    for i in tqdm_notebook(range(len(filter_data.GENIUS_LINK))):
         page = requests.get(filter_data.GENIUS_LINK[i]) # Getting Html Tag for each links in Genius_link column 
         if page.status_code == 200:
             html = bs(page.text, 'html.parser')
