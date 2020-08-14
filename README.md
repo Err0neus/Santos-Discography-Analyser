@@ -13,7 +13,7 @@ For any given artist name: <br>
 
 ## Dependencies:
 
-<i>APIs</i><br>
+<h5><i>APIs</i></h5><br>
 lyricsgenius<br>
 lxml.html<br>
 cssselect<br>
@@ -21,7 +21,7 @@ discogs_client<br>
 requests<br>
 lyricsmaster<br>
 
-<u><i>data processing and charts</i></u><br>
+<h5><u><i>data processing and charts</i></u></h5><br>
 matplotlib<br>
 pandas<br>
 numpy<br>
@@ -29,12 +29,12 @@ time<br>
 seaborn<br>
 fuzzy_pandas<br>
 
-<u><i>UI</i></u><br>
+<h5><u><i>UI</i></u></h5><br>
 ipywidgets<br>
 IPython<br>
 tqdm<br>
 
-<u><i>word processing</i></u><br>
+<h5><u><i>word processing</i></u></h5><br>
 re<br>
 os<br>
 nltk<br>
