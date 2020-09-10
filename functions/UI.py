@@ -59,6 +59,19 @@ def set_artist(x):
     global artist
     artist = x
 
+
+# function to adapt long texts for display in charts
+
+def adapt_title(text):
+    adapted_text = []
+    while len(text) > 0:
+        text_slice = text[:21]
+        last_char = 0 if text_slice == text else min(text_slice[::-1].find(' '), len(text_slice))
+        adapted_text.append(text_slice[:None if last_char == 0 else -last_char])
+        text = text[21 - last_char:]
+    return '\n'.join(adapted_text)
+
+    
     
 # function to run at click of the button    
 def get_discography(x):
@@ -101,6 +114,8 @@ def get_discography(x):
 #-------------------------------------------------------------------------------        
     discog['YEAR_ALBUM'] = "[" + discog['YEAR'].astype(str) + "] " \
                             + discog['ALBUMS']
+    # make version for displaying in charts (with line breaks)
+    discog['YEAR_ALBUM_DISPLAY'] = discog['YEAR_ALBUM'].astype(str).apply(adapt_title)
     # clear previous output
     clear_output()
     # set selected section
@@ -632,13 +647,15 @@ wordcloud_by_selection_dropdown = widgets.Dropdown(options=['period', 'album',],
 
 #-------------------------------------------------------------------------------
 # SECTION 2 | TAB 3 variables and functions
+
+
+
         
 def plot_albums_discogs_popularity(discog):
     '''plots Discogs registered owners and average ratings'''
-    
     width = 0.2
     data = pd.pivot_table(discog, 
-                          index = 'YEAR_ALBUM', 
+                          index = 'YEAR_ALBUM_DISPLAY', 
                           values = ['DISCOG_PPL_HAVING', 'DISCOG_AVG_RATING'],
                           aggfunc = 'max')
     
@@ -680,7 +697,7 @@ def plot_albums_discogs_popularity(discog):
     
 def plot_albums_ratings(discog):
     threshold = discog['DISCOG_AVG_RATING'].mean()
-    data = pd.pivot_table(discog,index='YEAR_ALBUM',
+    data = pd.pivot_table(discog,index='YEAR_ALBUM_DISPLAY',
                           values=['DISCOG_AVG_RATING'],
                           aggfunc = 'max')
     values = np.array(data['DISCOG_AVG_RATING'].tolist())
@@ -709,7 +726,7 @@ def plot_albums_ratings(discog):
     
 def plot_albums_ratings_indexing(discog):
     threshold = discog['DISCOG_AVG_RATING'].mean()
-    data = pd.pivot_table(discog,index='YEAR_ALBUM',
+    data = pd.pivot_table(discog,index='YEAR_ALBUM_DISPLAY',
                           values=['DISCOG_AVG_RATING'],
                           aggfunc = 'max')
     values = (np.array(data['DISCOG_AVG_RATING'])-threshold).tolist()
