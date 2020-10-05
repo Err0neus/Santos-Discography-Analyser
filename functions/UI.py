@@ -341,15 +341,50 @@ def apply_selection(x):
     clear_output()
     # select tab
     global selected_section
-    selected_section = 1
+    selected_section = 0
     # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 0
+    global selection_tab_of_section_1
+    selection_tab_of_section_1 = 2
     
     # display UI
     UI()    
-    
 
+#-------------------------------------------------------------------------------
+# SECTION 1 | TAB 3 variables and functions
+
+# set bin_size var with default 10
+bin_size = 10
+
+#defining a slider for bin_size selector
+period_selection_slider = widgets.IntSlider(
+        value=bin_size,
+        min=1,
+        max=10,
+        step=1,
+        description='Period Size (# of years)',
+        style = {'description_width': 'initial'},
+        disabled=False,
+        continuous_update=True,
+        orientation='horizontal',
+        readout=True,
+        readout_format='d'
+    )
+
+# define function to overwrite bin_size from slider input
+def set_bin_size(x):
+    global bin_size
+    bin_size = period_selection_slider.value
+    #clear previous output
+    clear_output()
+    # select next section    
+    global selected_section
+    selected_section = 1
+    # select tab
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 0
+    # restart UI
+    UI()
+    
 #-------------------------------------------------------------------------------
 # UI SECTION 2 variables and functions
 #-------------------------------------------------------------------------------
@@ -360,13 +395,21 @@ def generate_period_bins(discog, bin_size):
     '''returns list of period bins starting 0th year of the decade 
     of first release'''
     bins = []
-    start_year = int(str(discog['YEAR'].min())[:3]+'0')
-    last_year = int(discog['YEAR'].max()) \
-                + int(str(100 - int(str(discog['YEAR'].max())[2:]))[-1])
-    year = start_year
-    while year <= last_year:
-        bins.append(str(year) + '-' + str(year + bin_size-1))
-        year += bin_size
+    if bin_size == 1:
+        start_year = int(discog['YEAR'].min())
+        last_year = int(discog['YEAR'].max())
+        year = start_year
+        while year <= last_year:
+            bins.append(str(year))
+            year += bin_size
+    else:        
+        start_year = int(str(discog['YEAR'].min())[:3]+'0')
+        last_year = int(discog['YEAR'].max()) \
+                    + int(str(100 - int(str(discog['YEAR'].max())[2:]))[-1])
+        year = start_year
+        while year <= last_year:
+            bins.append(str(year) + '-' + str(year + bin_size-1))
+            year += bin_size
     return bins
 
 def unique_per_period(discog, column, bin_size):
@@ -374,14 +417,18 @@ def unique_per_period(discog, column, bin_size):
     by defined bin size'''
     data = {'period' : generate_period_bins(discog, bin_size),
             column : []}
-    for period in data['period']:
-        data[column].append(
-            len(
-                discog[
-                    (discog['YEAR'].astype(int) >= int(period[:4])) \
-                    & (discog['YEAR'].astype(int) <= int(period[5:]))
-                ][column].unique()))     
-    # filter out all but one period empty before first and after last record
+    if bin_size == 1:
+        for period in data['period']:
+            data[column].append(len(discog[discog['YEAR'] == period][column].unique()))
+    else:
+        for period in data['period']:
+            data[column].append(
+                len(
+                    discog[
+                        (discog['YEAR'].astype(int) >= int(period[:4])) \
+                        & (discog['YEAR'].astype(int) <= int(period[5:]))
+                    ][column].unique()))     
+        # filter out all but one period empty before first and after last record
     output = pd.DataFrame.from_dict(data)
     # flag record with and without data
     output.loc[output[column] == 0, 'data_flag'] = 0
@@ -436,11 +483,15 @@ def add_period_column(discog, bin_size):
     '''adds column with period info without any other modifications'''
     period_col_data = []
     bins = generate_period_bins(discog, bin_size)
-    for i, r in discog.iterrows():
-        for period in bins:
-            if int(r['YEAR']) >= int(period[:4]) \
-            and int(r['YEAR']) <= int(period[5:]):
-                period_col_data.append(period)
+    if bin_size == 1:
+        for i, r in discog.iterrows():
+            period_col_data.append(r['YEAR'])
+    else:
+        for i, r in discog.iterrows():
+            for period in bins:
+                if int(r['YEAR']) >= int(period[:4]) \
+                and int(r['YEAR']) <= int(period[5:]):
+                    period_col_data.append(period)
     discog['period'] = period_col_data
     return discog
                                                                
@@ -480,7 +531,6 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     
     width = 0.2
     data = album_song_count_per_period(discog, bin_size).set_index('period')
-    
     fig, ax1 = plt.subplots(figsize=(8,5))
 
     color = 'tab:red'
@@ -491,7 +541,8 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
                         color='red', 
                         ax=ax1, 
                         width=width, 
-                        position=1)
+                        position=1
+                       )
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45)
     ax1.set_xlabel(str(bin_size) + '-year period')
@@ -547,18 +598,10 @@ def violin_plot(discog, bin_size):
     plt.show()
 
 
-# set bin_size var with default 10
-bin_size = 10
-# define function to overwrite bin_size from slider input
-def set_bin_size(x):
-    global bin_size
-    bin_size = x
 
 # function to run at click of the button_3
 def show_basic_charts(x):
     global bin_size
-    #overwrite bin_size with current selection of the slider
-    set_bin_size(period_selection_slider.value)
     #clear previous output
     clear_output()
     # select current tab    
@@ -576,27 +619,14 @@ def show_basic_charts(x):
         (discog_store['ARTIST_NAME']==artist)\
         &(discog_store['YEAR_ALBUM'].isin(album_filter))
     ].copy()
-    #display chart using the new bin_size
+    #display chart using the bin_size
     #plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
     #pirate_plot(discog_filtered, bin_size)
     violin_plot(discog_filtered, bin_size)
 
 
-#defining a slider for bin_size selector
-period_selection_slider = widgets.IntSlider(
-        value=bin_size,
-        min=1,
-        max=10,
-        step=1,
-        description='Period Size (# of years)',
-        style = {'description_width': 'initial'},
-        disabled=False,
-        continuous_update=True,
-        orientation='horizontal',
-        readout=True,
-        readout_format='d'
-    )
+
 
 
     
@@ -611,8 +641,6 @@ def show_wordclouds(x):
     clear_output()
     print("WordClouds are rolling in...")
     global bin_size
-    #overwrite bin_size with current selection of the slider
-    set_bin_size(period_selection_slider.value)
     # select current tab    
     global selected_section
     selected_section = 1
@@ -871,11 +899,23 @@ def UI():
                              layout=widgets.Layout(width="80%", 
                                                    padding = "10px"))  
     #---------------------------------------------------------------------------
+    # SECTION 1 | TAB 3     "Time period" ( select time intervals for charts)
+    # period size selection slider
+    global period_selection_slider
+    # button to update the period selection
+    button_update_period_selection = widgets.Button(description="Confirm")
+    button_update_period_selection.on_click(set_bin_size)
+    # vertical block
+    SECTION_1_TAB_3 = widgets.VBox([period_selection_slider, 
+                                    button_update_period_selection,])
+    
+    #---------------------------------------------------------------------------
     # SECTION 1 build
-    section_1_children = [SECTION_1_TAB_1, SECTION_1_TAB_2]    
+    section_1_children = [SECTION_1_TAB_1, SECTION_1_TAB_2,SECTION_1_TAB_3]    
     section_1 = widgets.Tab(children=section_1_children)
     section_1.set_title(0, 'Artist')
     section_1.set_title(1, 'Albums')
+    section_1.set_title(2, 'Time periods')
     section_1.selected_index = selection_tab_of_section_1    
     #---------------------------------------------------------------------------
     
@@ -883,14 +923,11 @@ def UI():
     # SECTION 2          "Visualisations - single artist" 
     #---------------------------------------------------------------------------
     # SECTION 2 | TAB 1   "Basic Charts"
-    # period size selection slider
-    global period_selection_slider
     # button to update chart
     button_show_basic_charts = widgets.Button(description="Show/refresh charts")
     button_show_basic_charts.on_click(show_basic_charts)
     # vertical block
-    SECTION_2_TAB_1 = widgets.VBox([period_selection_slider, 
-                                    button_show_basic_charts,])
+    SECTION_2_TAB_1 = widgets.VBox([button_show_basic_charts,])
     #---------------------------------------------------------------------------   
     # SECTION 2 | TAB 2   "Wordclouds"
     # dropdown
@@ -970,7 +1007,7 @@ def UI():
     UI = widgets.Accordion(children=[section_1,
                                      section_2_wrapper,
                                      section_3])
-    UI.set_title(0, 'Get Data')
+    UI.set_title(0, 'Configuration')
     UI.set_title(1, 'Visualisations - single artist')
     UI.set_title(2, 'Visualisations - compare artists')
     UI.selected_index = selected_section
