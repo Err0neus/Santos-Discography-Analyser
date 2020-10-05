@@ -784,7 +784,10 @@ sentiment_dropdown1 = widgets.Dropdown(options=['albums', 'tracks by album',],
                                                 value='albums',
                                                 description='Display by:',
                                                 disabled=False,)
-sentiment_dropdown2 = []
+sentiment_dropdown2 = widgets.Dropdown(options=[''],
+                                                value='',
+                                                description='',
+                                                disabled=False,)
     
 # function to run at click of the button_show_wordclouds
 def show_sentiment_graphs(x):
@@ -806,7 +809,7 @@ def show_sentiment_graphs(x):
     clear_output()   
     UI()
     if sentiment_dropdown1.value == 'albums':
-        advanced_analytics.plotDivergingBars(discog_filtered, 
+        advanced_analytics.plotDivergingBars(discog_filtered.reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
                           'YEAR_ALBUM')
     else:    
