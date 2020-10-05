@@ -16,6 +16,7 @@ from functions import get_discogs
 from functions import get_lyrics
 from functions import plot_wordcloud
 from functions import sentiment_analysis
+from functions import advanced_analytics
 
 # word processing
 import re
@@ -33,8 +34,8 @@ clear_output()
 
 # default selected tab in the UI
 selected_section = 0
-selected_tab_1 = 0
-selected_tab_2 = 0
+selection_tab_of_section_1 = 0
+selection_tab_of_section_2 = 0
 
 # global var for discog
 discog = ''
@@ -122,8 +123,8 @@ def get_discography(x):
     global selected_section
     selected_section = 0
     # set selected  tab
-    global selected_tab_1
-    selected_tab_1 = 1
+    global selection_tab_of_section_1
+    selection_tab_of_section_1 = 1
     # set album selecor content
     # overwrite album_filter with current selection
     global album_filter    
@@ -189,8 +190,8 @@ def select_deselect_all(x):
     global selected_section
     selected_section = 0
     # select sub tab
-    global selected_tab_1
-    selected_tab_1 = 1
+    global selection_tab_of_section_1
+    selection_tab_of_section_1 = 1
     
     # display UI
     UI()
@@ -342,8 +343,8 @@ def apply_selection(x):
     global selected_section
     selected_section = 1
     # select sub tab
-    global selected_tab_2
-    selected_tab_2 = 0
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 0
     
     # display UI
     UI()    
@@ -564,8 +565,8 @@ def show_basic_charts(x):
     global selected_section
     selected_section = 1
     # select sub tab
-    global selected_tab_2
-    selected_tab_2 = 0
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 0
     
     # display UI
     UI()
@@ -616,8 +617,8 @@ def show_wordclouds(x):
     global selected_section
     selected_section = 1
     # select sub tab
-    global selected_tab_2
-    selected_tab_2 = 1
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 1
     
     #filter dataset
     global discog_filtered
@@ -647,9 +648,6 @@ wordcloud_by_selection_dropdown = widgets.Dropdown(options=['period', 'album',],
 
 #-------------------------------------------------------------------------------
 # SECTION 2 | TAB 3 variables and functions
-
-
-
         
 def plot_albums_discogs_popularity(discog):
     '''plots Discogs registered owners and average ratings'''
@@ -763,8 +761,8 @@ def show_users_ratings_charts(x):
     global selected_section
     selected_section = 1
     # select sub tab
-    global selected_tab_2
-    selected_tab_2 = 2
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 2
     
     #clear previous output
     clear_output()
@@ -780,8 +778,57 @@ def show_users_ratings_charts(x):
     plot_albums_ratings_indexing(discog_filtered)
 
 #-------------------------------------------------------------------------------
-# display UI
+# # SECTION 2 | TAB 4 variables and functions
+
+sentiment_dropdown1 = widgets.Dropdown(options=['albums', 'tracks by album',],
+                                                value='albums',
+                                                description='Display by:',
+                                                disabled=False,)
+sentiment_dropdown2 = []
     
+# function to run at click of the button_show_wordclouds
+def show_sentiment_graphs(x):
+    #clear previous output
+    clear_output()
+    print("Analysing the sentiment of the lyrics...")
+    # select current tab    
+    global selected_section
+    selected_section = 1
+    # select sub tab
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 3
+    global discog_filtered
+    discog_filtered = discog_store[
+        (discog_store['ARTIST_NAME']==artist)\
+        &(discog_store['YEAR_ALBUM'].isin(album_filter))
+    ].copy()
+    
+    clear_output()   
+    UI()
+    if sentiment_dropdown1.value == 'albums':
+        advanced_analytics.plotDivergingBars(discog_filtered, 
+                          'SENTIMENT_COMPOUND_SCORE', 
+                          'YEAR_ALBUM')
+    else:    
+        advanced_analytics.plotDivergingBars(discog_filtered[discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value].reset_index(), 
+                          'SENTIMENT_COMPOUND_SCORE', 
+                          'TRACK_TITLE')
+# inner function to be triggered with a change of dropdown1 value
+def adapt_UI(x):
+    global discog_filtered, sentiment_dropdown2
+    global selected_section
+    selected_section = 1
+    # select sub tab
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 3
+    clear_output()
+    sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
+                                            value=discog_filtered['YEAR_ALBUM'].unique()[0],
+                                            description='Select Album:',
+                                            disabled=False,)
+    UI()
+#-------------------------------------------------------------------------------
+
 def UI():
     #---------------------------------------------------------------------------
     # SECTION 1          "Get Data" (Get discography, select albums, get lyrics)
@@ -826,7 +873,7 @@ def UI():
     section_1 = widgets.Tab(children=section_1_children)
     section_1.set_title(0, 'Artist')
     section_1.set_title(1, 'Albums')
-    section_1.selected_index = selected_tab_1    
+    section_1.selected_index = selection_tab_of_section_1    
     #---------------------------------------------------------------------------
     
     #---------------------------------------------------------------------------
@@ -859,16 +906,33 @@ def UI():
     # vertical block
     SECTION_2_TAB_3 = widgets.VBox([button_users_ratings_charts,])
     #---------------------------------------------------------------------------
+     # SECTION 2 | TAB 4   "Sentiment Analysis"
+    global sentiment_dropdown1, sentiment_dropdown2
+    # button to show charts
+    button_sentiment_analysis = widgets.Button(description="Show")
+    button_sentiment_analysis.on_click(show_sentiment_graphs)
+    # vertical block
+    # define tab depending on the value of the global variable
+    if sentiment_dropdown1.value == 'tracks by album':
+        SECTION_2_TAB_4 = widgets.VBox([sentiment_dropdown1,sentiment_dropdown2,button_sentiment_analysis, ])
+    else:
+        SECTION_2_TAB_4 = widgets.VBox([sentiment_dropdown1,button_sentiment_analysis])
+    
+    # trigger inner function when value of the dropdown1 changes
+    sentiment_dropdown1.observe(adapt_UI, names='value')
+    #---------------------------------------------------------------------------
     # SECTION 2 build
     section_2_children = [SECTION_2_TAB_1, 
                           SECTION_2_TAB_2, 
-                          SECTION_2_TAB_3,] 
+                          SECTION_2_TAB_3,
+                          SECTION_2_TAB_4,] 
     section_2 = widgets.Tab()
     section_2.children = section_2_children
     section_2.set_title(0, 'Basic Charts')
     section_2.set_title(1, 'Wordclouds')
     section_2.set_title(2, 'Users and ratings')
-    section_2.selected_index = selected_tab_2 
+    section_2.set_title(3, 'Sentiment analysis')
+    section_2.selected_index = selection_tab_of_section_2 
     section_2_wrapper_label = widgets.HTML(
         value=f'''Current artist: <b>{artist}</b>''',
         layout=widgets.Layout(width="100%"))
