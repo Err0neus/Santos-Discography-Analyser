@@ -6,7 +6,8 @@ import numpy as np
 import time
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
-from IPython.display import clear_output, display
+from IPython.display import clear_output, display, IFrame
+from chord import Chord 
 # UI
 import ipywidgets as widgets
 from tqdm import tnrange, tqdm_notebook
@@ -624,12 +625,6 @@ def show_basic_charts(x):
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
     #pirate_plot(discog_filtered, bin_size)
     violin_plot(discog_filtered, bin_size)
-
-
-
-
-
-    
     
 
 #-------------------------------------------------------------------------------
@@ -778,6 +773,57 @@ def plot_albums_ratings_indexing(discog):
     plt.title('Average Discogs users rating by album vs index', fontsize=18)
     plt.show()
     
+def create_chord_diag(df):
+    '''
+    Creating Chord diagram.
+    @param - Dataframe
+    @param - bin_size -> int [by default 10]
+    
+    @return - Chord_diagram using Chord Library
+    '''
+    # Creating period column 
+    global bin_size
+    get_period = add_period_column(df, bin_size)
+    artist_nam = df['ARTIST_NAME'].iloc[0]
+    # Flag Charted/Uncharted tracks
+    get_period.loc[get_period['BILLBOARD_TRACK_RANK'] >= 1.0
+                   , "Charted_Uncharted"
+                  ] = 'Charted'
+    
+    get_period.loc[~(get_period['BILLBOARD_TRACK_RANK'] >= 1.0)
+                   , "Charted_Uncharted"
+                  ] = 'Uncharted'
+    #Group By period and Chart_Unchart
+    df_groupby = get_period[['period'
+                              , 'BILLBOARD_TRACK_RANK'
+                              , "Charted_Uncharted"]
+                            ].groupby(['period', 'Charted_Uncharted']).size().reset_index()
+    
+    # Creating two pivot data
+    pivot_data =  df_groupby.pivot(index = 'period'
+                                    , columns = 'Charted_Uncharted'
+                                    , values = 0)
+    pivot_data2 =  df_groupby.pivot(index = 'Charted_Uncharted'
+                                     , columns = 'period'
+                                     , values = 0)
+    
+    # Appending two dataFrame
+    df_final = pd.concat([pivot_data, pivot_data2], sort = True).fillna(0).astype(int)
+    matrix = df_final.values.tolist()
+    ls_col_nam = [col for col in df_final.columns]
+#     {artist}
+    plot = Chord(matrix
+                 , ls_col_nam
+                 , padding=0.05
+                 , width = 600 if len(get_period["period"].unique()) < 5 else 500
+                 , margin= 10 if len(get_period["period"].unique()) < 5 else 80
+                 , wrap_labels= True if len(get_period["period"].unique()) < 5 else False
+                ).to_html()
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Chord Diagram - Billboard 100 songs placement</center></h2>''',
+                           layout=widgets.Layout(width="100%")))
+    display(widgets.HTML(value=f'''<h3><center><font color="black">Artist: {artist_nam}</center></h3>''',
+                           layout=widgets.Layout(width="100%")))
+    display(IFrame(src="./out.html", width=1000, height=700))
     
 # function to run at click of the button_users_ratings_charts
 def show_users_ratings_charts(x):
@@ -804,6 +850,7 @@ def show_users_ratings_charts(x):
     plot_albums_discogs_popularity(discog_filtered)
     plot_albums_ratings(discog_filtered)
     plot_albums_ratings_indexing(discog_filtered)
+    create_chord_diag(discog_filtered,)
 
 #-------------------------------------------------------------------------------
 # # SECTION 2 | TAB 4 variables and functions
@@ -844,6 +891,7 @@ def show_sentiment_graphs(x):
         advanced_analytics.plotDivergingBars(discog_filtered[discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value].reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
                           'TRACK_TITLE')
+
 # inner function to be triggered with a change of dropdown1 value
 def adapt_UI(x):
     global discog_filtered, sentiment_dropdown2
