@@ -28,6 +28,7 @@ numpy<br>
 time<br>
 seaborn<br>
 fuzzy_pandas<br>
+chord<br>
 
 <h5><u><i>UI</i></u></h5>
 ipywidgets<br>
