@@ -504,12 +504,12 @@ def plot_albums_songs_per_period(discog, bin_size):
     fig, ax1 = plt.subplots(figsize=(8,5))
 
     color = 'tab:red'
-    ax1.set_xlabel(str(bin_size) + '-year period')
+    ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
     ax1.set_ylabel('number of albums', color=color)
 
     ax1.plot(data['period'], data['ALBUMS'], color=color)
     ax1.tick_params(axis='y', labelcolor=color)
-    ax1.tick_params(axis='x', labelrotation=45)
+    ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
     
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
@@ -531,6 +531,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     '''plots the number of albums and songs per period'''
     
     width = 0.2
+    
     data = album_song_count_per_period(discog, bin_size).set_index('period')
     fig, ax1 = plt.subplots(figsize=(8,5))
 
@@ -545,8 +546,8 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
                         position=1
                        )
     ax1.tick_params(axis='y', labelcolor=color)
-    ax1.tick_params(axis='x', labelrotation=45)
-    ax1.set_xlabel(str(bin_size) + '-year period')
+    ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
+    ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
     
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
@@ -586,16 +587,20 @@ def violin_plot(discog, bin_size):
     data = add_period_column(discog, bin_size)
     # Draw Plot
     plt.figure(figsize=(8,5), dpi= 80)
-    sns.violinplot(x='period', 
+    violinplot = sns.violinplot(x='period', 
                    y='LYRICS_CLEAN_UNIQUE_COUNT', 
                    data=data, 
                    scale='width', 
                    inner='quartile', 
                    cut=0)
+    # rotate x axis labels
+    if len(data['period'].unique()) > 5:
+        for item in violinplot.get_xticklabels():
+            item.set_rotation(45)
     # Decoration
     plt.title('Lexical diversity', fontsize=18)
     plt.ylabel('Number of unique words (excl. stopwords)')
-    plt.xlabel('Period')
+    plt.xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
     plt.show()
 
 
