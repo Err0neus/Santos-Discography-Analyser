@@ -422,7 +422,7 @@ def unique_per_period(discog, column, bin_size):
             column : []}
     if bin_size == 1:
         for period in data['period']:
-            data[column].append(len(discog[discog['YEAR'] == period][column].unique()))
+            data[column].append(len(discog[discog['YEAR'].astype(int) == int(period)][column].unique()))
     else:
         for period in data['period']:
             data[column].append(
@@ -532,8 +532,7 @@ def add_period_column(discog, bin_size):
 def plot_albums_songs_per_period_bar(discog, bin_size):
     '''plots the number of albums and songs per period'''
     
-    width = 0.2
-    #print(discog)    
+    width = 0.2 
     data = album_song_count_per_period(discog, bin_size).set_index('period')
     fig, ax1 = plt.subplots(figsize=(8,5))
 
