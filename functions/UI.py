@@ -37,6 +37,8 @@ clear_output()
 selected_section = 0
 selection_tab_of_section_1 = 0
 selection_tab_of_section_2 = 0
+selection_tab_of_section_3 = 0
+selection_tab_of_section_4 = 0
 
 # global var for discog
 discog = ''
@@ -496,46 +498,47 @@ def add_period_column(discog, bin_size):
     discog['period'] = period_col_data
     return discog
                                                                
-def plot_albums_songs_per_period(discog, bin_size):
-    '''plots the number of albums and songs per period'''
+# def plot_albums_songs_per_period(discog, bin_size):
+#     '''plots the number of albums and songs per period'''
     
-    data = album_song_count_per_period(discog, bin_size)
+#     data = album_song_count_per_period(discog, bin_size)
     
-    fig, ax1 = plt.subplots(figsize=(8,5))
+#     fig, ax1 = plt.subplots(figsize=(8,5))
 
-    color = 'tab:red'
-    ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
-    ax1.set_ylabel('number of albums', color=color)
+#     color = 'tab:red'
+#     ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
+#     ax1.set_ylabel('number of albums', color=color)
 
-    ax1.plot(data['period'], data['ALBUMS'], color=color)
-    ax1.tick_params(axis='y', labelcolor=color)
-    ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
+#     ax1.plot(data['period'], data['ALBUMS'], color=color)
+#     ax1.tick_params(axis='y', labelcolor=color)
+#     ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
     
-    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+#     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
-    color = 'tab:blue'
-    ax2.set_ylabel('number of songs', color=color)  # x-label handled with ax1
-    ax2.plot(data.index.tolist(), data['TRACK_TITLE'], color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
+#     color = 'tab:blue'
+#     ax2.set_ylabel('number of songs', color=color)  # x-label handled with ax1
+#     ax2.plot(data.index.tolist(), data['TRACK_TITLE'], color=color)
+#     ax2.tick_params(axis='y', labelcolor=color)
 
-    fig.tight_layout()  # otherwise the right y-label may be slightly clipped
+#     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
     
-    ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-    ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-    ax1.set_ylim(bottom=0)
-    ax2.set_ylim(bottom=0)
-    plt.title('Albums and songs count by period', fontsize=18)
-    plt.show()
+#     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+#     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+#     ax1.set_ylim(bottom=0)
+#     ax2.set_ylim(bottom=0)
+#     plt.title('Albums and songs count by period', fontsize=18)
+#     plt.show()
 
 def plot_albums_songs_per_period_bar(discog, bin_size):
     '''plots the number of albums and songs per period'''
     
     width = 0.2
-    
+    #print(discog)    
     data = album_song_count_per_period(discog, bin_size).set_index('period')
     fig, ax1 = plt.subplots(figsize=(8,5))
 
     color = 'tab:red'
+
 
     ax1.set_ylabel('number of albums', color=color)
     #ax1.plot(data.period, data.album, color=color)
@@ -567,41 +570,23 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     plt.title('Albums and songs count by period', fontsize=18)
     plt.show()
     
-def pirate_plot(discog, bin_size):
-    data = add_period_column(discog, bin_size)
-    sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=(8,5))
-    ax = sns.boxplot(x="period", 
-                     y="LYRICS_CLEAN_UNIQUE_COUNT", 
-                     data=data)
-    ax = sns.stripplot(x="period", 
-                       y="LYRICS_CLEAN_UNIQUE_COUNT", 
-                       data=data, 
-                       color=".25")
-    ax.set_xlabel('Period')
-    ax.set_ylabel('Number of unique words (excl. stopwords)')
-    plt.title('Lexical diversity', fontsize=18)
-    plt.show()
+# def pirate_plot(discog, bin_size):
+#     data = add_period_column(discog, bin_size)
+#     sns.set_style("whitegrid")
+#     fig, ax = plt.subplots(figsize=(8,5))
+#     ax = sns.boxplot(x="period", 
+#                      y="LYRICS_CLEAN_UNIQUE_COUNT", 
+#                      data=data)
+#     ax = sns.stripplot(x="period", 
+#                        y="LYRICS_CLEAN_UNIQUE_COUNT", 
+#                        data=data, 
+#                        color=".25")
+#     ax.set_xlabel('Period')
+#     ax.set_ylabel('Number of unique words (excl. stopwords)')
+#     plt.title('Lexical diversity', fontsize=18)
+#     plt.show()
 
-def violin_plot(discog, bin_size):
-    data = add_period_column(discog, bin_size)
-    # Draw Plot
-    plt.figure(figsize=(8,5), dpi= 80)
-    violinplot = sns.violinplot(x='period', 
-                   y='LYRICS_CLEAN_UNIQUE_COUNT', 
-                   data=data, 
-                   scale='width', 
-                   inner='quartile', 
-                   cut=0)
-    # rotate x axis labels
-    if len(data['period'].unique()) > 5:
-        for item in violinplot.get_xticklabels():
-            item.set_rotation(45)
-    # Decoration
-    plt.title('Lexical diversity', fontsize=18)
-    plt.ylabel('Number of unique words (excl. stopwords)')
-    plt.xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
-    plt.show()
+
 
 
 
@@ -628,13 +613,59 @@ def show_basic_charts(x):
     #display chart using the bin_size
     #plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
-    #pirate_plot(discog_filtered, bin_size)
-    violin_plot(discog_filtered, bin_size)
     
 
 #-------------------------------------------------------------------------------
 # SECTION 2 | TAB 2 variables and functions
-        
+
+def violin_plot(discog, bin_size):
+    data = add_period_column(discog, bin_size)
+    # Draw Plot
+    plt.figure(figsize=(8,5), dpi= 80)
+    violinplot = sns.violinplot(x='period', 
+                   y='LYRICS_CLEAN_UNIQUE_COUNT', 
+                   data=data, 
+                   scale='width', 
+                   inner='quartile', 
+                   cut=0)
+    # rotate x axis labels
+    if len(data['period'].unique()) > 5:
+        for item in violinplot.get_xticklabels():
+            item.set_rotation(45)
+    # Decoration
+    plt.title('Lexical diversity', fontsize=18)
+    plt.ylabel('Number of unique words (excl. stopwords)')
+    plt.xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
+    plt.show()
+    
+def show_lexical_diversity(x):
+    global bin_size
+    #clear previous output
+    clear_output()
+    # select current tab    
+    global selected_section
+    selected_section = 1
+    # select sub tab
+    global selection_tab_of_section_2
+    selection_tab_of_section_2 = 1
+    
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog_store[
+        (discog_store['ARTIST_NAME']==artist)\
+        &(discog_store['YEAR_ALBUM'].isin(album_filter))
+    ].copy()
+    #display chart using the bin_size
+    #pirate_plot(discog_filtered, bin_size)
+    violin_plot(discog_filtered, bin_size)
+
+    
+    
+#-------------------------------------------------------------------------------
+# SECTION 2 | TAB 3 variables and functions
+
 # function to run at click of the button_show_wordclouds
 def show_wordclouds(x):
     #clear previous output
@@ -646,7 +677,7 @@ def show_wordclouds(x):
     selected_section = 1
     # select sub tab
     global selection_tab_of_section_2
-    selection_tab_of_section_2 = 1
+    selection_tab_of_section_2 = 2
     
     #filter dataset
     global discog_filtered
@@ -674,8 +705,16 @@ wordcloud_by_selection_dropdown = widgets.Dropdown(options=['period', 'album',],
                                                    description='Display by:',
                                                    disabled=False,)  
 
+
+
+
+
 #-------------------------------------------------------------------------------
-# SECTION 2 | TAB 3 variables and functions
+# UI SECTION 3 variables and functions
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# SECTION 3 | TAB 1 variables and functions
+
         
 def plot_albums_discogs_popularity(discog):
     '''plots Discogs registered owners and average ratings'''
@@ -778,6 +817,36 @@ def plot_albums_ratings_indexing(discog):
     plt.title('Average Discogs users rating by album vs index', fontsize=18)
     plt.show()
     
+# function to run at click of the button
+def show_discogs_users_charts(x):
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
+    global bin_size
+
+    # select current tab    
+    global selected_section
+    selected_section = 2
+    # select sub tab
+    global selection_tab_of_section_3
+    selection_tab_of_section_3 = 0
+    
+    #clear previous output
+    clear_output()
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
+                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    plot_albums_discogs_popularity(discog_filtered)
+    plot_albums_ratings(discog_filtered)
+    plot_albums_ratings_indexing(discog_filtered)
+    
+    
+    
+#-------------------------------------------------------------------------------
+# SECTION 3 | TAB 2 variables and functions
+    
 def create_chord_diag(df):
     '''
     Creating Chord diagram.
@@ -830,18 +899,18 @@ def create_chord_diag(df):
                            layout=widgets.Layout(width="100%")))
     display(IFrame(src="./out.html", width=1000, height=700))
     
-# function to run at click of the button_users_ratings_charts
-def show_users_ratings_charts(x):
+# function to run at click of the button
+def show_billboard_100_charts(x):
     global discog_store
     discog_store = pd.read_csv('discog_store.csv')
     global bin_size
 
     # select current tab    
     global selected_section
-    selected_section = 1
+    selected_section = 2
     # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 2
+    global selection_tab_of_section_3
+    selection_tab_of_section_3 = 1
     
     #clear previous output
     clear_output()
@@ -852,13 +921,47 @@ def show_users_ratings_charts(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
-    plot_albums_discogs_popularity(discog_filtered)
-    plot_albums_ratings(discog_filtered)
-    plot_albums_ratings_indexing(discog_filtered)
     create_chord_diag(discog_filtered,)
 
+    
 #-------------------------------------------------------------------------------
-# # SECTION 2 | TAB 4 variables and functions
+# SECTION 3 | TAB 3 variables and functions
+    
+#TODO make chord diagram for albums
+    
+# function to run at click of the button
+def show_billboard_album_charts(x):
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
+    global bin_size
+
+    # select current tab    
+    global selected_section
+    selected_section = 2
+    # select sub tab
+    global selection_tab_of_section_3
+    selection_tab_of_section_3 = 2
+    
+    #clear previous output
+    clear_output()
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+    
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
+                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    ### placeholder for new function
+    print('this is a placeholder for album charts chord diagram')
+    
+
+    
+    
+    
+    
+    
+#-------------------------------------------------------------------------------
+# # SECTION 4 | TAB 1 variables and functions
 
 sentiment_dropdown1 = widgets.Dropdown(options=['albums', 'tracks by album',],
                                                 value='albums',
@@ -876,10 +979,10 @@ def show_sentiment_graphs(x):
     print("Analysing the sentiment of the lyrics...")
     # select current tab    
     global selected_section
-    selected_section = 1
+    selected_section = 3
     # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 3
+    global selection_tab_of_section_4
+    selection_tab_of_section_2 = 0
     global discog_filtered
     discog_filtered = discog_store[
         (discog_store['ARTIST_NAME']==artist)\
@@ -901,10 +1004,10 @@ def show_sentiment_graphs(x):
 def adapt_UI(x):
     global discog_filtered, sentiment_dropdown2
     global selected_section
-    selected_section = 1
+    selected_section = 3
     # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 3
+    global selection_tab_of_section_4
+    selection_tab_of_section_2 = 0
     clear_output()
     sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
                                             value=discog_filtered['YEAR_ALBUM'].unique()[0],
@@ -913,7 +1016,7 @@ def adapt_UI(x):
     UI()
 #-------------------------------------------------------------------------------
 
-def UI():
+def oldUI():
     #---------------------------------------------------------------------------
     # SECTION 1          "Get Data" (Get discography, select albums, get lyrics)
     #---------------------------------------------------------------------------
@@ -1053,6 +1156,8 @@ def UI():
     #---------------------------------------------------------------------------
 
      
+    
+    
 
     #---------------------------------------------------------------------------
     # FINAL UI compiler 
@@ -1066,3 +1171,216 @@ def UI():
     UI.selected_index = selected_section
     display(UI)
     #---------------------------------------------------------------------------
+
+    
+    
+def UI():
+    #---------------------------------------------------------------------------
+    # SECTION 1            "Configuration" 
+    #---------------------------------------------------------------------------
+    # SECTION 1 | TAB 1    "Artist" (Get discography)  
+    # global variable (input box)
+    global artist_input
+    # button = get artist discography
+    button_get_discography = widgets.Button(description="Get discography")
+    button_get_discography.on_click(get_discography)
+    # wrap tab
+    SECTION_1_TAB_1 = widgets.VBox([artist_input, button_get_discography,])
+    #---------------------------------------------------------------------------
+    # SECTION 1 | TAB 2     "Albums" (select albums to include in the analysis)
+    # selector to include/exclude albums
+    global album_selector
+    # show current artist
+    label_current_artist = widgets.HTML(value=f'''<b><font size = "+1">Selected\
+    discography for <u>{artist}</u></b>''',
+                           layout=widgets.Layout(width="100%"))
+    # button to select/deselect
+    text_select_deselect_all = widgets.Label(
+        'Use checkboxes to toggle selection:',
+        layout=widgets.Layout(width="80%"))
+    button_select_deselect_all = widgets.Button(
+        description="Select/deselect all")
+    button_select_deselect_all.on_click(select_deselect_all)
+    # button = confirm
+    button_apply_selection = widgets.Button(description="Apply")
+    button_apply_selection.on_click(apply_selection)
+    # wrap elements
+    SECTION_1_TAB_2 = widgets.VBox([label_current_artist, 
+                              text_select_deselect_all, 
+                              button_select_deselect_all,
+                              album_selector, 
+                              button_apply_selection,], 
+                             layout=widgets.Layout(width="80%", 
+                                                   padding = "10px"))  
+    #---------------------------------------------------------------------------
+    # SECTION 1 | TAB 3     "Time period" ( select time intervals for charts)
+    # period size selection slider
+    global period_selection_slider
+    # button to update the period selection
+    button_update_period_selection = widgets.Button(description="Confirm")
+    button_update_period_selection.on_click(set_bin_size)
+    # vertical block
+    SECTION_1_TAB_3 = widgets.VBox([period_selection_slider, 
+                                    button_update_period_selection,])
+    
+    #---------------------------------------------------------------------------
+    # SECTION 1 build
+    section_1_children = [SECTION_1_TAB_1, 
+                          SECTION_1_TAB_2,
+                          SECTION_1_TAB_3]    
+    section_1 = widgets.Tab(children=section_1_children)
+    section_1.set_title(0, 'Artist')
+    section_1.set_title(1, 'Albums')
+    section_1.set_title(2, 'Time periods')
+    section_1.selected_index = selection_tab_of_section_1    
+    #---------------------------------------------------------------------------
+    
+    #---------------------------------------------------------------------------
+    # SECTION 2          "Visualisations - Overview and Lexical Diversity" 
+    #---------------------------------------------------------------------------
+    
+    #---------------------------------------------------------------------------
+    # SECTION 2 | TAB 1   "Overview"
+    # button to update chart
+    button_show_basic_charts = widgets.Button(description="Show/refresh charts")
+    button_show_basic_charts.on_click(show_basic_charts)
+    # vertical block
+    SECTION_2_TAB_1 = widgets.VBox([button_show_basic_charts,])
+    #---------------------------------------------------------------------------
+    # SECTION 2 | TAB 2   "Lexical Diversity"
+    # button to update chart
+    button_show_lexical_diversity = widgets.Button(description="Show/refresh charts")
+    button_show_lexical_diversity.on_click(show_lexical_diversity)
+    # vertical block
+    SECTION_2_TAB_2 = widgets.VBox([button_show_lexical_diversity,])
+    #---------------------------------------------------------------------------   
+    # SECTION 2 | TAB 3   "Wordclouds"
+    # dropdown
+    global wordcloud_by_selection_dropdown
+    # button to update chart
+    button_show_wordclouds = widgets.Button(description="Show")
+    button_show_wordclouds.on_click(show_wordclouds)
+    # vertical block
+    SECTION_2_TAB_3 = widgets.VBox([wordcloud_by_selection_dropdown, 
+                                    button_show_wordclouds,])
+    #---------------------------------------------------------------------------
+    # SECTION 2 build
+    section_2_children = [SECTION_2_TAB_1, 
+                          SECTION_2_TAB_2, 
+                          SECTION_2_TAB_3,] 
+    section_2 = widgets.Tab()
+    section_2.children = section_2_children
+    section_2.set_title(0, 'Basic Charts')
+    section_2.set_title(1, 'Lexical Diversity')
+    section_2.set_title(2, 'Wordclouds')
+    section_2.selected_index = selection_tab_of_section_2 
+    section_2_wrapper_label = widgets.HTML(
+        value=f'''Current artist: <b>{artist}</b>''',
+        layout=widgets.Layout(width="100%"))
+    section_2_wrapper = widgets.VBox([section_2_wrapper_label, 
+                                      section_2,])     
+    #---------------------------------------------------------------------------
+    
+    
+    
+    #---------------------------------------------------------------------------
+    # SECTION 3          "Visualisations - Ratings and Sucess" 
+    #---------------------------------------------------------------------------    
+    #---------------------------------------------------------------------------
+    # SECTION 3 | TAB 1   "Discogs Ratings"
+    # button to show charts
+    button_discogs_users_charts = widgets.Button(description="Show")
+    button_discogs_users_charts.on_click(show_discogs_users_charts)
+    # vertical block
+    SECTION_3_TAB_1 = widgets.VBox([button_discogs_users_charts,])
+    #---------------------------------------------------------------------------
+    # SECTION 3 | TAB 2   "Billboard 100"
+    # button to show charts
+    button_billboard_100_charts = widgets.Button(description="Show")
+    button_billboard_100_charts.on_click(show_billboard_100_charts)
+    # vertical block
+    SECTION_3_TAB_2 = widgets.VBox([button_billboard_100_charts,])
+    #---------------------------------------------------------------------------                     
+    # SECTION 3 | TAB 3   "Billboard Albums"
+    # button to show charts
+    button_billboard_albums_charts = widgets.Button(description="Show")
+    button_billboard_albums_charts.on_click(show_billboard_album_charts)
+    # vertical block
+    SECTION_3_TAB_3 = widgets.VBox([button_billboard_albums_charts,])
+    #---------------------------------------------------------------------------                          
+    # SECTION 3 build
+    section_3_children = [SECTION_3_TAB_1, 
+                          SECTION_3_TAB_2, 
+                          SECTION_3_TAB_3,] 
+    section_3 = widgets.Tab()
+    section_3.children = section_3_children
+    section_3.set_title(0, 'Discogs Ratings')
+    section_3.set_title(1, 'Billboard 100')
+    section_3.set_title(2, 'Billboard Albums')
+    section_3.selected_index = selection_tab_of_section_3 
+    section_3_wrapper_label = widgets.HTML(
+        value=f'''Current artist: <b>{artist}</b>''',
+        layout=widgets.Layout(width="100%"))
+    section_3_wrapper = widgets.VBox([section_3_wrapper_label, 
+                                      section_3,])     
+    #---------------------------------------------------------------------------                          
+                          
+                          
+                          
+    #---------------------------------------------------------------------------
+    # SECTION 4          "Visualisations - Sentiment Analysis" 
+    #---------------------------------------------------------------------------    
+    #---------------------------------------------------------------------------
+    # SECTION 4 | TAB 1   "Albums and Songs Sentiment"
+    global sentiment_dropdown1, sentiment_dropdown2
+    # button to show charts
+    button_sentiment_analysis = widgets.Button(description="Show")
+    button_sentiment_analysis.on_click(show_sentiment_graphs)
+    # vertical block
+    # define tab depending on the value of the global variable
+    if sentiment_dropdown1.value == 'tracks by album':
+        SECTION_4_TAB_1 = widgets.VBox([sentiment_dropdown1,sentiment_dropdown2,button_sentiment_analysis, ])
+    else:
+        SECTION_4_TAB_1 = widgets.VBox([sentiment_dropdown1,button_sentiment_analysis])
+    
+    # trigger inner function when value of the dropdown1 changes
+    sentiment_dropdown1.observe(adapt_UI, names='value')
+
+    #---------------------------------------------------------------------------                          
+    # SECTION 4 | TAB 2   "Sentiment and Charts"                                        
+    SECTION_4_TAB_2 = widgets.VBox()
+                          
+    #---------------------------------------------------------------------------
+    # SECTION 4 build
+    section_4_children = [SECTION_4_TAB_1, 
+                          SECTION_4_TAB_2,] 
+    section_4 = widgets.Tab()
+    section_4.children = section_4_children
+    section_4.set_title(0, 'Lyrics Sentiment')
+    section_4.set_title(1, 'Sentiment vs Charts')
+
+    section_4.selected_index = selection_tab_of_section_4 
+    section_4_wrapper_label = widgets.HTML(
+        value=f'''Current artist: <b>{artist}</b>''',
+        layout=widgets.Layout(width="100%"))
+    section_4_wrapper = widgets.VBox([section_4_wrapper_label, 
+                                      section_4,])     
+    #---------------------------------------------------------------------------
+
+    #---------------------------------------------------------------------------
+    # FINAL UI compiler 
+    #---------------------------------------------------------------------------
+    UI = widgets.Accordion(children=[section_1,
+                                     section_2_wrapper,
+                                     section_3_wrapper,
+                                     section_4_wrapper])
+    UI.set_title(0, 'Configuration')
+    UI.set_title(1, 'Visualisations - Overview and Lexical Diversity')
+    UI.set_title(2, 'Visualisations - Ratings and Sucess')
+    UI.set_title(3, 'Visualisations - Sentiment Analysis')
+    UI.selected_index = selected_section
+    display(UI)
+    #---------------------------------------------------------------------------
+    
+    
+    
