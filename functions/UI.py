@@ -930,6 +930,8 @@ def create_chord_diag(df, column1, column2):
                                                 ).reset_index()
         
   
+    # Converting period to string to solve issue when using bin size 1
+    df_groupby[column2] = df_groupby[column2].astype(str)
     
 #     df_groupby = data[[column2
 #                               , column1
