@@ -955,12 +955,27 @@ def create_chord_diag(df, column1, column2):
     matrix = df_final.values.tolist()
     ls_col_nam = [col for col in df_final.columns]
 #     {artist}
+
+    # calculate whether to wrap labels or not
+    # anticipate all albums/tracks may be charted or uncharted
+    wrap_index = True
+    if 'Uncharted' in pivot_data.columns and 'Charted'in pivot_data.columns:
+        wrap_index = False if (
+        (pivot_data['Uncharted'].sum() / pivot_data['Charted'].sum()) <= 0.2 or
+        (pivot_data['Charted'].sum() / pivot_data['Uncharted'].sum()) <= 0.2
+        ) else True
+    if len(data[column2].unique()) > 5:
+        wrap_index = False
+
+    #if len(data[column2].unique()) < 5
+    
+    
     plot = Chord(matrix
                  , ls_col_nam
                  , padding=0.05
-                 , width = 600 if len(data[column2].unique()) < 5 else 500
-                 , margin= 10 if len(data[column2].unique()) < 5 else 80
-                 , wrap_labels= True if len(data[column2].unique()) < 5 else False
+                 , width = 600 if wrap_index == True else 500
+                 , margin= 10 if wrap_index == True else 80
+                 , wrap_labels= wrap_index
                 ).to_html()
     if column1 == 'BILLBOARD_TRACK_RANK':
         display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
