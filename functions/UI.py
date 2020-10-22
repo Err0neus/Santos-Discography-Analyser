@@ -962,10 +962,14 @@ def create_chord_diag(df, column1, column2):
                  , margin= 10 if len(data[column2].unique()) < 5 else 80
                  , wrap_labels= True if len(data[column2].unique()) < 5 else False
                 ).to_html()
-    display(widgets.HTML(value=f'''<h2><center><font color="black">Chord Diagram - Billboard 100 songs placement</center></h2>''',
-                           layout=widgets.Layout(width="100%")))
+    if column1 == 'BILLBOARD_TRACK_RANK':
+        display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
+                             layout=widgets.Layout(width="100%")))
+    else:
+        display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
+                             layout=widgets.Layout(width="100%")))        
     display(widgets.HTML(value=f'''<h3><center><font color="black">Artist: {artist_nam}</center></h3>''',
-                           layout=widgets.Layout(width="100%")))
+                         layout=widgets.Layout(width="100%")))        
     display(IFrame(src="./out.html", width=1000, height=700))
     
 #------------------------------------------------------------------------------------------      
@@ -1086,161 +1090,161 @@ def adapt_UI(x):
     UI()
 #-------------------------------------------------------------------------------
 
-def oldUI():
-    #---------------------------------------------------------------------------
-    # SECTION 1          "Get Data" (Get discography, select albums, get lyrics)
-    #---------------------------------------------------------------------------
-    # SECTION 1 | TAB 1    "Artist" (Get discography)  
-    # global variable (input box)
-    global artist_input
-    # button = get artist discography
-    button_get_discography = widgets.Button(description="Get discography")
-    button_get_discography.on_click(get_discography)
-    # wrap tab
-    SECTION_1_TAB_1 = widgets.VBox([artist_input, button_get_discography,])
-    #---------------------------------------------------------------------------
-    # SECTION 1 | TAB 2     "Albums" (select albums to include in the analysis)
-    # selector to include/exclude albums
-    global album_selector
-    # show current artist
-    label_current_artist = widgets.HTML(value=f'''<b><font size = "+1">Selected\
-    discography for <u>{artist}</u></b>''',
-                           layout=widgets.Layout(width="100%"))
-    # button to select/deselect
-    text_select_deselect_all = widgets.Label(
-        'Use checkboxes to toggle selection:',
-        layout=widgets.Layout(width="80%"))
-    button_select_deselect_all = widgets.Button(
-        description="Select/deselect all")
-    button_select_deselect_all.on_click(select_deselect_all)
-    # button = confirm
-    button_apply_selection = widgets.Button(description="Apply")
-    button_apply_selection.on_click(apply_selection)
-    # wrap elements
-    SECTION_1_TAB_2 = widgets.VBox([label_current_artist, 
-                              text_select_deselect_all, 
-                              button_select_deselect_all,
-                              album_selector, 
-                              button_apply_selection,], 
-                             layout=widgets.Layout(width="80%", 
-                                                   padding = "10px"))  
-    #---------------------------------------------------------------------------
-    # SECTION 1 | TAB 3     "Time period" ( select time intervals for charts)
-    # period size selection slider
-    global period_selection_slider
-    # button to update the period selection
-    button_update_period_selection = widgets.Button(description="Confirm")
-    button_update_period_selection.on_click(set_bin_size)
-    # vertical block
-    SECTION_1_TAB_3 = widgets.VBox([period_selection_slider, 
-                                    button_update_period_selection,])
+# def oldUI():
+#     #---------------------------------------------------------------------------
+#     # SECTION 1          "Get Data" (Get discography, select albums, get lyrics)
+#     #---------------------------------------------------------------------------
+#     # SECTION 1 | TAB 1    "Artist" (Get discography)  
+#     # global variable (input box)
+#     global artist_input
+#     # button = get artist discography
+#     button_get_discography = widgets.Button(description="Get discography")
+#     button_get_discography.on_click(get_discography)
+#     # wrap tab
+#     SECTION_1_TAB_1 = widgets.VBox([artist_input, button_get_discography,])
+#     #---------------------------------------------------------------------------
+#     # SECTION 1 | TAB 2     "Albums" (select albums to include in the analysis)
+#     # selector to include/exclude albums
+#     global album_selector
+#     # show current artist
+#     label_current_artist = widgets.HTML(value=f'''<b><font size = "+1">Selected\
+#     discography for <u>{artist}</u></b>''',
+#                            layout=widgets.Layout(width="100%"))
+#     # button to select/deselect
+#     text_select_deselect_all = widgets.Label(
+#         'Use checkboxes to toggle selection:',
+#         layout=widgets.Layout(width="80%"))
+#     button_select_deselect_all = widgets.Button(
+#         description="Select/deselect all")
+#     button_select_deselect_all.on_click(select_deselect_all)
+#     # button = confirm
+#     button_apply_selection = widgets.Button(description="Apply")
+#     button_apply_selection.on_click(apply_selection)
+#     # wrap elements
+#     SECTION_1_TAB_2 = widgets.VBox([label_current_artist, 
+#                               text_select_deselect_all, 
+#                               button_select_deselect_all,
+#                               album_selector, 
+#                               button_apply_selection,], 
+#                              layout=widgets.Layout(width="80%", 
+#                                                    padding = "10px"))  
+#     #---------------------------------------------------------------------------
+#     # SECTION 1 | TAB 3     "Time period" ( select time intervals for charts)
+#     # period size selection slider
+#     global period_selection_slider
+#     # button to update the period selection
+#     button_update_period_selection = widgets.Button(description="Confirm")
+#     button_update_period_selection.on_click(set_bin_size)
+#     # vertical block
+#     SECTION_1_TAB_3 = widgets.VBox([period_selection_slider, 
+#                                     button_update_period_selection,])
     
-    #---------------------------------------------------------------------------
-    # SECTION 1 build
-    section_1_children = [SECTION_1_TAB_1, SECTION_1_TAB_2,SECTION_1_TAB_3]    
-    section_1 = widgets.Tab(children=section_1_children)
-    section_1.set_title(0, 'Artist')
-    section_1.set_title(1, 'Albums')
-    section_1.set_title(2, 'Time periods')
-    section_1.selected_index = selection_tab_of_section_1    
-    #---------------------------------------------------------------------------
+#     #---------------------------------------------------------------------------
+#     # SECTION 1 build
+#     section_1_children = [SECTION_1_TAB_1, SECTION_1_TAB_2,SECTION_1_TAB_3]    
+#     section_1 = widgets.Tab(children=section_1_children)
+#     section_1.set_title(0, 'Artist')
+#     section_1.set_title(1, 'Albums')
+#     section_1.set_title(2, 'Time periods')
+#     section_1.selected_index = selection_tab_of_section_1    
+#     #---------------------------------------------------------------------------
     
-    #---------------------------------------------------------------------------
-    # SECTION 2          "Visualisations - single artist" 
-    #---------------------------------------------------------------------------
-    # SECTION 2 | TAB 1   "Basic Charts"
-    # button to update chart
-    button_show_basic_charts = widgets.Button(description="Show/refresh charts")
-    button_show_basic_charts.on_click(show_basic_charts)
-    # vertical block
-    SECTION_2_TAB_1 = widgets.VBox([button_show_basic_charts,])
-    #---------------------------------------------------------------------------   
-    # SECTION 2 | TAB 2   "Wordclouds"
-    # dropdown
-    global wordcloud_by_selection_dropdown
-    # button to update chart
-    button_show_wordclouds = widgets.Button(description="Show")
-    button_show_wordclouds.on_click(show_wordclouds)
-    # vertical block
-    SECTION_2_TAB_2 = widgets.VBox([wordcloud_by_selection_dropdown, 
-                                    button_show_wordclouds,])
-    #---------------------------------------------------------------------------
-    # SECTION 2 | TAB 3   "Users and Ratings"
-    # button to show charts
-    button_users_ratings_charts = widgets.Button(description="Show")
-    button_users_ratings_charts.on_click(show_users_ratings_charts)
-    # vertical block
-    SECTION_2_TAB_3 = widgets.VBox([button_users_ratings_charts,])
-    #---------------------------------------------------------------------------
-     # SECTION 2 | TAB 4   "Sentiment Analysis"
-    global sentiment_dropdown1, sentiment_dropdown2
-    # button to show charts
-    button_sentiment_analysis = widgets.Button(description="Show")
-    button_sentiment_analysis.on_click(show_sentiment_graphs)
-    # vertical block
-    # define tab depending on the value of the global variable
-    if sentiment_dropdown1.value == 'tracks by album':
-        SECTION_2_TAB_4 = widgets.VBox([sentiment_dropdown1,sentiment_dropdown2,button_sentiment_analysis, ])
-    else:
-        SECTION_2_TAB_4 = widgets.VBox([sentiment_dropdown1,button_sentiment_analysis])
+#     #---------------------------------------------------------------------------
+#     # SECTION 2          "Visualisations - single artist" 
+#     #---------------------------------------------------------------------------
+#     # SECTION 2 | TAB 1   "Basic Charts"
+#     # button to update chart
+#     button_show_basic_charts = widgets.Button(description="Show/refresh charts")
+#     button_show_basic_charts.on_click(show_basic_charts)
+#     # vertical block
+#     SECTION_2_TAB_1 = widgets.VBox([button_show_basic_charts,])
+#     #---------------------------------------------------------------------------   
+#     # SECTION 2 | TAB 2   "Wordclouds"
+#     # dropdown
+#     global wordcloud_by_selection_dropdown
+#     # button to update chart
+#     button_show_wordclouds = widgets.Button(description="Show")
+#     button_show_wordclouds.on_click(show_wordclouds)
+#     # vertical block
+#     SECTION_2_TAB_2 = widgets.VBox([wordcloud_by_selection_dropdown, 
+#                                     button_show_wordclouds,])
+#     #---------------------------------------------------------------------------
+#     # SECTION 2 | TAB 3   "Users and Ratings"
+#     # button to show charts
+#     button_users_ratings_charts = widgets.Button(description="Show")
+#     button_users_ratings_charts.on_click(show_users_ratings_charts)
+#     # vertical block
+#     SECTION_2_TAB_3 = widgets.VBox([button_users_ratings_charts,])
+#     #---------------------------------------------------------------------------
+#      # SECTION 2 | TAB 4   "Sentiment Analysis"
+#     global sentiment_dropdown1, sentiment_dropdown2
+#     # button to show charts
+#     button_sentiment_analysis = widgets.Button(description="Show")
+#     button_sentiment_analysis.on_click(show_sentiment_graphs)
+#     # vertical block
+#     # define tab depending on the value of the global variable
+#     if sentiment_dropdown1.value == 'tracks by album':
+#         SECTION_2_TAB_4 = widgets.VBox([sentiment_dropdown1,sentiment_dropdown2,button_sentiment_analysis, ])
+#     else:
+#         SECTION_2_TAB_4 = widgets.VBox([sentiment_dropdown1,button_sentiment_analysis])
     
-    # trigger inner function when value of the dropdown1 changes
-    sentiment_dropdown1.observe(adapt_UI, names='value')
-    #---------------------------------------------------------------------------
-    # SECTION 2 build
-    section_2_children = [SECTION_2_TAB_1, 
-                          SECTION_2_TAB_2, 
-                          SECTION_2_TAB_3,
-                          SECTION_2_TAB_4,] 
-    section_2 = widgets.Tab()
-    section_2.children = section_2_children
-    section_2.set_title(0, 'Basic Charts')
-    section_2.set_title(1, 'Wordclouds')
-    section_2.set_title(2, 'Users and ratings')
-    section_2.set_title(3, 'Sentiment analysis')
-    section_2.selected_index = selection_tab_of_section_2 
-    section_2_wrapper_label = widgets.HTML(
-        value=f'''Current artist: <b>{artist}</b>''',
-        layout=widgets.Layout(width="100%"))
-    section_2_wrapper = widgets.VBox([section_2_wrapper_label, 
-                                      section_2,])     
-    #---------------------------------------------------------------------------
+#     # trigger inner function when value of the dropdown1 changes
+#     sentiment_dropdown1.observe(adapt_UI, names='value')
+#     #---------------------------------------------------------------------------
+#     # SECTION 2 build
+#     section_2_children = [SECTION_2_TAB_1, 
+#                           SECTION_2_TAB_2, 
+#                           SECTION_2_TAB_3,
+#                           SECTION_2_TAB_4,] 
+#     section_2 = widgets.Tab()
+#     section_2.children = section_2_children
+#     section_2.set_title(0, 'Basic Charts')
+#     section_2.set_title(1, 'Wordclouds')
+#     section_2.set_title(2, 'Users and ratings')
+#     section_2.set_title(3, 'Sentiment analysis')
+#     section_2.selected_index = selection_tab_of_section_2 
+#     section_2_wrapper_label = widgets.HTML(
+#         value=f'''Current artist: <b>{artist}</b>''',
+#         layout=widgets.Layout(width="100%"))
+#     section_2_wrapper = widgets.VBox([section_2_wrapper_label, 
+#                                       section_2,])     
+#     #---------------------------------------------------------------------------
     
     
-    #---------------------------------------------------------------------------
-    # SECTION 3          "Visualisations - compare artists" 
-    #---------------------------------------------------------------------------
-    # SECTION 3 | TAB 1   "Select artists" 
-    SECTION_3_TAB_1 = widgets.VBox()
-    #---------------------------------------------------------------------------
-    # SECTION 3 | TAB 1   "Basic charts"
-    SECTION_3_TAB_2 = widgets.VBox()
-    #---------------------------------------------------------------------------
-    # SECTION 3 build
-    section_3_children = [SECTION_3_TAB_1, 
-                          SECTION_3_TAB_2,]
-    section_3 = widgets.Tab()
-    section_3.children = section_3_children
-    section_3.set_title(0, 'Select Artists')
-    section_3.set_title(1, 'Basic Charts')
-    #---------------------------------------------------------------------------
+#     #---------------------------------------------------------------------------
+#     # SECTION 3          "Visualisations - compare artists" 
+#     #---------------------------------------------------------------------------
+#     # SECTION 3 | TAB 1   "Select artists" 
+#     SECTION_3_TAB_1 = widgets.VBox()
+#     #---------------------------------------------------------------------------
+#     # SECTION 3 | TAB 1   "Basic charts"
+#     SECTION_3_TAB_2 = widgets.VBox()
+#     #---------------------------------------------------------------------------
+#     # SECTION 3 build
+#     section_3_children = [SECTION_3_TAB_1, 
+#                           SECTION_3_TAB_2,]
+#     section_3 = widgets.Tab()
+#     section_3.children = section_3_children
+#     section_3.set_title(0, 'Select Artists')
+#     section_3.set_title(1, 'Basic Charts')
+#     #---------------------------------------------------------------------------
 
      
     
     
 
-    #---------------------------------------------------------------------------
-    # FINAL UI compiler 
-    #---------------------------------------------------------------------------
-    UI = widgets.Accordion(children=[section_1,
-                                     section_2_wrapper,
-                                     section_3])
-    UI.set_title(0, 'Configuration')
-    UI.set_title(1, 'Visualisations - single artist')
-    UI.set_title(2, 'Visualisations - compare artists')
-    UI.selected_index = selected_section
-    display(UI)
-    #---------------------------------------------------------------------------
+#     #---------------------------------------------------------------------------
+#     # FINAL UI compiler 
+#     #---------------------------------------------------------------------------
+#     UI = widgets.Accordion(children=[section_1,
+#                                      section_2_wrapper,
+#                                      section_3])
+#     UI.set_title(0, 'Configuration')
+#     UI.set_title(1, 'Visualisations - single artist')
+#     UI.set_title(2, 'Visualisations - compare artists')
+#     UI.selected_index = selected_section
+#     display(UI)
+#     #---------------------------------------------------------------------------
 
     
     
