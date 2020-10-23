@@ -306,7 +306,11 @@ def apply_selection(x):
             discog_store.loc[
                 (discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
                 (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
-                "SENTIMENT_COMPOUND_SCORE"] = r['SENTIMENT_COMPOUND_SCORE']            
+                "SENTIMENT_COMPOUND_SCORE"] = r['SENTIMENT_COMPOUND_SCORE']
+            discog_store.loc[
+                (discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']),
+                "SENTIMENT_GROUP"] = r['SENTIMENT_GROUP']    
             
 
         # add column with lyrics with removed stopwords

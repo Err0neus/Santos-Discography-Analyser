@@ -26,6 +26,7 @@ def sentimentAnalyser(df, artist):
         df["SENTIMENT_PCT_NEUTRAL"] = np.nan
         df["SENTIMENT_PCT_POSITIVE"] = np.nan
         df["SENTIMENT_COMPOUND_SCORE"] = np.nan
+#         df["SENTIMENT_GROUP"] = np.nan
     
     else:        
         for i in tqdm_notebook(range(len(song_list))):
@@ -68,6 +69,6 @@ def sentimentAnalyser(df, artist):
                     (df['ARTIST_NAME'] == artist) & \
                     (df['TRACK_TITLE'] == song), \
                     "SENTIMENT_COMPOUND_SCORE"
-                ] = compound/num_lines        
-    
+                ] = compound/num_lines
+    df["SENTIMENT_GROUP"] = df['SENTIMENT_COMPOUND_SCORE'].apply(lambda x: -1 if x <=-0.03 else (1 if x >=0.03 else 0))
     return df
