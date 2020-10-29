@@ -849,60 +849,7 @@ def show_discogs_users_charts(x):
     
 #-------------------------------------------------------------------------------
 # SECTION 3 | TAB 2 variables and functions
-    
-def create_chord_diag_original(df):
-    '''
-    Creating Chord diagram.
-    @param - Dataframe
-    @param - bin_size -> int [by default 10]
-    
-    @return - Chord_diagram using Chord Library
-    '''
-    # Creating period column 
-    global bin_size
-    get_period = add_period_column(df, bin_size)
-    artist_nam = df['ARTIST_NAME'].iloc[0]
-    # Flag Charted/Uncharted tracks
-    get_period.loc[get_period['BILLBOARD_TRACK_RANK'] >= 1.0
-                   , "Charted_Uncharted"
-                  ] = 'Charted'
-    
-    get_period.loc[~(get_period['BILLBOARD_TRACK_RANK'] >= 1.0)
-                   , "Charted_Uncharted"
-                  ] = 'Uncharted'
-    #Group By period and Chart_Unchart
-    df_groupby = get_period[['period'
-                              , 'BILLBOARD_TRACK_RANK'
-                              , "Charted_Uncharted"]
-                            ].groupby(['period', 'Charted_Uncharted']).size().reset_index()
-    
-    # Creating two pivot data
-    pivot_data =  df_groupby.pivot(index = 'period'
-                                    , columns = 'Charted_Uncharted'
-                                    , values = 0)
-    pivot_data2 =  df_groupby.pivot(index = 'Charted_Uncharted'
-                                     , columns = 'period'
-                                     , values = 0)
-    
-    # Appending two dataFrame
-    df_final = pd.concat([pivot_data, pivot_data2], sort = True).fillna(0).astype(int)
-    matrix = df_final.values.tolist()
-    ls_col_nam = [col for col in df_final.columns]
-#     {artist}
-    plot = Chord(matrix
-                 , ls_col_nam
-                 , padding=0.05
-                 , width = 600 if len(get_period["period"].unique()) < 5 else 500
-                 , margin= 10 if len(get_period["period"].unique()) < 5 else 80
-                 , wrap_labels= True if len(get_period["period"].unique()) < 5 else False
-                ).to_html()
-    display(widgets.HTML(value=f'''<h2><center><font color="black">Chord Diagram - Billboard 100 songs placement</center></h2>''',
-                           layout=widgets.Layout(width="100%")))
-    display(widgets.HTML(value=f'''<h3><center><font color="black">Artist: {artist_nam}</center></h3>''',
-                           layout=widgets.Layout(width="100%")))
-    display(IFrame(src="./out.html", width=1000, height=700))
-
-#------------------------------------------------------------------------------------------    
+     
 def create_chord_diag(df, column1, column2):
     '''
     Creating Chord diagram.
@@ -942,10 +889,7 @@ def create_chord_diag(df, column1, column2):
 #                               , "Charted_Uncharted"]
 #                             ].groupby([column2, 'Charted_Uncharted']).nunique().reset_index()
                                 
-                                
-
-    
-                                
+                            
     # Creating two pivot data
     pivot_data =  df_groupby.pivot(index = column2
                                     , columns = 'Charted_Uncharted'
@@ -955,7 +899,7 @@ def create_chord_diag(df, column1, column2):
                                      , values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS')
     
     # Appending two dataFrame
-    df_final = pd.concat([pivot_data, pivot_data2], sort = True).fillna(0).astype(int)
+    df_final = pd.concat([pivot_data, pivot_data2], sort = True).fillna(0).astype(int).sort_index()
     matrix = df_final.values.tolist()
     ls_col_nam = [col for col in df_final.columns]
 #     {artist}
@@ -1100,13 +1044,38 @@ def adapt_UI(x):
     selected_section = 3
     # select sub tab
     global selection_tab_of_section_4
-    selection_tab_of_section_2 = 0
+    selection_tab_of_section_4 = 0
     clear_output()
     sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
                                             value=discog_filtered['YEAR_ALBUM'].unique()[0],
                                             description='Select Album:',
                                             disabled=False,)
+    UI() 
+#-------------------------------------------------------------------------------
+# SECTION 4 | TAB 2 
+
+def show_sentiment_vs_charts_song(x):
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
+
+    # select current tab    
+    global selected_section
+    selected_section = 3
+    # select sub tab
+    global selection_tab_of_section_4
+    selection_tab_of_section_4 = 1
+    
+    #clear previous output
+    clear_output()
+    # display UI
     UI()
+    #filter dataset
+    global discog_filtered
+    
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
+                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    
+    create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
 #-------------------------------------------------------------------------------
 
 # def oldUI():
@@ -1441,7 +1410,11 @@ def UI():
 
     #---------------------------------------------------------------------------                          
     # SECTION 4 | TAB 2   "Sentiment and Charts"                                        
-    SECTION_4_TAB_2 = widgets.VBox()
+    # button to show Sentiment Vs Charts
+    button_sentiment_vs_charts_song = widgets.Button(description="Show")
+    button_sentiment_vs_charts_song.on_click(show_sentiment_vs_charts_song)
+    # vertical block
+    SECTION_4_TAB_2 = widgets.VBox([button_sentiment_vs_charts_song,])
                           
     #---------------------------------------------------------------------------
     # SECTION 4 build

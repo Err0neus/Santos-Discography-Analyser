@@ -70,5 +70,5 @@ def sentimentAnalyser(df, artist):
                     (df['TRACK_TITLE'] == song), \
                     "SENTIMENT_COMPOUND_SCORE"
                 ] = compound/num_lines
-    df["SENTIMENT_GROUP"] = df['SENTIMENT_COMPOUND_SCORE'].apply(lambda x: -1 if x <=-0.03 else (1 if x >=0.03 else 0))
+    df["SENTIMENT_GROUP"] = df['SENTIMENT_COMPOUND_SCORE'].apply(lambda x: 'Negative' if x <=-0.03 else ('Positive' if x >=0.03 else 'Neutral'))
     return df
