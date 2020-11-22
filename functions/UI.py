@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import time
+import math
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
 from IPython.display import clear_output, display, IFrame
@@ -39,6 +40,7 @@ selection_tab_of_section_1 = 0
 selection_tab_of_section_2 = 0
 selection_tab_of_section_3 = 0
 selection_tab_of_section_4 = 0
+selection_tab_of_section_5 = 0
 
 # global var for discog
 discog = ''
@@ -1076,6 +1078,188 @@ def show_sentiment_vs_charts_song(x):
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
+
+#-------------------------------------------------------------------------------
+# SECTION 5 | TAB 1 Sentiment score over time
+
+def sntm_scr_ovr_time(data):   
+    
+    # Decide Colors 
+    mycolors = ['tab:red', 'tab:blue', 'tab:green'
+                , 'tab:orange', 'tab:brown', 'tab:grey'
+                , 'tab:pink', 'tab:olive'
+               ]
+    
+    mycolors1 = ['tab:grey'
+                 , 'tab:green'
+                ]      
+    mycolors2 = ['tab:grey'
+                 , 'tab:red'
+                ]
+    
+    # Draw Plot and Annotate
+    fig, ax = plt.subplots(1,1,figsize=(16, 9), dpi= 80)
+
+    df = pd.pivot_table(data, index = 'YEAR', columns = 'SENTIMENT_GROUP', values = 'TRACK_TITLE', aggfunc = 'count')
+    
+    # Prepare data
+    x  = df.index
+    y_neg = [x*-1 for x in df['Negative'].values.tolist()]
+    y_ntr1 = [x/2 *-1 for x in df['Neutral'].values.tolist()]
+    y_ntr2 = [x/2  for x in df['Neutral'].values.tolist()]
+    y_pos = df['Positive'].values.tolist()
+    y_1 = np.vstack([y_ntr2, y_pos])
+    y_2 = np.vstack([y_ntr1, y_neg,])
+
+
+    # Plot for each column
+    ax = plt.gca()
+    # ax.stackplot(x, y_1, labels=labs, colors=mycolors1, alpha=0.7)
+    # ax.stackplot(x, y_2, labels=labs, colors=mycolors2, alpha=0.7)
+
+
+    #ax.bar(x, y_1, stacked = True, )
+    ax.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+    ax.bar(x, y_pos, width = 0.9 , bottom=y_ntr2, color = '#198c19')
+    ax.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+    ax.bar(x, y_neg, width = 0.9 , bottom=y_ntr1, color = '#ff4c4c')
+    #ax.fill_between(x, y1=y2, y2=0, label=columns[1], alpha=0.9, color=mycolors1[0], linewidth=2)
+    #ax.fill_between(x, y1=y1, y2=0, label=columns[0], alpha=0.9, color=mycolors[1], linewidth=2)
+
+    # Decorations
+    ax.set_title('Sentiment score over time', fontsize=14)
+    
+    # Creating y-axis positive both ways
+    ax.set_yticklabels([abs(x) for x in ax.get_yticks()])
+#     ax.set(ylim=[-limit, limit])
+    # ax.legend(fontsize=10, ncol=4)
+    plt.xticks(x[::1], fontsize=10, horizontalalignment='center')
+    # plt.yticks(np.arange(10000, 100000, 20000), fontsize=10)
+    plt.xlim(x[0]-1, x[-1]+1)
+    # for y in np.arange(5, max(y2), 5):    
+    #     plt.hlines(y, xmin=x.min(), xmax=len(x), colors='black', alpha=0.3, linestyles="--", lw=0.5)
+
+    # Lighten borders
+    plt.gca().spines["top"].set_alpha(0)
+    plt.gca().spines["bottom"].set_alpha(.3)
+    plt.gca().spines["right"].set_alpha(0)
+    plt.gca().spines["left"].set_alpha(.3)
+
+
+    plt.show()
+
+def show_sentiment_score_ovr_time(x):
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
+
+    # select current tab    
+    global selected_section
+    selected_section = 4
+    # select sub tab
+    global selection_tab_of_section_5
+    selection_tab_of_section_5 = 0
+    
+    #clear previous output
+    clear_output()
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+    
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)].copy()
+    
+    sntm_scr_ovr_time(discog_filtered)
+    
+#-------------------------------------------------------------------------------
+# SECTION 5 | TAB 2 Sentiment score over time Charted Vs Uncharted Tracks
+
+def sntm_scr_ovr_cht_unchta(data):
+    mycolors1 = ['tab:grey', 'tab:green']      
+    mycolors2 = ['tab:grey', 'tab:red']
+
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+    f.suptitle('Sentiment score over time, charted vs uncharted tracks', fontsize=14)
+
+    columns = data.columns[1:]
+    labs = columns.values.tolist()
+    
+    data.loc[~data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'charted'
+    data.loc[data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'uncharted'
+
+    # charted
+    df_charted = pd.pivot_table(data[data.charted_uncharted == 'charted'],
+                                index = 'YEAR', 
+                                columns = 'SENTIMENT_GROUP', 
+                                values = 'TRACK_TITLE', 
+                                aggfunc = 'count')
+    x  = df_charted.index
+    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_charted['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_charted['Neutral'].values.tolist()]]
+    y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
+    y_1 = np.vstack([y_ntr2, y_pos])
+    y_2 = np.vstack([y_ntr1, y_neg,])
+    # plot bars
+    ax1.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+    ax1.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
+    ax1.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+    ax1.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    # calculate axis limits
+    xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
+    ax1.set_yticklabels([abs(x) for x in ax1.get_yticks()])
+    # set title
+    ax1.title.set_text('Charted Tracks')
+
+    # uncharted
+    df_uncharted = pd.pivot_table(data[data.charted_uncharted == 'uncharted'],
+                                index = 'YEAR', 
+                                columns = 'SENTIMENT_GROUP', 
+                                values = 'TRACK_TITLE', 
+                                aggfunc = 'count')
+    x  = df_uncharted.index
+    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_uncharted['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_uncharted['Neutral'].values.tolist()]]
+    y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
+    y_1 = np.vstack([y_ntr2, y_pos])
+    y_2 = np.vstack([y_ntr1, y_neg,])
+    # plot bars
+    ax2.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+    ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
+    ax2.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+    ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    # calculate axis limits
+    xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
+    ax2.set_yticklabels([abs(x) for x in ax2.get_yticks()])
+    # set title
+    ax2.title.set_text('Uncharted Tracks')
+
+
+    # set final limtits for both subplots
+    xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
+    
+    plt.show()
+    
+def show_sentiment_score_charted_vs_uncharted(x):
+    global discog_store
+    discog_store = pd.read_csv('discog_store.csv')
+
+    # select current tab    
+    global selected_section
+    selected_section = 4
+    # select sub tab
+    global selection_tab_of_section_5
+    selection_tab_of_section_5 = 1
+
+    #clear previous output
+    clear_output()
+    # display UI
+    UI()
+    #filter dataset
+    global discog_filtered
+
+    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)].copy()
+    sntm_scr_ovr_cht_unchta(discog_filtered)
 #-------------------------------------------------------------------------------
 
 # def oldUI():
@@ -1430,23 +1614,54 @@ def UI():
         value=f'''Current artist: <b>{artist}</b>''',
         layout=widgets.Layout(width="100%"))
     section_4_wrapper = widgets.VBox([section_4_wrapper_label, 
-                                      section_4,])     
+                                      section_4,])
+    
     #---------------------------------------------------------------------------
+    # SECTION 5          "Visualisations - Sentiment Score" 
+    #--------------------------------------------------------------------------- 
+    #---------------------------------------------------------------------------
+    # SECTION 5 | TAB 1   "Sentiment Score over time"                                        
+    # button to show Sentiment score over time
+    button_sentiment_socer_over_time = widgets.Button(description="Show")
+    button_sentiment_socer_over_time.on_click(show_sentiment_score_ovr_time)
+    # vertical block
+    SECTION_5_TAB_1 = widgets.VBox([button_sentiment_socer_over_time,])
+    
+    # SECTION 5 | TAB 2   "Sentiment Score over time charted vs uncharted tracks"                                        
+    # button to show Sentiment score over time
+    button_sentiment_socer_chart_unchart = widgets.Button(description="Show")
+    button_sentiment_socer_chart_unchart.on_click(show_sentiment_score_charted_vs_uncharted)
+    # vertical block
+    SECTION_5_TAB_2 = widgets.VBox([button_sentiment_socer_chart_unchart,])
+                          
+    #---------------------------------------------------------------------------
+    # SECTION 4 build
+    section_5_children = [SECTION_5_TAB_1, 
+                          SECTION_5_TAB_2,] 
+    section_5 = widgets.Tab()
+    section_5.children = section_5_children
+    section_5.set_title(0, 'Sentiment score over time')
+    section_5.set_title(1, 'Sentiment Score charted vs uncharted tracks')
 
+    section_5.selected_index = selection_tab_of_section_5 
+    section_5_wrapper_label = widgets.HTML(
+        value=f'''Current artist: <b>{artist}</b>''',
+        layout=widgets.Layout(width="100%"))
+    section_5_wrapper = widgets.VBox([section_5_wrapper_label, 
+                                      section_5,])     
     #---------------------------------------------------------------------------
     # FINAL UI compiler 
     #---------------------------------------------------------------------------
     UI = widgets.Accordion(children=[section_1,
                                      section_2_wrapper,
                                      section_3_wrapper,
-                                     section_4_wrapper])
+                                     section_4_wrapper,
+                                     section_5_wrapper])
     UI.set_title(0, 'Configuration')
     UI.set_title(1, 'Visualisations - Overview and Lexical Diversity')
     UI.set_title(2, 'Visualisations - Ratings and Sucess')
     UI.set_title(3, 'Visualisations - Sentiment Analysis')
+    UI.set_title(4, 'Visualisations - Sentiment Score Over Time')
     UI.selected_index = selected_section
     display(UI)
     #---------------------------------------------------------------------------
-    
-    
-    
