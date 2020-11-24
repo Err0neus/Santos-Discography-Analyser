@@ -1,9 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plotDivergingBars(df, x, y):
+def plotDivergingBars(df, x, y, sort_by_values = True):
     artist = df['ARTIST_NAME'][0]
-    data = df.sort_values(by=[x])
+    if sort_by_values == True:
+        data = df.sort_values(by=[x])
+    else:
+        data = df.sort_values(by=[y], ascending = False)
     data = data[[y,x]]
     data['colors'] = ['red' if x < 0 else 'green' for x in data[x]]
     plt.figure(figsize=(14,10), dpi= 80)

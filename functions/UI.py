@@ -1033,7 +1033,8 @@ def show_sentiment_graphs(x):
     if sentiment_dropdown1.value == 'albums':
         advanced_analytics.plotDivergingBars(discog_filtered.reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
-                          'YEAR_ALBUM')
+                          'YEAR_ALBUM',
+                          sort_by_values = False)
     else:    
         advanced_analytics.plotDivergingBars(discog_filtered[discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value].reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
