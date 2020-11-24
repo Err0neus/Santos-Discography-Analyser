@@ -927,12 +927,12 @@ def create_chord_diag(df, column1, column2):
                  , margin= 10 if wrap_index == True else 80
                  , wrap_labels= wrap_index
                 ).to_html()
-    if column1 == 'BILLBOARD_TRACK_RANK':
-        display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
-                             layout=widgets.Layout(width="100%")))
-    else:
-        display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
-                             layout=widgets.Layout(width="100%")))        
+#     if column1 == 'BILLBOARD_TRACK_RANK':
+#         display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
+#                              layout=widgets.Layout(width="100%")))
+#     else:
+#         display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
+#                              layout=widgets.Layout(width="100%")))        
     display(widgets.HTML(value=f'''<h3><center><font color="black">Artist: {artist_nam}</center></h3>''',
                          layout=widgets.Layout(width="100%")))        
     display(IFrame(src="./out.html", width=1000, height=700))
@@ -961,6 +961,9 @@ def show_billboard_100_charts(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    # display label
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
+                              layout=widgets.Layout(width="100%")))
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='period')
 
     
@@ -991,6 +994,10 @@ def show_billboard_album_charts(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    # display label
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
+                              layout=widgets.Layout(width="100%"))) 
+    
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_ALBUM_RANK', column2 ='period')
     
 
@@ -1077,6 +1084,9 @@ def show_sentiment_vs_charts_song(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    # display label
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Tracks sentiment vs placement in Billboard 100 charts </center></h2>''',
+                              layout=widgets.Layout(width="100%"))) 
     
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
 
