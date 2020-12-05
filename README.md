@@ -6,7 +6,7 @@ For any given musician/band name: <br>
 • gets the discography of studio albums, <br>
 • allows user to select albums from a list, then gets lyrics for each song on selected albums,<br>
 • gathers album ratings from Discogs website, album and song placement in Billboard charts,<br>
-• performs lyrics sentiment analysis and generates scores, <b>
+• performs lyrics sentiment analysis and generates scores, <br>
 • with a simple user interface, allows users to browse through visalisations of (by user defined period intervals where applicable: <br>
    ○ number of songs and albums over time<br>
    ○ word clouds by album or period <br>
