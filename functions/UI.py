@@ -927,12 +927,12 @@ def create_chord_diag(df, column1, column2):
                  , margin= 10 if wrap_index == True else 80
                  , wrap_labels= wrap_index
                 ).to_html()
-    if column1 == 'BILLBOARD_TRACK_RANK':
-        display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
-                             layout=widgets.Layout(width="100%")))
-    else:
-        display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
-                             layout=widgets.Layout(width="100%")))        
+#     if column1 == 'BILLBOARD_TRACK_RANK':
+#         display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
+#                              layout=widgets.Layout(width="100%")))
+#     else:
+#         display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
+#                              layout=widgets.Layout(width="100%")))        
     display(widgets.HTML(value=f'''<h3><center><font color="black">Artist: {artist_nam}</center></h3>''',
                          layout=widgets.Layout(width="100%")))        
     display(IFrame(src="./out.html", width=1000, height=700))
@@ -961,6 +961,8 @@ def show_billboard_100_charts(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
+                              layout=widgets.Layout(width="100%")))
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='period')
 
     
@@ -991,6 +993,8 @@ def show_billboard_album_charts(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
+                              layout=widgets.Layout(width="100%"))) 
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_ALBUM_RANK', column2 ='period')
     
 
@@ -1033,7 +1037,8 @@ def show_sentiment_graphs(x):
     if sentiment_dropdown1.value == 'albums':
         advanced_analytics.plotDivergingBars(discog_filtered.reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
-                          'YEAR_ALBUM')
+                          'YEAR_ALBUM',
+                          sort_by_values = False)
     else:    
         advanced_analytics.plotDivergingBars(discog_filtered[discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value].reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
@@ -1076,7 +1081,8 @@ def show_sentiment_vs_charts_song(x):
     
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
                       &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
-    
+    display(widgets.HTML(value=f'''<h2><center><font color="black">Tracks sentiment vs placement in Billboard 100 charts </center></h2>''',
+                              layout=widgets.Layout(width="100%"))) 
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
 
 #-------------------------------------------------------------------------------
@@ -1116,8 +1122,9 @@ def sntm_scr_ovr_time(data):
     ax = plt.gca()
     # ax.stackplot(x, y_1, labels=labs, colors=mycolors1, alpha=0.7)
     # ax.stackplot(x, y_2, labels=labs, colors=mycolors2, alpha=0.7)
+    
 
-
+    
     #ax.bar(x, y_1, stacked = True, )
     ax.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
     ax.bar(x, y_pos, width = 0.9 , bottom=y_ntr2, color = '#198c19')
@@ -1126,11 +1133,15 @@ def sntm_scr_ovr_time(data):
     #ax.fill_between(x, y1=y2, y2=0, label=columns[1], alpha=0.9, color=mycolors1[0], linewidth=2)
     #ax.fill_between(x, y1=y1, y2=0, label=columns[0], alpha=0.9, color=mycolors[1], linewidth=2)
 
+    # add gridline
+    ax.set_axisbelow(True)
+    ax.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    
     # Decorations
     ax.set_title('Sentiment score over time', fontsize=14)
     
     # Creating y-axis positive both ways
-    ax.set_yticklabels([abs(x) for x in ax.get_yticks()])
+    #ax.set_yticklabels([abs(x) for x in ax.get_yticks()])
 #     ax.set(ylim=[-limit, limit])
     # ax.legend(fontsize=10, ncol=4)
     plt.xticks(x[::1], fontsize=10, horizontalalignment='center')
@@ -1138,7 +1149,15 @@ def sntm_scr_ovr_time(data):
     plt.xlim(x[0]-1, x[-1]+1)
     # for y in np.arange(5, max(y2), 5):    
     #     plt.hlines(y, xmin=x.min(), xmax=len(x), colors='black', alpha=0.3, linestyles="--", lw=0.5)
+    
+    #set axes limits
+    xlimit = [df.index.min()-1, df.max()+1]
+    ylimit = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+    ax.set(ylim=[-ylimit, ylimit])
+    ax.set(xlim=[df.index.min()-1, df.index.max()+1])
+    
 
+    
     # Lighten borders
     plt.gca().spines["top"].set_alpha(0)
     plt.gca().spines["bottom"].set_alpha(.3)
@@ -1177,14 +1196,25 @@ def sntm_scr_ovr_cht_unchta(data):
     y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
+    
+    
     # plot bars
     ax1.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
     ax1.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
     ax1.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
     ax1.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    
+    # add gridline
+    ax1.set_axisbelow(True)
+    ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    
     # calculate axis limits
     xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
-    ax1.set_yticklabels([abs(x) for x in ax1.get_yticks()])
+    ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+    # labels
+    # ax1.set_yticklabels([abs(x) for x in ax1.get_yticks()])
+    
+
     # set title
     ax1.title.set_text('Charted Tracks')
 
@@ -1201,20 +1231,28 @@ def sntm_scr_ovr_cht_unchta(data):
     y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
+
     # plot bars
     ax2.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
     ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
     ax2.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
     ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    # add gridline
+    ax2.set_axisbelow(True)
+    ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
     # calculate axis limits
     xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
-    ax2.set_yticklabels([abs(x) for x in ax2.get_yticks()])
+    ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+    # labels
+    # ax2.set_yticklabels([abs(x) for x in ax2.get_yticks()])
     # set title
     ax2.title.set_text('Uncharted Tracks')
 
-
     # set final limtits for both subplots
     xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
+    ylimit_final = max(ylimit_1, ylimit_2)
+    ax1.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
+    ax2.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
     
     plt.show()
 
