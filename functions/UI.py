@@ -1089,7 +1089,7 @@ def show_sentiment_vs_charts_song(x):
 # SECTION 4 | TAB 3 Sentiment score over time
 
 def sntm_scr_ovr_time(data):   
-    
+    import matplotlib.gridspec as gridspec
     # Decide Colors 
     mycolors = ['tab:red', 'tab:blue', 'tab:green'
                 , 'tab:orange', 'tab:brown', 'tab:grey'
@@ -1102,50 +1102,46 @@ def sntm_scr_ovr_time(data):
     mycolors2 = ['tab:grey'
                  , 'tab:red'
                 ]
+    ##-----------------------------------------------------------------------------------##
+    fig= plt.figure(figsize=(12, 20)) # Creating a figure 
+    gs = gridspec.GridSpec(2,2) # Creating 2 by 2 Grid in the figure
+    # Subplot on each axis 
+    ax1 = fig.add_subplot(gs[0,:]) # ploting whole first row of grid
+    ax2 = fig.add_subplot(gs[1,0])
+    ax3 = fig.add_subplot(gs[1,1])
     
-    # Draw Plot and Annotate
-    fig, ax = plt.subplots(1,1,figsize=(16, 4.5), dpi= 80)
-
+    ##-----------------------------------------------------------------------------------##
     df = pd.pivot_table(data, index = 'YEAR', columns = 'SENTIMENT_GROUP', values = 'TRACK_TITLE', aggfunc = 'count')
     
     # Prepare data
     x  = df.index
-    y_neg = [x*-1 for x in df['Negative'].values.tolist()]
-    y_ntr1 = [x/2 *-1 for x in df['Neutral'].values.tolist()]
-    y_ntr2 = [x/2  for x in df['Neutral'].values.tolist()]
+    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df['Negative'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df['Neutral'].values.tolist()]]
+    y_pos = [0 if math.isnan(x) else x for x in df['Positive'].values.tolist()]
     y_pos = df['Positive'].values.tolist()
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
 
 
     # Plot for each column
-    ax = plt.gca()
-    # ax.stackplot(x, y_1, labels=labs, colors=mycolors1, alpha=0.7)
-    # ax.stackplot(x, y_2, labels=labs, colors=mycolors2, alpha=0.7)
+#     ax = plt.gca()
     
+    ax1.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+    ax1.bar(x, y_pos, width = 0.9 , bottom=y_ntr2, color = '#198c19')
+    ax1.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+    ax1.bar(x, y_neg, width = 0.9 , bottom=y_ntr1, color = '#ff4c4c')
 
-    
-    #ax.bar(x, y_1, stacked = True, )
-    ax.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
-    ax.bar(x, y_pos, width = 0.9 , bottom=y_ntr2, color = '#198c19')
-    ax.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
-    ax.bar(x, y_neg, width = 0.9 , bottom=y_ntr1, color = '#ff4c4c')
-    #ax.fill_between(x, y1=y2, y2=0, label=columns[1], alpha=0.9, color=mycolors1[0], linewidth=2)
-    #ax.fill_between(x, y1=y1, y2=0, label=columns[0], alpha=0.9, color=mycolors[1], linewidth=2)
 
     # add gridline
-    ax.set_axisbelow(True)
-    ax.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    ax1.set_axisbelow(True)
+    ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
     
     # Decorations
-    ax.set_title('Sentiment score over time', fontsize=14)
+    ax1.set_title('Sentiment score over time', fontsize=14)
     
     # Creating y-axis positive both ways
-    #ax.set_yticklabels([abs(x) for x in ax.get_yticks()])
-#     ax.set(ylim=[-limit, limit])
-    # ax.legend(fontsize=10, ncol=4)
     plt.xticks(x[::1], fontsize=10, horizontalalignment='center')
-    # plt.yticks(np.arange(10000, 100000, 20000), fontsize=10)
     plt.xlim(x[0]-1, x[-1]+1)
     # for y in np.arange(5, max(y2), 5):    
     #     plt.hlines(y, xmin=x.min(), xmax=len(x), colors='black', alpha=0.3, linestyles="--", lw=0.5)
@@ -1153,23 +1149,89 @@ def sntm_scr_ovr_time(data):
     #set axes limits
     xlimit = [df.index.min()-1, df.max()+1]
     ylimit = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
-    ax.set(ylim=[-ylimit, ylimit])
-    ax.set(xlim=[df.index.min()-1, df.index.max()+1])
+    ax1.set(ylim=[-ylimit, ylimit])
+    ax1.set(xlim=[df.index.min()-1, df.index.max()+1])
+    ##-----------------------------------------------------------------------------------##
+    # Ploting for charted and uncharted Track Rank
     
-
+    columns = data.columns[1:]
+    labs = columns.values.tolist()
     
-    # Lighten borders
-    plt.gca().spines["top"].set_alpha(0)
-    plt.gca().spines["bottom"].set_alpha(.3)
-    plt.gca().spines["right"].set_alpha(0)
-    plt.gca().spines["left"].set_alpha(.3)
+    data.loc[~data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'charted'
+    data.loc[data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'uncharted'
 
+    # charted
+    df_charted = pd.pivot_table(data[data.charted_uncharted == 'charted'],
+                                index = 'YEAR', 
+                                columns = 'SENTIMENT_GROUP', 
+                                values = 'TRACK_TITLE', 
+                                aggfunc = 'count')
+    x  = df_charted.index
+    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_charted['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_charted['Neutral'].values.tolist()]]
+    y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
+    y_1 = np.vstack([y_ntr2, y_pos])
+    y_2 = np.vstack([y_ntr1, y_neg,])
+    
+    
+    # plot bars
+    ax2.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+    ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
+    ax2.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+    ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    
+    # add gridline
+    ax2.set_axisbelow(True)
+    ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    
+    # calculate axis limits
+    xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
+    ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)   
 
+    # set title
+    ax2.title.set_text('Charted Tracks')
+    ##-----------------------------------------------------------------------------------##
+    # uncharted
+    df_uncharted = pd.pivot_table(data[data.charted_uncharted == 'uncharted'],
+                                index = 'YEAR', 
+                                columns = 'SENTIMENT_GROUP', 
+                                values = 'TRACK_TITLE', 
+                                aggfunc = 'count')
+    x  = df_uncharted.index
+    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_uncharted['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_uncharted['Neutral'].values.tolist()]]
+    y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
+    y_1 = np.vstack([y_ntr2, y_pos])
+    y_2 = np.vstack([y_ntr1, y_neg,])
+
+    # plot bars
+    ax3.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+    ax3.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
+    ax3.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+    ax3.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    # add gridline
+    ax3.set_axisbelow(True)
+    ax3.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    # calculate axis limits
+    xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
+    ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+
+    ax3.title.set_text('Uncharted Tracks')
+
+    # set final limtits for both subplots
+    xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
+    ylimit_final = max(ylimit_1, ylimit_2)
+    ax2.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
+    ax3.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
+    ##-----------------------------------------------------------------------------------##    
+    
     plt.show()
 
 #-------------------------------------------------------------------------------
 # SECTION 4 | TAB 3 Sentiment score over time Charted Vs Uncharted Tracks
-
+## Not in use ###
 def sntm_scr_ovr_cht_unchta(data):
     mycolors1 = ['tab:grey', 'tab:green']      
     mycolors2 = ['tab:grey', 'tab:red']
@@ -1278,7 +1340,7 @@ def show_sentiment_score_ovr_time(x):
     discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)].copy()
     
     sntm_scr_ovr_time(discog_filtered)
-    sntm_scr_ovr_cht_unchta(discog_filtered)    
+#     sntm_scr_ovr_cht_unchta(discog_filtered)    
 #-------------------------------------------------------------------------------
 
 # def oldUI():
@@ -1659,6 +1721,3 @@ def UI():
     UI.selected_index = selected_section
     display(UI)
     #---------------------------------------------------------------------------
-    
-    
-    
