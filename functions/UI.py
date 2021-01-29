@@ -49,6 +49,15 @@ discog_store = []
 #global var for artist
 artist = ''
 
+colour_palette = {'blue': '#4878D0',
+ 'orange': '#EE854A',
+ 'green': '#6ACC64',
+ 'purple': '#D65F5F',
+ 'brown': '#956CB4',
+ 'pink': '#8C613C',
+ 'grey': '#DC7EC0',
+ 'tan': '#797979',
+ 'cyan': '#D5BB67'}
 
 
 #-------------------------------------------------------------------------------
