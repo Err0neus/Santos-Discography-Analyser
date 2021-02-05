@@ -59,6 +59,8 @@ colour_palette = {'blue': '#4878D0',
  'tan': '#797979',
  'cyan': '#D5BB67'}
 
+plt.gca()
+plt.style.use('seaborn')
 
 #-------------------------------------------------------------------------------
 # UI SECTION 1 variables and functions
@@ -549,39 +551,45 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     
     width = 0.2 
     data = album_song_count_per_period(discog, bin_size).set_index('period')
-    fig, ax1 = plt.subplots(figsize=(8,5))
+    fig, ax1 = plt.subplots(figsize=(8,5))   
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    ax2.set_axisbelow(True)
+    color = colour_palette.get('blue')
 
-    color = 'tab:red'
 
-
-    ax1.set_ylabel('number of albums', color=color)
+    ax1.set_ylabel('number of songs', color=color)
     #ax1.plot(data.period, data.album, color=color)
-    data['ALBUMS'].plot(kind='bar', 
-                        color='red', 
-                        ax=ax1, 
-                        width=width, 
-                        position=1
-                       )
+    
+    data['TRACK_TITLE'].plot(kind='bar', 
+                             color=color, 
+                             ax=ax1, 
+                             width=width, 
+                             position=1)
+                        
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
     ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
     
-    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    # ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
-    color = 'tab:blue'
-    ax2.set_ylabel('number of songs', color=color)  # x-label handled with ax1
+    color = colour_palette.get('orange')
+    ax2.grid(False)
+    ax2.set_ylabel('number of albums', color=color)  # x-label handled with ax1
     #ax2.plot(data.index.tolist(), data.track_title, color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
-    data['TRACK_TITLE'].plot(kind='bar', 
-                             color='blue', 
-                             ax=ax2, 
-                             width=width, 
-                             position=0)
+    data['ALBUMS'].plot(kind='bar', 
+                        color=color, 
+                        ax=ax2, 
+                        width=width, 
+                        position=0
+                       )
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     plt.title('Albums and songs count by period', fontsize=18)
+    ax2.grid(False, axis='both')
+    ax1.grid(False, axis='x')
     plt.show()
     
 # def pirate_plot(discog, bin_size):
@@ -764,7 +772,7 @@ def plot_albums_discogs_popularity(discog):
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
     data['DISCOG_AVG_RATING'].plot(kind='bar', 
-                                   color=color, 
+                                   color=colour_palette, 
                                    ax=ax2, 
                                    width=width, 
                                    position=0)
@@ -785,7 +793,7 @@ def plot_albums_ratings(discog):
     fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
 
     data['DISCOG_AVG_RATING'].plot(kind='bar', 
-                                   color='y', 
+                                   color=colour_palette, 
                                    ax=ax, 
                                    width=0.5, 
                                    position=1)
@@ -815,7 +823,7 @@ def plot_albums_ratings_indexing(discog):
     fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
     data['positive'] = data['indexing'] > 0
     data['indexing'].plot(kind='bar', 
-                          color=data.positive.map({True: 'g', False: 'r'}), 
+                          color=data.positive.map({True: colour_palette.get('green'), False: 'r'}), 
                           ax=ax, width=0.5, position=1)
     
     ax.set_ylabel('Album Discogs rating vs. average')
