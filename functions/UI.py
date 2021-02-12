@@ -1124,8 +1124,10 @@ def sntm_scr_ovr_time(data):
     mycolors2 = ['tab:grey'
                  , 'tab:red'
                 ]
+    
+    expect_cols = ['Negative', 'Neutral', 'Positive']
     ##-----------------------------------------------------------------------------------##
-    fig= plt.figure(figsize=(12, 20)) # Creating a figure 
+    fig= plt.figure(figsize=(15, 20)) # Creating a figure 
     gs = gridspec.GridSpec(2,2) # Creating 2 by 2 Grid in the figure
     # Subplot on each axis 
     ax1 = fig.add_subplot(gs[0,:]) # ploting whole first row of grid
@@ -1134,7 +1136,9 @@ def sntm_scr_ovr_time(data):
     
     ##-----------------------------------------------------------------------------------##
     df = pd.pivot_table(data, index = 'YEAR', columns = 'SENTIMENT_GROUP', values = 'TRACK_TITLE', aggfunc = 'count')
-    
+    for col in expect_cols:
+        if col not in df.columns:
+            df[col] = 0
     # Prepare data
     x  = df.index
     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df['Negative'].values.tolist()]]
@@ -1189,7 +1193,11 @@ def sntm_scr_ovr_time(data):
                                 values = 'TRACK_TITLE', 
                                 aggfunc = 'count')
     x  = df_charted.index
-    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]
+    for col in expect_cols:
+        if col not in df_charted.columns:
+            df_charted[col] = 0
+          
+    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]        
     y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_charted['Neutral'].values.tolist()]]
     y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_charted['Neutral'].values.tolist()]]
     y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
@@ -1221,6 +1229,10 @@ def sntm_scr_ovr_time(data):
                                 values = 'TRACK_TITLE', 
                                 aggfunc = 'count')
     x  = df_uncharted.index
+    for col in expect_cols:
+        if col not in df_uncharted.columns:
+            df_uncharted[col] = 0
+            
     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
     y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_uncharted['Neutral'].values.tolist()]]
     y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_uncharted['Neutral'].values.tolist()]]
