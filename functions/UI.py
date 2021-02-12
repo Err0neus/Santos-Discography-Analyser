@@ -51,6 +51,7 @@ artist = ''
 
 colour_palette = {'blue': '#4878D0',
  'orange': '#EE854A',
+ 'red': '#D9363E',
  'green': '#6ACC64',
  'purple': '#D65F5F',
  'brown': '#956CB4',
@@ -748,7 +749,7 @@ def plot_albums_discogs_popularity(discog):
     
     fig, ax1 = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
 
-    color = 'y'
+    color = colour_palette.get('orange')
 
     ax1.set_ylabel('Discogs owners', color=color)
     #ax1.plot(data.period, data.album, color=color)
@@ -765,14 +766,14 @@ def plot_albums_discogs_popularity(discog):
 
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
-    color = 'g'
+    color = colour_palette.get('blue')
     ax2.set_ylabel('Discogs average rating', color=color)  
     #ax2.plot(data.index.tolist(), data.track_title, color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
     data['DISCOG_AVG_RATING'].plot(kind='bar', 
-                                   color=colour_palette, 
+                                   color=colour_palette.get('blue'), 
                                    ax=ax2, 
                                    width=width, 
                                    position=0)
@@ -793,7 +794,7 @@ def plot_albums_ratings(discog):
     fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
 
     data['DISCOG_AVG_RATING'].plot(kind='bar', 
-                                   color=colour_palette, 
+                                   color=colour_palette.get('purple'), 
                                    ax=ax, 
                                    width=0.5, 
                                    position=1)
@@ -823,7 +824,7 @@ def plot_albums_ratings_indexing(discog):
     fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
     data['positive'] = data['indexing'] > 0
     data['indexing'].plot(kind='bar', 
-                          color=data.positive.map({True: colour_palette.get('green'), False: 'r'}), 
+                          color=data.positive.map({True: colour_palette.get('green'), False: colour_palette.get('red')}), 
                           ax=ax, width=0.5, position=1)
     
     ax.set_ylabel('Album Discogs rating vs. average')
@@ -1054,12 +1055,16 @@ def show_sentiment_graphs(x):
     if sentiment_dropdown1.value == 'albums':
         advanced_analytics.plotDivergingBars(discog_filtered.reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
-                          'YEAR_ALBUM',
+                          'YEAR_ALBUM',  
+                          green=colour_palette.get('green'),
+                          red=colour_palette.get('red'),
                           sort_by_values = False)
     else:    
         advanced_analytics.plotDivergingBars(discog_filtered[discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value].reset_index(), 
                           'SENTIMENT_COMPOUND_SCORE', 
-                          'TRACK_TITLE')
+                          'TRACK_TITLE',
+                          green=colour_palette.get('green'),
+                          red=colour_palette.get('red'))
 
 # inner function to be triggered with a change of dropdown1 value
 def adapt_UI(x):
