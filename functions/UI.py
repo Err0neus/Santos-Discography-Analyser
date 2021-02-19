@@ -1127,7 +1127,7 @@ def sntm_scr_ovr_time(data):
     
     expect_cols = ['Negative', 'Neutral', 'Positive']
     ##-----------------------------------------------------------------------------------##
-    fig= plt.figure(figsize=(15, 20)) # Creating a figure 
+    fig= plt.figure(figsize=(16, 9)) # Creating a figure 
     gs = gridspec.GridSpec(2,2) # Creating 2 by 2 Grid in the figure
     # Subplot on each axis 
     ax1 = fig.add_subplot(gs[0,:]) # ploting whole first row of grid
@@ -1153,10 +1153,10 @@ def sntm_scr_ovr_time(data):
     # Plot for each column
 #     ax = plt.gca()
     
-    ax1.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
-    ax1.bar(x, y_pos, width = 0.9 , bottom=y_ntr2, color = '#198c19')
-    ax1.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
-    ax1.bar(x, y_neg, width = 0.9 , bottom=y_ntr1, color = '#ff4c4c')
+    ax1.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('grey'))
+    ax1.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
+    ax1.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('grey'))
+    ax1.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
 
 
     # add gridline
@@ -1167,16 +1167,19 @@ def sntm_scr_ovr_time(data):
     ax1.set_title('Sentiment score over time', fontsize=14)
     
     # Creating y-axis positive both ways
-    plt.xticks(x[::1], fontsize=10, horizontalalignment='center')
-    plt.xlim(x[0]-1, x[-1]+1)
+#     plt.xticks(np.arrange(df.index.min()-1, df.max()+1, 5)
+#     plt.xticks(x[::1], fontsize=10, horizontalalignment='center')
+#     plt.xlim(x[0]-1, x[-1]+1)
     # for y in np.arange(5, max(y2), 5):    
     #     plt.hlines(y, xmin=x.min(), xmax=len(x), colors='black', alpha=0.3, linestyles="--", lw=0.5)
     
     #set axes limits
     xlimit = [df.index.min()-1, df.max()+1]
     ylimit = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
-    ax1.set(ylim=[-ylimit, ylimit])
-    ax1.set(xlim=[df.index.min()-1, df.index.max()+1])
+    ylimit_final = [-ylimit, ylimit]
+    xlimit_final = [df.index.min()-1, df.index.max()+1]
+    
+    ax1.set(ylim = ylimit_final, xlim = xlimit_final)
     ##-----------------------------------------------------------------------------------##
     # Ploting for charted and uncharted Track Rank
     
@@ -1206,18 +1209,21 @@ def sntm_scr_ovr_time(data):
     
     
     # plot bars
-    ax2.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
-    ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
-    ax2.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
-    ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    ax2.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('grey'))
+    ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
+    ax2.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('grey'))
+    ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
     
     # add gridline
     ax2.set_axisbelow(True)
     ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
     
+    # Setting up x and y axis limit
+    ax2.set(ylim = ylimit_final, xlim = xlimit_final)
+    
     # calculate axis limits
-    xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
-    ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)   
+#     xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
+#     ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)   
 
     # set title
     ax2.title.set_text('Charted Tracks')
@@ -1241,24 +1247,27 @@ def sntm_scr_ovr_time(data):
     y_2 = np.vstack([y_ntr1, y_neg,])
 
     # plot bars
-    ax3.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
-    ax3.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
-    ax3.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
-    ax3.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+    ax3.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('grey'))
+    ax3.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
+    ax3.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('grey'))
+    ax3.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
+    
     # add gridline
     ax3.set_axisbelow(True)
     ax3.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    
+    # Setting up x and y axis limit
+    ax3.set(ylim = ylimit_final, xlim = xlimit_final)
+    
     # calculate axis limits
-    xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
-    ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+#     xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
+#     ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
 
     ax3.title.set_text('Uncharted Tracks')
 
     # set final limtits for both subplots
-    xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
-    ylimit_final = max(ylimit_1, ylimit_2)
-    ax2.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
-    ax3.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
+#     xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
+#     ylimit_final = max(ylimit_1, ylimit_2)
     ##-----------------------------------------------------------------------------------##    
     
     plt.show()
