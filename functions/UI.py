@@ -1043,7 +1043,7 @@ def show_sentiment_graphs(x):
     selected_section = 3
     # select sub tab
     global selection_tab_of_section_4
-    selection_tab_of_section_2 = 0
+    selection_tab_of_section_4 = 0
     global discog_filtered
     discog_filtered = discog_store[
         (discog_store['ARTIST_NAME']==artist)\
