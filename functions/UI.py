@@ -60,6 +60,8 @@ colour_palette = {'blue': '#4878D0',
  'tan': '#797979',
  'cyan': '#D5BB67'}
 
+descriptions_colour = colour_palette.get('grey')
+
 #plt.gca()
 plt.style.use('seaborn')
 
@@ -1602,7 +1604,16 @@ def UI():
     section_1.set_title(0, 'Artist')
     section_1.set_title(1, 'Albums')
     section_1.set_title(2, 'Time periods')
-    section_1.selected_index = selection_tab_of_section_1    
+    section_1.selected_index = selection_tab_of_section_1  
+    section_1_wrapper_label = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Choose the ARTIST to load the discography, select ALBUMS to be 
+           included in the analysis and choose the TIME PERIOD length for time 
+           based visualisations.</i>
+        <br>''',
+        layout=widgets.Layout(width="100%"))
+    section_1_wrapper = widgets.VBox([section_1_wrapper_label, 
+                                      section_1,]) 
     #---------------------------------------------------------------------------
     
     #---------------------------------------------------------------------------
@@ -1612,26 +1623,47 @@ def UI():
     #---------------------------------------------------------------------------
     # SECTION 2 | TAB 1   "Overview"
     # button to update chart
+    s2t1_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Displays Number of Albums and Tracks in the selected Artist's 
+        discography over time, arranged in periods of chosen size.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     button_show_basic_charts = widgets.Button(description="Show/refresh charts")
     button_show_basic_charts.on_click(show_basic_charts)
     # vertical block
-    SECTION_2_TAB_1 = widgets.VBox([button_show_basic_charts,])
+    SECTION_2_TAB_1 = widgets.VBox([s2t1_desc, 
+                                    button_show_basic_charts,])
     #---------------------------------------------------------------------------
     # SECTION 2 | TAB 2   "Lexical Diversity"
     # button to update chart
+    s2t2_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Displays the lexical diversity of the Artist's lyrics over time, 
+        arranged in periods of chosen size.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     button_show_lexical_diversity = widgets.Button(description="Show/refresh charts")
     button_show_lexical_diversity.on_click(show_lexical_diversity)
     # vertical block
-    SECTION_2_TAB_2 = widgets.VBox([button_show_lexical_diversity,])
+    SECTION_2_TAB_2 = widgets.VBox([s2t2_desc, 
+                                    button_show_lexical_diversity,])
     #---------------------------------------------------------------------------   
     # SECTION 2 | TAB 3   "Wordclouds"
+    s2t3_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Displays Artist's lyrics in Wordclouds, either by selected period 
+        size or by individual Album.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     # dropdown
     global wordcloud_by_selection_dropdown
     # button to update chart
     button_show_wordclouds = widgets.Button(description="Show")
     button_show_wordclouds.on_click(show_wordclouds)
     # vertical block
-    SECTION_2_TAB_3 = widgets.VBox([wordcloud_by_selection_dropdown, 
+    SECTION_2_TAB_3 = widgets.VBox([s2t3_desc,
+                                    wordcloud_by_selection_dropdown, 
                                     button_show_wordclouds,])
     #---------------------------------------------------------------------------
     # SECTION 2 build
@@ -1659,24 +1691,51 @@ def UI():
     #---------------------------------------------------------------------------
     # SECTION 3 | TAB 1   "Discogs Ratings"
     # button to show charts
+    s3t1_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Visualises data retrieved about the selected Artist's discography 
+        from DISCOGS.COM, such as:<br>
+         <ul>
+         <li>number of registered record owners and average rating</li>
+         <li>average album rating vs. index</li>
+         </ul>
+         </i>''',
+        layout=widgets.Layout(width="80%"))
     button_discogs_users_charts = widgets.Button(description="Show")
     button_discogs_users_charts.on_click(show_discogs_users_charts)
     # vertical block
-    SECTION_3_TAB_1 = widgets.VBox([button_discogs_users_charts,])
+    SECTION_3_TAB_1 = widgets.VBox([s3t1_desc,
+                                    button_discogs_users_charts,])
     #---------------------------------------------------------------------------
     # SECTION 3 | TAB 2   "Billboard 100"
+    s3t2_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Visualises the proportions of tracks in the selected Artist's 
+        discography that reached a position in the official Billboard 100 music
+        charts vs those that didn't, by period.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     # button to show charts
     button_billboard_100_charts = widgets.Button(description="Show")
     button_billboard_100_charts.on_click(show_billboard_100_charts)
     # vertical block
-    SECTION_3_TAB_2 = widgets.VBox([button_billboard_100_charts,])
+    SECTION_3_TAB_2 = widgets.VBox([s3t2_desc,
+                                    button_billboard_100_charts,])
     #---------------------------------------------------------------------------                     
     # SECTION 3 | TAB 3   "Billboard Albums"
+    s3t3_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Visualises the proportions of Albums in the selected Artist's 
+        discography that reached a position in the official Billboard  music 
+        Album charts vs those that didn't, by period.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     # button to show charts
     button_billboard_albums_charts = widgets.Button(description="Show")
     button_billboard_albums_charts.on_click(show_billboard_album_charts)
     # vertical block
-    SECTION_3_TAB_3 = widgets.VBox([button_billboard_albums_charts,])
+    SECTION_3_TAB_3 = widgets.VBox([s3t3_desc,
+                                    button_billboard_albums_charts,])
     #---------------------------------------------------------------------------                          
     # SECTION 3 build
     section_3_children = [SECTION_3_TAB_1, 
@@ -1753,7 +1812,7 @@ def UI():
     #---------------------------------------------------------------------------
     # FINAL UI compiler 
     #---------------------------------------------------------------------------
-    UI = widgets.Accordion(children=[section_1,
+    UI = widgets.Accordion(children=[section_1_wrapper,
                                      section_2_wrapper,
                                      section_3_wrapper,
                                      section_4_wrapper])
