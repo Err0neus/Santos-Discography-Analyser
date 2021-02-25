@@ -294,12 +294,12 @@ def apply_selection(x):
     # if any new lyrics were retrieved
     if len(lyrics_data) != 0:
         # do sentiment analysis
-        print('Analyzing lyrics sentiment...')
+        print('Analyzing lyric sentiment...')
         sentiment_data = sentiment_analysis.sentimentAnalyser(
             lyrics_data, artist
         )
         
-        print('processing and cleaning, please hold on')
+        print('Processing and cleaning, please hold on')
         # iterate through results and populate the columns in main discog store
         # add lyrics
         for i,r in lyrics_data.iterrows():
@@ -561,7 +561,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     color = colour_palette.get('blue')
 
 
-    ax1.set_ylabel('number of songs', color=color)
+    ax1.set_ylabel('Number of songs', color=color)
     #ax1.plot(data.period, data.album, color=color)
     
     data['TRACK_TITLE'].plot(kind='bar', 
@@ -578,7 +578,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
 
     color = colour_palette.get('orange')
     ax2.grid(False)
-    ax2.set_ylabel('number of albums', color=color)  # x-label handled with ax1
+    ax2.set_ylabel('Number of albums', color=color)  # x-label handled with ax1
     #ax2.plot(data.index.tolist(), data.track_title, color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
@@ -591,7 +591,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
                        )
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-    plt.title('Albums and songs count by period', fontsize=18)
+    plt.title('Albums and Song Count by Period', fontsize=18)
     ax2.grid(False, axis='both')
     ax1.grid(False, axis='x')
     plt.show()
@@ -661,7 +661,7 @@ def violin_plot(discog, bin_size):
         for item in violinplot.get_xticklabels():
             item.set_rotation(45)
     # Decoration
-    plt.title('Lexical diversity', fontsize=18)
+    plt.title('Lexical Diversity', fontsize=18)
     plt.ylabel('Number of unique words (excl. stopwords)')
     plt.xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
     plt.show()
@@ -785,7 +785,7 @@ def plot_albums_discogs_popularity(discog):
     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     #ax1.xticks(ha='right')
-    plt.title('Discogs users - owners and average ratings', fontsize=18)
+    plt.title('Discogs Users - Owners and Average Ratings', fontsize=18)
     plt.show()
     
 def plot_albums_ratings(discog):
@@ -813,7 +813,7 @@ def plot_albums_ratings(discog):
     # horizontal line indicating the threshold
     ax.plot([-1, len(data)], [threshold, threshold], "k--", color = 'b')
     
-    plt.title('Average Discogs users rating by album vs index', fontsize=18)
+    plt.title('Average Discogs Users Rating by Album vs Index', fontsize=18)
     plt.show()
 
     
@@ -842,7 +842,7 @@ def plot_albums_ratings_indexing(discog):
     # horizontal line indicating the threshold
     ax.plot([-1, len(data)], [0, 0], "k--", color = 'b')
     
-    plt.title('Average Discogs users rating by album vs index', fontsize=18)
+    plt.title('Average Discogs Users Rating by Album vs Index', fontsize=18)
     plt.show()
     
 # function to run at click of the button
@@ -1169,7 +1169,7 @@ def sntm_scr_ovr_time(data):
     ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
     
     # Decorations
-    ax1.set_title('Sentiment score over time', fontsize=14)
+    ax1.set_title('Sentiment Score Over Time', fontsize=14)
     
     # Creating y-axis positive both ways
 #     plt.xticks(np.arrange(df.index.min()-1, df.max()+1, 5)
