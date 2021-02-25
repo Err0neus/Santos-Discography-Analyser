@@ -755,7 +755,9 @@ def plot_albums_discogs_popularity(discog):
     fig, ax1 = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
 
     color = colour_palette.get('orange')
-
+    ax1.set_axisbelow(True)
+    #ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    ax1.yaxis.grid(True)
     ax1.set_ylabel('Discogs owners', color=color)
     #ax1.plot(data.period, data.album, color=color)
     data['DISCOG_PPL_HAVING'].plot(kind='bar', 
@@ -770,7 +772,6 @@ def plot_albums_discogs_popularity(discog):
     ax1.set_xticklabels(xlabels, ha='right')
 
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-
     color = colour_palette.get('blue')
     ax2.set_ylabel('Discogs average rating', color=color)  
     #ax2.plot(data.index.tolist(), data.track_title, color=color)
@@ -782,9 +783,10 @@ def plot_albums_discogs_popularity(discog):
                                    ax=ax2, 
                                    width=width, 
                                    position=0)
-    ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-    ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+    #ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
+    #ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     #ax1.xticks(ha='right')
+    ax2.grid(None)
     plt.title('Discogs Users - Owners and Average Ratings', fontsize=18)
     plt.show()
     
