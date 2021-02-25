@@ -51,14 +51,15 @@ artist = ''
 
 colour_palette = {'blue': '#4878D0',
  'orange': '#EE854A',
+ 'purple': '#956CB4',
  'red': '#D9363E',
  'green': '#6ACC64',
- 'purple': '#D65F5F',
- 'brown': '#956CB4',
- 'pink': '#8C613C',
- 'grey': '#DC7EC0',
- 'tan': '#797979',
- 'cyan': '#D5BB67'}
+ 'purple': '#956CB4',
+ 'brown': '#8C613C',
+ 'pink': '#DC7EC0',
+ 'light grey': '#c4bba5',
+ 'grey': '#797979',
+ 'tan': '#D5BB67'}
 
 descriptions_colour = colour_palette.get('grey')
 
@@ -651,8 +652,10 @@ def violin_plot(discog, bin_size):
                    y='LYRICS_CLEAN_UNIQUE_COUNT', 
                    data=data, 
                    scale='width', 
-                   inner='quartile', 
-                   cut=0)
+                   inner='quartile',
+                   linewidth = 1.5,
+                   cut=0,
+                   palette=colour_palette.values())
     # rotate x axis labels
     if len(data['period'].unique()) > 5:
         for item in violinplot.get_xticklabels():
@@ -1155,9 +1158,9 @@ def sntm_scr_ovr_time(data):
     # Plot for each column
 #     ax = plt.gca()
     
-    ax1.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('grey'))
+    ax1.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('light grey'))
     ax1.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
-    ax1.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('grey'))
+    ax1.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('light grey'))
     ax1.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
 
 
@@ -1211,9 +1214,9 @@ def sntm_scr_ovr_time(data):
     
     
     # plot bars
-    ax2.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('grey'))
+    ax2.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('light grey'))
     ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
-    ax2.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('grey'))
+    ax2.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('light grey'))
     ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
     
     # add gridline
@@ -1249,9 +1252,9 @@ def sntm_scr_ovr_time(data):
     y_2 = np.vstack([y_ntr1, y_neg,])
 
     # plot bars
-    ax3.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('grey'))
+    ax3.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('light grey'))
     ax3.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
-    ax3.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('grey'))
+    ax3.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('light grey'))
     ax3.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
     
     # add gridline
