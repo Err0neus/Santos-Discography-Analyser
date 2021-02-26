@@ -1384,10 +1384,6 @@ def show_sentiment_score_ovr_time(x):
     clear_output()
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
-    
-    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)].copy()
     
     sntm_scr_ovr_time(discog_filtered)
 #     sntm_scr_ovr_cht_unchta(discog_filtered)    
