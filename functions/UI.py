@@ -1142,6 +1142,7 @@ def sntm_scr_ovr_time(data):
     ax3 = fig.add_subplot(gs[1,1])
     
     ##-----------------------------------------------------------------------------------##
+    print(data)
     df = pd.pivot_table(data, index = 'YEAR', columns = 'SENTIMENT_GROUP', values = 'TRACK_TITLE', aggfunc = 'count')
     for col in expect_cols:
         if col not in df.columns:
@@ -1181,12 +1182,24 @@ def sntm_scr_ovr_time(data):
     #     plt.hlines(y, xmin=x.min(), xmax=len(x), colors='black', alpha=0.3, linestyles="--", lw=0.5)
     
     #set axes limits
-    xlimit = [df.index.min()-1, df.max()+1]
+    # make sure the chart always displays at least 12 years on x axis
+    min_ticks = 12
+    x_vals = df.index
+    print(x_vals)
+    x_min = x_vals.min() - 1
+    x_max = x_vals.max() + 1
+    diff = x_max - x_min
+    if diff < min_ticks:
+        padding = (min_ticks - diff) / 2
+        x_max = math.ceil(x_max + padding)
+        x_min = math.floor(x_min - padding)
+        
+    # set the actual limits for each axis
     ylimit = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
     ylimit_final = [-ylimit, ylimit]
-    xlimit_final = [df.index.min()-1, df.index.max()+1]
-    
+    xlimit_final = [x_min, x_max]
     ax1.set(ylim = ylimit_final, xlim = xlimit_final)
+ 
     ##-----------------------------------------------------------------------------------##
     # Ploting for charted and uncharted Track Rank
     
