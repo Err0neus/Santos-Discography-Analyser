@@ -238,9 +238,7 @@ def apply_selection(x):
     # reset selector to keep the actual selections
     set_album_selector(discog['YEAR_ALBUM'].unique().tolist(), selected)
     
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog[discog['YEAR_ALBUM'].isin(album_filter)].copy()
+
     #clear previous output
     clear_output() 
     
@@ -369,6 +367,17 @@ def apply_selection(x):
     # select sub tab
     global selection_tab_of_section_1
     selection_tab_of_section_1 = 2
+    
+    #update discog_filtered variable
+    
+    ### read latest saved discog_store (reformats datatypes)
+    discog_store = pd.read_csv('discog_store.csv')
+    ### overwrite discog_filtered
+    global discog_filtered
+    discog_filtered = discog_store[
+        (discog_store['ARTIST_NAME']==artist)\
+        &(discog_store['YEAR_ALBUM'].isin(album_filter))
+    ].copy()
     
     # display UI
     UI()    
@@ -630,12 +639,7 @@ def show_basic_charts(x):
     
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog_store[
-        (discog_store['ARTIST_NAME']==artist)\
-        &(discog_store['YEAR_ALBUM'].isin(album_filter))
-    ].copy()
+
     #display chart using the bin_size
     #plot_albums_songs_per_period(discog_filtered, bin_size)
     plot_albums_songs_per_period_bar(discog_filtered, bin_size)
@@ -676,16 +680,8 @@ def show_lexical_diversity(x):
     # select sub tab
     global selection_tab_of_section_2
     selection_tab_of_section_2 = 1
-    
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog_store[
-        (discog_store['ARTIST_NAME']==artist)\
-        &(discog_store['YEAR_ALBUM'].isin(album_filter))
-    ].copy()
-    #display chart using the bin_size
     #pirate_plot(discog_filtered, bin_size)
     violin_plot(discog_filtered, bin_size)
 
@@ -706,13 +702,7 @@ def show_wordclouds(x):
     # select sub tab
     global selection_tab_of_section_2
     selection_tab_of_section_2 = 2
-    
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog_store[
-        (discog_store['ARTIST_NAME']==artist)\
-        &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
-    
+
     data = add_period_column(discog_filtered, bin_size)
     
     clear_output()
@@ -849,8 +839,6 @@ def plot_albums_ratings_indexing(discog):
     
 # function to run at click of the button
 def show_discogs_users_charts(x):
-    global discog_store
-    discog_store = pd.read_csv('discog_store.csv')
     global bin_size
 
     # select current tab    
@@ -864,10 +852,7 @@ def show_discogs_users_charts(x):
     clear_output()
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
-    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
-                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+
     plot_albums_discogs_popularity(discog_filtered)
     plot_albums_ratings(discog_filtered)
     plot_albums_ratings_indexing(discog_filtered)
@@ -966,8 +951,6 @@ def create_chord_diag(df, column1, column2):
     
 # function to run at click of the button
 def show_billboard_100_charts(x):
-    global discog_store
-    discog_store = pd.read_csv('discog_store.csv')
     global bin_size
 
     # select current tab    
@@ -981,11 +964,7 @@ def show_billboard_100_charts(x):
     clear_output()
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
     
-    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
-                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
                               layout=widgets.Layout(width="100%")))
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='period')
@@ -998,8 +977,6 @@ def show_billboard_100_charts(x):
     
 # function to run at click of the button
 def show_billboard_album_charts(x):
-    global discog_store
-    discog_store = pd.read_csv('discog_store.csv')
     global bin_size
 
     # select current tab    
@@ -1013,11 +990,7 @@ def show_billboard_album_charts(x):
     clear_output()
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
-    
-    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
-                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
+
     display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
                               layout=widgets.Layout(width="100%"))) 
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_ALBUM_RANK', column2 ='period')
@@ -1051,11 +1024,6 @@ def show_sentiment_graphs(x):
     # select sub tab
     global selection_tab_of_section_4
     selection_tab_of_section_4 = 0
-    global discog_filtered
-    discog_filtered = discog_store[
-        (discog_store['ARTIST_NAME']==artist)\
-        &(discog_store['YEAR_ALBUM'].isin(album_filter))
-    ].copy()
     
     clear_output()   
     UI()
@@ -1091,9 +1059,6 @@ def adapt_UI(x):
 # SECTION 4 | TAB 2 
 
 def show_sentiment_vs_charts_song(x):
-    global discog_store
-    discog_store = pd.read_csv('discog_store.csv')
-
     # select current tab    
     global selected_section
     selected_section = 3
@@ -1105,11 +1070,6 @@ def show_sentiment_vs_charts_song(x):
     clear_output()
     # display UI
     UI()
-    #filter dataset
-    global discog_filtered
-    
-    discog_filtered = discog_store[(discog_store['ARTIST_NAME']==artist)\
-                      &(discog_store['YEAR_ALBUM'].isin(album_filter))].copy()
     display(widgets.HTML(value=f'''<h2><center><font color="black">Tracks sentiment vs placement in Billboard 100 charts </center></h2>''',
                               layout=widgets.Layout(width="100%"))) 
     create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
@@ -1142,7 +1102,6 @@ def sntm_scr_ovr_time(data):
     ax3 = fig.add_subplot(gs[1,1])
     
     ##-----------------------------------------------------------------------------------##
-    print(data)
     df = pd.pivot_table(data, index = 'YEAR', columns = 'SENTIMENT_GROUP', values = 'TRACK_TITLE', aggfunc = 'count')
     for col in expect_cols:
         if col not in df.columns:
@@ -1185,9 +1144,8 @@ def sntm_scr_ovr_time(data):
     # make sure the chart always displays at least 12 years on x axis
     min_ticks = 12
     x_vals = df.index
-    print(x_vals)
-    x_min = x_vals.min() - 1
-    x_max = x_vals.max() + 1
+    x_min = int(x_vals.min()) - 1
+    x_max = int(x_vals.max()) + 1
     diff = x_max - x_min
     if diff < min_ticks:
         padding = (min_ticks - diff) / 2
@@ -1295,97 +1253,94 @@ def sntm_scr_ovr_time(data):
 #-------------------------------------------------------------------------------
 # SECTION 4 | TAB 3 Sentiment score over time Charted Vs Uncharted Tracks
 ## Not in use ###
-def sntm_scr_ovr_cht_unchta(data):
-    mycolors1 = ['tab:grey', 'tab:green']      
-    mycolors2 = ['tab:grey', 'tab:red']
+# def sntm_scr_ovr_cht_unchta(data):
+#     mycolors1 = ['tab:grey', 'tab:green']      
+#     mycolors2 = ['tab:grey', 'tab:red']
 
-    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 4.5))
-    f.suptitle('Sentiment score over time, charted vs uncharted tracks', fontsize=14)
+#     f, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 4.5))
+#     f.suptitle('Sentiment score over time, charted vs uncharted tracks', fontsize=14)
 
-    columns = data.columns[1:]
-    labs = columns.values.tolist()
+#     columns = data.columns[1:]
+#     labs = columns.values.tolist()
     
-    data.loc[~data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'charted'
-    data.loc[data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'uncharted'
+#     data.loc[~data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'charted'
+#     data.loc[data['BILLBOARD_TRACK_RANK'].isnull(), 'charted_uncharted'] = 'uncharted'
 
-    # charted
-    df_charted = pd.pivot_table(data[data.charted_uncharted == 'charted'],
-                                index = 'YEAR', 
-                                columns = 'SENTIMENT_GROUP', 
-                                values = 'TRACK_TITLE', 
-                                aggfunc = 'count')
-    x  = df_charted.index
-    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]
-    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_charted['Neutral'].values.tolist()]]
-    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_charted['Neutral'].values.tolist()]]
-    y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
-    y_1 = np.vstack([y_ntr2, y_pos])
-    y_2 = np.vstack([y_ntr1, y_neg,])
+#     # charted
+#     df_charted = pd.pivot_table(data[data.charted_uncharted == 'charted'],
+#                                 index = 'YEAR', 
+#                                 columns = 'SENTIMENT_GROUP', 
+#                                 values = 'TRACK_TITLE', 
+#                                 aggfunc = 'count')
+#     x  = df_charted.index
+#     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]
+#     y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_charted['Neutral'].values.tolist()]]
+#     y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_charted['Neutral'].values.tolist()]]
+#     y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
+#     y_1 = np.vstack([y_ntr2, y_pos])
+#     y_2 = np.vstack([y_ntr1, y_neg,])
     
     
-    # plot bars
-    ax1.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
-    ax1.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
-    ax1.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
-    ax1.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+#     # plot bars
+#     ax1.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+#     ax1.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
+#     ax1.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+#     ax1.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
     
-    # add gridline
-    ax1.set_axisbelow(True)
-    ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+#     # add gridline
+#     ax1.set_axisbelow(True)
+#     ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
     
-    # calculate axis limits
-    xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
-    ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
-    # labels
-    # ax1.set_yticklabels([abs(x) for x in ax1.get_yticks()])
+#     # calculate axis limits
+#     xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
+#     ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+#     # labels
+#     # ax1.set_yticklabels([abs(x) for x in ax1.get_yticks()])
     
 
-    # set title
-    ax1.title.set_text('Charted Tracks')
+#     # set title
+#     ax1.title.set_text('Charted Tracks')
 
-    # uncharted
-    df_uncharted = pd.pivot_table(data[data.charted_uncharted == 'uncharted'],
-                                index = 'YEAR', 
-                                columns = 'SENTIMENT_GROUP', 
-                                values = 'TRACK_TITLE', 
-                                aggfunc = 'count')
-    x  = df_uncharted.index
-    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
-    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_uncharted['Neutral'].values.tolist()]]
-    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_uncharted['Neutral'].values.tolist()]]
-    y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
-    y_1 = np.vstack([y_ntr2, y_pos])
-    y_2 = np.vstack([y_ntr1, y_neg,])
+#     # uncharted
+#     df_uncharted = pd.pivot_table(data[data.charted_uncharted == 'uncharted'],
+#                                 index = 'YEAR', 
+#                                 columns = 'SENTIMENT_GROUP', 
+#                                 values = 'TRACK_TITLE', 
+#                                 aggfunc = 'count')
+#     x  = df_uncharted.index
+#     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
+#     y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_uncharted['Neutral'].values.tolist()]]
+#     y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_uncharted['Neutral'].values.tolist()]]
+#     y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
+#     y_1 = np.vstack([y_ntr2, y_pos])
+#     y_2 = np.vstack([y_ntr1, y_neg,])
 
-    # plot bars
-    ax2.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
-    ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
-    ax2.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
-    ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
-    # add gridline
-    ax2.set_axisbelow(True)
-    ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
-    # calculate axis limits
-    xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
-    ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
-    # labels
-    # ax2.set_yticklabels([abs(x) for x in ax2.get_yticks()])
-    # set title
-    ax2.title.set_text('Uncharted Tracks')
+#     # plot bars
+#     ax2.bar(x, y_ntr2, width = 0.9, color = '#b2b2b2')
+#     ax2.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = '#198c19')
+#     ax2.bar(x, y_ntr1, width = 0.9, color = '#b2b2b2')
+#     ax2.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = '#ff4c4c')
+#     # add gridline
+#     ax2.set_axisbelow(True)
+#     ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+#     # calculate axis limits
+#     xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
+#     ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
+#     # labels
+#     # ax2.set_yticklabels([abs(x) for x in ax2.get_yticks()])
+#     # set title
+#     ax2.title.set_text('Uncharted Tracks')
 
-    # set final limtits for both subplots
-    xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
-    ylimit_final = max(ylimit_1, ylimit_2)
-    ax1.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
-    ax2.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
+#     # set final limtits for both subplots
+#     xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
+#     ylimit_final = max(ylimit_1, ylimit_2)
+#     ax1.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
+#     ax2.set(ylim=[-ylimit_final, ylimit_final], xlim=xlimit_final)
     
-    plt.show()
+#     plt.show()
 
 
 def show_sentiment_score_ovr_time(x):
-    global discog_store
-    discog_store = pd.read_csv('discog_store.csv')
-
     # select current tab    
     global selected_section
     selected_section = 3
