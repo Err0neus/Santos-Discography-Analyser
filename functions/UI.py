@@ -1027,19 +1027,48 @@ def show_sentiment_graphs(x):
     
     clear_output()   
     UI()
+
     if sentiment_dropdown1.value == 'albums':
-        advanced_analytics.plotDivergingBars(discog_filtered.reset_index(), 
-                          'SENTIMENT_COMPOUND_SCORE', 
-                          'YEAR_ALBUM',  
-                          green=colour_palette.get('green'),
-                          red=colour_palette.get('red'),
-                          sort_by_values = False)
-    else:    
-        advanced_analytics.plotDivergingBars(discog_filtered[discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value].reset_index(), 
-                          'SENTIMENT_COMPOUND_SCORE', 
-                          'TRACK_TITLE',
-                          green=colour_palette.get('green'),
-                          red=colour_palette.get('red'))
+        # display label
+        display(
+            widgets.HTML(
+                value=f'''<h3><center><font color="black">
+                          Sentiment Analysis - diverging bars</center></h3>
+                          <h4><center><font color="black">
+                          Artist: {artist} </center></h4>''',
+                layout=widgets.Layout(width="100%"))
+        ) 
+        # display plot of scores by album, sorted chronologically
+        advanced_analytics.plotDivergingBars(
+            discog_filtered.reset_index(), 
+            'SENTIMENT_COMPOUND_SCORE', 
+            'YEAR_ALBUM', 
+            green=colour_palette.get('green'),
+            red=colour_palette.get('red'),
+            sort_by_values = False)
+    else: 
+        # display more specific label
+        display(
+            widgets.HTML(
+                value=f'''<h3><center><font color="black">
+                          Sentiment Analysis - diverging bars</center></h3>
+                          <h4><center><font color="black">
+                          Artist: {artist} | 
+                          Album: {sentiment_dropdown2.value[7:]} | 
+                          Year: {sentiment_dropdown2.value[1:5]}
+                          </center></h4>''',
+                layout=widgets.Layout(width="100%"))
+        ) 
+        # display plot by song in a selected album, sorted by sentiment score
+        advanced_analytics.plotDivergingBars(
+            discog_filtered[
+                discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value
+            ].reset_index(),
+            'SENTIMENT_COMPOUND_SCORE', 
+            'TRACK_TITLE',
+            green=colour_palette.get('green'),
+            red=colour_palette.get('red')
+        )
 
 # inner function to be triggered with a change of dropdown1 value
 def adapt_UI(x):
