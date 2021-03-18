@@ -150,7 +150,7 @@ def get_track_discog(df):
                                                                       ).replace("/", " ", regex = True)
                                 ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
                                ).replace(" ", "-", regex = True)
-    track_info["new_track_tile"] = ((track_info['TRACK_TITLE'].str.replace("'", " ", regex = True)
+    track_info["new_track_tile"] = ((track_info['TRACK_TITLE'].str.replace("'", "", regex = True)
                                     ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
                                    ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     track_info['GENIUS_LINK'] = "https://genius.com/" + track_info["new_artist"].str.strip()+ "-" + track_info["new_track_tile"].str.strip()+"-lyrics"
