@@ -325,91 +325,30 @@ def get_artist_albums(a_name):
     
     return update_albums_info
 
-def getArtistData(a_name):
-    '''
-    Get all the Artist data from Atrist name using genius and Discogs API. 
-    
-    @param: a_name-> String 
-    
-    @return: Dataframe
-    '''
-    artist_albums = get_artist_albums(a_name)# dicogs API
-   
-    genius_track = get_track_genius(artist_albums)
-    # getting track for None
-    
-    df_genius_none = genius_track[genius_track["TRACK_TITLE"].isnull()]
-    df_genius_none = data_cleaning(df_genius_none) # Removing any release from albums
-    
-    if df_genius_none.empty == False:
-        discog_track = get_track_discog(df_genius_none) # using discog API
-        full_data = pd.concat([genius_track, discog_track], ignore_index = True, sort = True) # appending genius and discog data
-        flag_data = flag_exclude_album(full_data) # Creating flag column for an album
-        final_data = flag_track_title(flag_data) # Creating flag column for a track_title
-        
-    else:    
-        flag_data = flag_exclude_album(genius_track) # Creating flag column for an album
-        final_data = flag_track_title(flag_data) # Creating flag column for a track_title
-    
-    #sorting data by its years
-    final_data_sort = final_data.sort_values(by = ["YEAR"]).rename(columns={"NUM_OF_PPL_HAVING" : "DISCOG_PPL_HAVING"
-                                                                            , "NUM_OF_PPL_WANT" : "DISCOG_PPL_WANT"
-                                                                            , "NUM_OF_RATING" : "DISCOG_RATING"
-                                                                            , "AVG_RATING" : "DISCOG_AVG_RATING"
-                                                                           }
-                                                                  ).reset_index(drop = True)
-    
-    # Creating new album column & track without any brackets
-    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUMS"].str.replace(r"\s+\(.*\)","")
-    final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
-    
-    # Get billboard ranking for albums and tracks
-    df_billboard_albums = getBillBoardPeak(a_name)
-    df_billboard_tracks = getBillBoardPeak(a_name, 0)
-    
-    #Merge discog data with billboard data
-    df_discog_album = fpd.fuzzy_merge(final_data_sort, df_billboard_albums, 
-                          left_on = ['ARTIST_NAME', 'CLEAN_ALBUM_COL'], 
-                          right_on = ['BILLBOARD_ARTIST_NAME', 'BILLBOARD_ALBUM'],
-                          method = 'levenshtein', 
-                          threshold = 0.85,
-                          join = 'left-outer').drop(['BILLBOARD_ARTIST_NAME'], axis = 1)
+# def getTrackDiscogs(df):
+#     '''
+#     Getting Track titles using discogs api
+#     '''
+#     find_str = "master"
+#     filter_df = df[df["TYPES"].str.contains(find_str) == True]
+#     reset_df = filter_df.reset_index(drop = True)
+#     a_id, track_title = [], []
+#     track_info = pd.DataFrame()
+#     print("Getting Track..")
+#     for i in range(len(reset_df)):
+#         album_id = reset_df["ARTIST_ID"][i]
+#         time.sleep(0.5)
+#         release = discogs.master(int(album_id))
+#         release = discogs.master(int(album_id)) # discogs API
+# #         print(release)
+#         m_release = release.tracklist
+#         for track in m_release:
+#             a_id.append(album_id)
+#             track_title.append(track.title)
+#     track_info["ARTIST_ID"] = a_id
+#     track_info["DISCOGS_TRACK_TITLE"] = track_title
 
-    full_data = fpd.fuzzy_merge(df_discog_album, df_billboard_tracks, 
-                          left_on = ['ARTIST_NAME', 'CLEAN_TRACK_COL'], 
-                          right_on = ['BILLBOARD_ARTIST_NAME', 'BILLBOARD_TRACK_TITLE'],
-                          method = 'levenshtein', 
-                          threshold = 0.85,
-                          join = 'left-outer')
-    
-    # Converting list of columns to integer
-    cols = ["DISCOG_PPL_HAVING"
-            , "DISCOG_PPL_WANT"
-            , "DISCOG_RATING"
-            , "DISCOG_AVG_RATING"
-            , "BILLBOARD_ALBUM_RANK"
-            , "BILLBOARD_TRACK_RANK"
-           ]
-    
-    full_data[cols] = full_data[cols].apply(pd.to_numeric, errors='coerce')
-    
-    return full_data[["ARTIST_ID"
-                       , "ARTIST_NAME"
-                       , "ALBUMS"
-                       , "YEAR"
-                       , "TRACK_TITLE"
-                       , "DISCOG_PPL_HAVING"
-                       , "DISCOG_PPL_WANT"
-                       , "DISCOG_RATING"                       
-                       , "DISCOG_AVG_RATING"
-                       , "EXCLUDE_ALBUM"
-                       , "EXCLUDE_SONG"
-                       , "GENIUS_LINK"
-                       , "BILLBOARD_ALBUM_RANK"
-                       , "BILLBOARD_TRACK_RANK"
-                       , "BILLBOARD_TRACK_TITLE"
-                      ]
-                     ].sort_values(by = ["YEAR", "ARTIST_ID"]).drop_duplicates()
+#     return track_info
 
 
 def getBillBoardPeak(artist_name, flag:int = 1):
@@ -504,3 +443,119 @@ def getBillBoardPeak(artist_name, flag:int = 1):
                                    , "BILLBOARD_TRACK_DATE"
                                   ]
                                  ]
+
+    
+def getArtistData(a_name):
+    '''
+    Get all the Artist data from Atrist name using genius and Discogs API. 
+    
+    @param: a_name-> String 
+    
+    @return: Dataframe
+    '''
+    artist_albums = get_artist_albums(a_name)# dicogs API
+    
+    #Getting Tracks Title from Disgos
+#     df_discog_track = getTrackDiscogs(artist_albums)
+    
+    genius_track = get_track_genius(artist_albums)
+    
+    #Flagging any duplicate albums and tracks but has different ID
+    genius_track['flag'] = genius_track.duplicated(subset=['ALBUMS', 'TRACK_TITLE'], keep = 'first')
+    genius_track_dup = genius_track[genius_track['flag'] == True].drop_duplicates(subset = ['ARTIST_ID'
+                                                                                        , 'TYPES'
+                                                                                        , 'ARTIST_NAME'
+                                                                                        , 'ALBUMS'
+                                                                                        , 'YEAR']
+                                                                             )
+    genius_track_dup['TRACK_TITLE'] = None
+    #
+    df_clean_genius = pd.concat([
+                                   genius_track[genius_track['flag'] == False]
+                                     , genius_track_dup
+                                ]
+                                , ignore_index = True
+                                , sort = True
+                               )
+    
+    # getting track for None
+    df_genius_none = df_clean_genius[df_clean_genius["TRACK_TITLE"].isnull()]
+    df_genius_none = data_cleaning(df_genius_none) # Removing any release from albums
+    
+    if df_genius_none.empty == False:
+        discog_track = get_track_discog(df_genius_none) # using discog API
+        
+        full_data = (pd.concat([
+                                genius_track[genius_track['flag'] == False]
+                               , discog_track
+                              ]
+                            , ignore_index = True
+                            , sort = True
+                            )).drop(columns = 'flag')# appending genius and discog data
+        
+        flag_data = flag_exclude_album(full_data) # Creating flag column for an album
+        final_data = flag_track_title(flag_data) # Creating flag column for a track_title
+        
+    else:    
+        flag_data = flag_exclude_album(genius_track) # Creating flag column for an album
+        final_data = flag_track_title(flag_data) # Creating flag column for a track_title
+    
+    #sorting data by its years
+    final_data_sort = final_data.sort_values(by = ["YEAR"]).rename(columns={"NUM_OF_PPL_HAVING" : "DISCOG_PPL_HAVING"
+                                                                            , "NUM_OF_PPL_WANT" : "DISCOG_PPL_WANT"
+                                                                            , "NUM_OF_RATING" : "DISCOG_RATING"
+                                                                            , "AVG_RATING" : "DISCOG_AVG_RATING"
+                                                                           }
+                                                                  ).reset_index(drop = True)
+    
+    # Creating new album column & track without any brackets
+    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUMS"].str.replace(r"\s+\(.*\)","")
+    final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
+    
+    # Get billboard ranking for albums and tracks
+    df_billboard_albums = getBillBoardPeak(a_name)
+    df_billboard_tracks = getBillBoardPeak(a_name, 0)
+    
+    #Merge discog data with billboard data
+    df_discog_album = fpd.fuzzy_merge(final_data_sort, df_billboard_albums, 
+                          left_on = ['ARTIST_NAME', 'CLEAN_ALBUM_COL'], 
+                          right_on = ['BILLBOARD_ARTIST_NAME', 'BILLBOARD_ALBUM'],
+                          method = 'levenshtein', 
+                          threshold = 0.85,
+                          join = 'left-outer').drop(['BILLBOARD_ARTIST_NAME'], axis = 1)
+
+    full_data = fpd.fuzzy_merge(df_discog_album, df_billboard_tracks, 
+                          left_on = ['ARTIST_NAME', 'CLEAN_TRACK_COL'], 
+                          right_on = ['BILLBOARD_ARTIST_NAME', 'BILLBOARD_TRACK_TITLE'],
+                          method = 'levenshtein', 
+                          threshold = 0.85,
+                          join = 'left-outer')
+    
+    # Converting list of columns to integer
+    cols = ["DISCOG_PPL_HAVING"
+            , "DISCOG_PPL_WANT"
+            , "DISCOG_RATING"
+            , "DISCOG_AVG_RATING"
+            , "BILLBOARD_ALBUM_RANK"
+            , "BILLBOARD_TRACK_RANK"
+           ]
+    
+    full_data[cols] = full_data[cols].apply(pd.to_numeric, errors='coerce')
+    
+    return full_data[["ARTIST_ID"
+                       , "ARTIST_NAME"
+                       , "ALBUMS"
+                       , "YEAR"
+                       , "TRACK_TITLE"
+                       , "DISCOG_PPL_HAVING"
+                       , "DISCOG_PPL_WANT"
+                       , "DISCOG_RATING"                       
+                       , "DISCOG_AVG_RATING"
+                       , "EXCLUDE_ALBUM"
+                       , "EXCLUDE_SONG"
+                       , "GENIUS_LINK"
+                       , "BILLBOARD_ALBUM_RANK"
+                       , "BILLBOARD_TRACK_RANK"
+                       , "BILLBOARD_TRACK_TITLE"
+                      ]
+                     ].sort_values(by = ["YEAR", "ARTIST_ID"]).drop_duplicates()
