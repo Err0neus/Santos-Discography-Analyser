@@ -1691,12 +1691,8 @@ def UI():
     # button to show charts
     s3t1_desc = widgets.HTML(
         value=f'''<font color='{descriptions_colour}'><font size = "-2">
-        <i>Visualises data retrieved about the selected Artist's discography 
-        from DISCOGS.COM, such as:<br>
-         <ul>
-         <li>number of registered record owners and average rating</li>
-         <li>average album rating vs. index</li>
-         </ul>
+        <i>Visualises data retrieved from DISCOGS.COM, such as number of 
+        registered record owners or average album ratings.
          </i>''',
         layout=widgets.Layout(width="80%"))
     button_discogs_users_charts = widgets.Button(description="Show")
@@ -1759,6 +1755,12 @@ def UI():
     #---------------------------------------------------------------------------    
     #---------------------------------------------------------------------------
     # SECTION 4 | TAB 1   "Albums and Songs Sentiment"
+    s4t1_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Visualises the sentiment score of individual lyrics. Choose to 
+        display by Album or individually by Tracks of a selected Album.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     global sentiment_dropdown1, sentiment_dropdown2
     # button to show charts
     button_sentiment_analysis = widgets.Button(description="Show")
@@ -1766,27 +1768,48 @@ def UI():
     # vertical block
     # define tab depending on the value of the global variable
     if sentiment_dropdown1.value == 'tracks by album':
-        SECTION_4_TAB_1 = widgets.VBox([sentiment_dropdown1,sentiment_dropdown2,button_sentiment_analysis, ])
+        SECTION_4_TAB_1 = widgets.VBox([s4t1_desc, 
+                                        sentiment_dropdown1,
+                                        sentiment_dropdown2,
+                                        button_sentiment_analysis, ])
     else:
-        SECTION_4_TAB_1 = widgets.VBox([sentiment_dropdown1,button_sentiment_analysis])
+        SECTION_4_TAB_1 = widgets.VBox([s4t1_desc, 
+                                        sentiment_dropdown1,
+                                        button_sentiment_analysis])
     
     # trigger inner function when value of the dropdown1 changes
     sentiment_dropdown1.observe(adapt_UI, names='value')
 
     #---------------------------------------------------------------------------                          
-    # SECTION 4 | TAB 2   "Sentiment and Charts"                                        
+    # SECTION 4 | TAB 2   "Sentiment and Charts"    
+    s4t2_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Shows a chord diagram comparing the sentiment of the lyrics with 
+        whether the track reached a position in the official Billboard 100 music
+        charts or not.</i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     # button to show Sentiment Vs Charts
     button_sentiment_vs_charts_song = widgets.Button(description="Show")
     button_sentiment_vs_charts_song.on_click(show_sentiment_vs_charts_song)
     # vertical block
-    SECTION_4_TAB_2 = widgets.VBox([button_sentiment_vs_charts_song,])
+    SECTION_4_TAB_2 = widgets.VBox([s4t2_desc,
+                                    button_sentiment_vs_charts_song,])
     
-    # SECTION 4 | TAB 3   "Sentiment Score over time"                                        
+    # SECTION 4 | TAB 3   "Sentiment Score over time"  
+    s4t3_desc = widgets.HTML(
+        value=f'''<font color='{descriptions_colour}'><font size = "-2">
+        <i>Displays tracks grouped by sentiment score over time. Shown as all 
+        tracks together as well as charted and uncharted tracks individually.
+        </i>
+        <br>''',
+        layout=widgets.Layout(width="80%"))
     # button to show Sentiment score over time
     button_sentiment_over_time = widgets.Button(description="Show")
     button_sentiment_over_time.on_click(show_sentiment_score_ovr_time)
     # vertical block
-    SECTION_4_TAB_3 = widgets.VBox([button_sentiment_over_time,])
+    SECTION_4_TAB_3 = widgets.VBox([s4t3_desc,
+                                    button_sentiment_over_time,])
                           
     #---------------------------------------------------------------------------
     # SECTION 4 build
