@@ -239,6 +239,7 @@ def apply_selection(x):
     set_album_selector(discog['YEAR_ALBUM'].unique().tolist(), selected)
     
 
+    
     #clear previous output
     clear_output() 
     
@@ -378,6 +379,14 @@ def apply_selection(x):
         (discog_store['ARTIST_NAME']==artist)\
         &(discog_store['YEAR_ALBUM'].isin(album_filter))
     ].copy()
+
+    # populate sentiment chart dropdown with selected albums
+    global sentiment_dropdown2
+    sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
+                                            value=discog_filtered['YEAR_ALBUM'].unique()[0],
+                                            description='Select Album:',
+                                            disabled=False,)
+
     
     # display UI
     UI()    
