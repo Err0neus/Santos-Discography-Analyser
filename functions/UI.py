@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import time
 import math
-from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator
 import seaborn as sns
 from IPython.display import clear_output, display, IFrame
 from chord import Chord 
@@ -1166,7 +1166,10 @@ def sntm_scr_ovr_time(data):
 
     # add gridline
     ax1.set_axisbelow(True)
+    ax1.yaxis.set_major_locator(MultipleLocator(5))
+    ax1.yaxis.set_minor_locator(AutoMinorLocator(5)) # minor line every 1
     ax1.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    ax1.yaxis.grid(True, which = 'minor', linestyle = ':', color = '#d1d1d1')
     
     # Decorations
     ax1.set_title('Sentiment Score Over Time', fontsize=14)
@@ -1232,7 +1235,10 @@ def sntm_scr_ovr_time(data):
     
     # add gridline
     ax2.set_axisbelow(True)
+    ax2.yaxis.set_major_locator(MultipleLocator(5))
+    ax2.yaxis.set_minor_locator(AutoMinorLocator(5)) # minor line every 1
     ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    ax2.yaxis.grid(True, which = 'minor', linestyle = ':', color = '#d1d1d1')
     
     # Setting up x and y axis limit
     ax2.set(ylim = ylimit_final, xlim = xlimit_final)
@@ -1270,7 +1276,10 @@ def sntm_scr_ovr_time(data):
     
     # add gridline
     ax3.set_axisbelow(True)
+    ax3.yaxis.set_major_locator(MultipleLocator(5))  # line every 5
+    ax3.yaxis.set_minor_locator(AutoMinorLocator(5)) # minor line every 1
     ax3.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
+    ax3.yaxis.grid(True, which = 'minor', linestyle = ':', color = '#d1d1d1')
     
     # Setting up x and y axis limit
     ax3.set(ylim = ylimit_final, xlim = xlimit_final)
