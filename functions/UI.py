@@ -1140,17 +1140,21 @@ def sntm_scr_ovr_time(data):
     ax3 = fig.add_subplot(gs[1,1])
     
     ##-----------------------------------------------------------------------------------##
-    df = pd.pivot_table(data, index = 'YEAR', columns = 'SENTIMENT_GROUP', values = 'TRACK_TITLE', aggfunc = 'count')
+    df = pd.pivot_table(data, 
+                        index = 'YEAR', 
+                        columns = 'SENTIMENT_GROUP', 
+                        values = 'TRACK_TITLE', 
+                        aggfunc = 'count').fillna(0)
     for col in expect_cols:
         if col not in df.columns:
             df[col] = 0
     # Prepare data
     x  = df.index
     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df['Negative'].values.tolist()]]
-    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df['Neutral'].values.tolist()]]
-    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df['Neutral'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [math.floor(x/2) *-1 for x in df['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [math.ceil(x/2)  for x in df['Neutral'].values.tolist()]]
     y_pos = [0 if math.isnan(x) else x for x in df['Positive'].values.tolist()]
-    y_pos = df['Positive'].values.tolist()
+    #y_pos = df['Positive'].values.tolist()
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
 
@@ -1172,7 +1176,7 @@ def sntm_scr_ovr_time(data):
     ax1.yaxis.grid(True, which = 'minor', linestyle = ':', color = '#d1d1d1')
     
     # Decorations
-    ax1.set_title('Sentiment Score Over Time', fontsize=14)
+    ax1.set_title('Song lyrics by Sentiment over time', fontsize=14)
     
     # Creating y-axis positive both ways
 #     plt.xticks(np.arrange(df.index.min()-1, df.max()+1, 5)
@@ -1198,6 +1202,9 @@ def sntm_scr_ovr_time(data):
     ylimit_final = [-ylimit, ylimit]
     xlimit_final = [x_min, x_max]
     ax1.set(ylim = ylimit_final, xlim = xlimit_final)
+
+    # remove y axis tick labels
+    ax1.yaxis.set_ticklabels([])
  
     ##-----------------------------------------------------------------------------------##
     # Ploting for charted and uncharted Track Rank
@@ -1213,15 +1220,15 @@ def sntm_scr_ovr_time(data):
                                 index = 'YEAR', 
                                 columns = 'SENTIMENT_GROUP', 
                                 values = 'TRACK_TITLE', 
-                                aggfunc = 'count')
+                                aggfunc = 'count').fillna(0)
     x  = df_charted.index
     for col in expect_cols:
         if col not in df_charted.columns:
             df_charted[col] = 0
           
     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_charted['Negative'].values.tolist()]]        
-    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_charted['Neutral'].values.tolist()]]
-    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_charted['Neutral'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [math.floor(x/2) *-1 for x in df_charted['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [math.ceil(x/2)  for x in df_charted['Neutral'].values.tolist()]]
     y_pos = [0 if math.isnan(x) else x for x in df_charted['Positive'].values.tolist()]
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
@@ -1242,6 +1249,8 @@ def sntm_scr_ovr_time(data):
     
     # Setting up x and y axis limit
     ax2.set(ylim = ylimit_final, xlim = xlimit_final)
+    # remove y axis tick labels
+    ax2.yaxis.set_ticklabels([])
     
     # calculate axis limits
 #     xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
@@ -1255,15 +1264,15 @@ def sntm_scr_ovr_time(data):
                                 index = 'YEAR', 
                                 columns = 'SENTIMENT_GROUP', 
                                 values = 'TRACK_TITLE', 
-                                aggfunc = 'count')
+                                aggfunc = 'count').fillna(0)
     x  = df_uncharted.index
     for col in expect_cols:
         if col not in df_uncharted.columns:
             df_uncharted[col] = 0
             
     y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
-    y_ntr1 = [0 if math.isnan(x) else x for x in [x/2 *-1 for x in df_uncharted['Neutral'].values.tolist()]]
-    y_ntr2 = [0 if math.isnan(x) else x for x in [x/2  for x in df_uncharted['Neutral'].values.tolist()]]
+    y_ntr1 = [0 if math.isnan(x) else x for x in [math.floor(x/2) *-1 for x in df_uncharted['Neutral'].values.tolist()]]
+    y_ntr2 = [0 if math.isnan(x) else x for x in [math.ceil(x/2)  for x in df_uncharted['Neutral'].values.tolist()]]
     y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
@@ -1283,6 +1292,8 @@ def sntm_scr_ovr_time(data):
     
     # Setting up x and y axis limit
     ax3.set(ylim = ylimit_final, xlim = xlimit_final)
+    # remove y axis tick labels
+    ax3.yaxis.set_ticklabels([]) 
     
     # calculate axis limits
 #     xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
@@ -1294,7 +1305,6 @@ def sntm_scr_ovr_time(data):
 #     xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
 #     ylimit_final = max(ylimit_1, ylimit_2)
     ##-----------------------------------------------------------------------------------##    
-    
     plt.show()
 
 #-------------------------------------------------------------------------------
@@ -1818,7 +1828,14 @@ def UI():
     s4t3_desc = widgets.HTML(
         value=f'''<font color='{descriptions_colour}'><font size = "-2">
         <i>Displays tracks grouped by sentiment score over time. Shown as all 
-        tracks together as well as charted and uncharted tracks individually.
+        tracks together as well as charted and uncharted tracks individually.<br>
+        <font color='{colour_palette['green']}'><b>GREEN</b>
+        <font color='{descriptions_colour}'> represents tracks with Positive,
+        <font color='{colour_palette['grey']}'><b>GREY</b>
+        <font color='{descriptions_colour}'> with Neutral, and
+        <font color='{colour_palette['red']}'><b>RED</b>
+        <font color='{descriptions_colour}'> with Negative sentiment score. Each
+        gridline represents a single track.
         </i>
         <br>''',
         layout=widgets.Layout(width="80%"))
