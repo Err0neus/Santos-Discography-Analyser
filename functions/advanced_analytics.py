@@ -7,7 +7,7 @@ def plotDivergingBars(df, x, y, green, red, sort_by_values = True):
         data = df.sort_values(by=[x])
     else:
         data = df.sort_values(by=[y], ascending = False)
-    data = data[[y,x]]
+    data = data[[y,x]].copy().fillna(0) # filling NaN to make sure chart data is aligned
     plt.figure(figsize=(14,max(1, len(data[y].unique())/2)),
                dpi= 80)
     # artificial vertical padding
@@ -23,7 +23,7 @@ def plotDivergingBars(df, x, y, green, red, sort_by_values = True):
     # add empty rows to the dataframe
     data = first_empty_row.append(data.append(last_empty_row))
     # add colours    
-    data['colors'] = [red if x < 0 else green for x in data[x]]
+    data['colors'] = [red if i < 0 else green for i in data[x]]
     # plot lines
     plt.hlines(y=data[y], xmin=0, xmax=data[x], color=data.colors, alpha=0.6, linewidth=15)
     #plt.gca()
