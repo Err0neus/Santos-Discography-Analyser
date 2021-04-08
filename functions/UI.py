@@ -1,11 +1,12 @@
 print('Loading...')
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator
+from matplotlib.axes import Axes
 import pandas as pd
 import numpy as np
 import time
 import math
-from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator
 import seaborn as sns
 from IPython.display import clear_output, display, IFrame
 from chord import Chord 
@@ -1205,6 +1206,8 @@ def sntm_scr_ovr_time(data):
 
     # remove y axis tick labels
     ax1.yaxis.set_ticklabels([])
+    # force x axis tics to be integers
+    ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
  
     ##-----------------------------------------------------------------------------------##
     # Ploting for charted and uncharted Track Rank
@@ -1251,6 +1254,8 @@ def sntm_scr_ovr_time(data):
     ax2.set(ylim = ylimit_final, xlim = xlimit_final)
     # remove y axis tick labels
     ax2.yaxis.set_ticklabels([])
+    # force x axis tics to be integers
+    ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
     
     # calculate axis limits
 #     xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
@@ -1294,6 +1299,8 @@ def sntm_scr_ovr_time(data):
     ax3.set(ylim = ylimit_final, xlim = xlimit_final)
     # remove y axis tick labels
     ax3.yaxis.set_ticklabels([]) 
+    # force x axis tics to be integers
+    ax3.xaxis.set_major_locator(MaxNLocator(integer=True))
     
     # calculate axis limits
 #     xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
@@ -1305,6 +1312,7 @@ def sntm_scr_ovr_time(data):
 #     xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
 #     ylimit_final = max(ylimit_1, ylimit_2)
     ##-----------------------------------------------------------------------------------##    
+    
     plt.show()
 
 #-------------------------------------------------------------------------------
