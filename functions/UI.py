@@ -1581,6 +1581,8 @@ def show_sentiment_score_ovr_time(x):
     
     
 def UI():
+    # select font for charts
+    plt.rcParams["font.family"] = "DejaVu Sans"
     #---------------------------------------------------------------------------
     # SECTION 1            "Configuration" 
     #---------------------------------------------------------------------------
