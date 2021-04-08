@@ -157,6 +157,7 @@ def get_discography(x):
         discog['YEAR_ALBUM'].unique().tolist(), 
         album_filter
     )
+
     # display UI
     UI()
     
@@ -220,8 +221,14 @@ def select_deselect_all(x):
 def apply_selection(x):
     global discog
     global discog_store
-
-    
+    try:
+        discog_store = pd.read_csv('discog_store.csv')
+    except:
+        pass   
+#     try:
+#         discog = discog_store[discog_store['ARTIST_NAME'] == artist].reset_index()
+#     except:
+#         pass    
     #apply user selections, overwrite album_filter with current selection
     global album_selector 
     global album_filter 
@@ -253,10 +260,11 @@ def apply_selection(x):
                                                ignore_index=True, 
                                                sort=False)
         else:
-            discog_store = discog_store[
-                discog_store['ARTIST_NAME'] != artist
-            ].append(discog, ignore_index=True, sort=False)
-    
+            for i,r in discog.iterrows():
+                # overwrite EXCLUDE_ALBUM flag
+                discog_store.loc[discog_store['YEAR_ALBUM'] == r['YEAR_ALBUM'], 
+                                 'EXCLUDE_ALBUM'] = r['EXCLUDE_ALBUM']
+  
     try:
         discog_store.to_csv('discog_store.csv', index = False)
     except PermissionError:
