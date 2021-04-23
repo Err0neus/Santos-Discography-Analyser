@@ -460,7 +460,7 @@ def getArtistData(a_name):
     
     genius_track = get_track_genius(artist_albums)
     
-    #Flagging any duplicate albums and tracks but has different ID
+    #Flagging any duplicate albums and tracks but has different ID##
     genius_track['flag'] = genius_track.duplicated(subset=['ALBUMS', 'TRACK_TITLE'], keep = 'first')
     genius_track_dup = genius_track[genius_track['flag'] == True].drop_duplicates(subset = ['ARTIST_ID'
                                                                                         , 'TYPES'
@@ -513,7 +513,7 @@ def getArtistData(a_name):
     final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
     
     # Get billboard ranking for albums and tracks
-    df_billboard_albums = getBillBoardPeak(a_name)
+    df_billboard_albums = (getBillBoardPeak(a_name)).agg(BILLBOARD_ALBUM_RANK = ('BILLBOARD_ALBUM_RANK', 'min')).reset_index()
     df_billboard_tracks = getBillBoardPeak(a_name, 0)
     
     #Merge discog data with billboard data
