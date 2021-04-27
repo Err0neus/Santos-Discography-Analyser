@@ -1318,8 +1318,14 @@ def sntm_scr_ovr_time(data):
     ax2.set_axisbelow(True)
     ax2.yaxis.set_major_locator(MultipleLocator(5))
     ax2.yaxis.set_minor_locator(AutoMinorLocator(5)) # minor line every 1
-    ax2.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
-    ax2.yaxis.grid(True, which = 'minor', linestyle = ':', color = '#d1d1d1')
+    ax2.yaxis.grid(True, 
+                   which = 'major', 
+                   linestyle = '--', 
+                   color = '#d3d3d3')
+    ax2.yaxis.grid(True, 
+                   which = 'minor', 
+                   linestyle = ':', 
+                   color = '#d1d1d1')
     
     # Setting up x and y axis limit
     ax2.set(ylim = ylimit_final, xlim = xlimit_final)
@@ -1342,25 +1348,63 @@ def sntm_scr_ovr_time(data):
         if col not in df_uncharted.columns:
             df_uncharted[col] = 0
             
-    y_neg = [0 if math.isnan(x) else x for x in [x*-1 for x in df_uncharted['Negative'].values.tolist()]]
-    y_ntr1 = [0 if math.isnan(x) else x for x in [math.floor(x/2) *-1 for x in df_uncharted['Neutral'].values.tolist()]]
-    y_ntr2 = [0 if math.isnan(x) else x for x in [math.ceil(x/2)  for x in df_uncharted['Neutral'].values.tolist()]]
-    y_pos = [0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()]
+    y_neg = [
+        0 if math.isnan(x) else x for x in [
+            x*-1 for x in df_uncharted['Negative'].values.tolist()
+        ]
+    ]
+    y_ntr1 = [
+        0 if math.isnan(x) else x for x in [
+            math.floor(x/2) *-1 for x in df_uncharted['Neutral'].values.tolist()
+        ]
+    ]
+    y_ntr2 = [
+        0 if math.isnan(x) else x for x in [
+            math.ceil(x/2)  for x in df_uncharted['Neutral'].values.tolist()
+        ]
+    ]
+    y_pos = [
+        0 if math.isnan(x) else x for x in df_uncharted['Positive'].values.tolist()
+    ]
     y_1 = np.vstack([y_ntr2, y_pos])
     y_2 = np.vstack([y_ntr1, y_neg,])
 
     # plot bars
-    ax3.bar(x, y_ntr2, width = 0.9, color = colour_palette.get('light grey'))
-    ax3.bar(x, y_pos, width = 0.9, bottom=y_ntr2, color = colour_palette.get('green'))
-    ax3.bar(x, y_ntr1, width = 0.9, color = colour_palette.get('light grey'))
-    ax3.bar(x, y_neg, width = 0.9, bottom=y_ntr1, color = colour_palette.get('red'))
+    ax3.bar(x, 
+            y_ntr2, 
+            width = 0.9, 
+            color = colour_palette.get('light grey')
+           )
+    ax3.bar(x,
+            y_pos, 
+            width = 0.9, 
+            bottom=y_ntr2, 
+            color = colour_palette.get('green')
+           )
+    ax3.bar(x,
+            y_ntr1, 
+            width = 0.9, 
+            color = colour_palette.get('light grey')
+           )
+    ax3.bar(x, 
+            y_neg, 
+            width = 0.9, 
+            bottom=y_ntr1, 
+            color = colour_palette.get('red')
+           )
     
     # add gridline
     ax3.set_axisbelow(True)
     ax3.yaxis.set_major_locator(MultipleLocator(5))  # line every 5
     ax3.yaxis.set_minor_locator(AutoMinorLocator(5)) # minor line every 1
-    ax3.yaxis.grid(True, which = 'major', linestyle = '--', color = '#d3d3d3')
-    ax3.yaxis.grid(True, which = 'minor', linestyle = ':', color = '#d1d1d1')
+    ax3.yaxis.grid(True, 
+                   which = 'major', 
+                   linestyle = '--', 
+                   color = '#d3d3d3')
+    ax3.yaxis.grid(True, 
+                   which = 'minor', 
+                   linestyle = ':', 
+                   color = '#d1d1d1')
     
     # Setting up x and y axis limit
     ax3.set(ylim = ylimit_final, xlim = xlimit_final)
@@ -1368,17 +1412,7 @@ def sntm_scr_ovr_time(data):
     ax3.yaxis.set_ticklabels([]) 
     # force x axis tics to be integers
     ax3.xaxis.set_major_locator(MaxNLocator(integer=True))
-    
-    # calculate axis limits
-#     xlimit_2 = [df_uncharted.index.min()-1, df_uncharted.index.max()+1]
-#     ylimit_2 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)
-
-    ax3.title.set_text('Uncharted Tracks')
-
-    # set final limtits for both subplots
-#     xlimit_final = [min(xlimit_1[0], xlimit_2[0]), max(xlimit_1[1], xlimit_2[1])]
-#     ylimit_final = max(ylimit_1, ylimit_2)
-    ##-----------------------------------------------------------------------------------##    
+    ax3.title.set_text('Uncharted Tracks')  
     
     plt.show()
 
