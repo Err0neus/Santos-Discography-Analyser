@@ -67,6 +67,24 @@ descriptions_colour = colour_palette.get('grey')
 #plt.gca()
 plt.style.use('seaborn')
 
+
+def no_selections_warning():
+    # clear previous output
+    clear_output()
+    display(
+            widgets.HTML(value=f'''<b><font color="red">
+            No artist/discography selected. 
+            Make sure selections are made before running visualisations.</b>''',
+                           layout=widgets.Layout(width="100%"))
+    )
+    global selected_section
+    selected_section = 0
+    # set selected  tab
+    global selection_tab_of_section_1
+    selection_tab_of_section_1 = 0 if artist == '' else 1
+    # display UI
+    UI()
+        
 #-------------------------------------------------------------------------------
 # UI SECTION 1 variables and functions
 #-------------------------------------------------------------------------------
@@ -388,17 +406,19 @@ def apply_selection(x):
         (discog_store['ARTIST_NAME']==artist)\
         &(discog_store['YEAR_ALBUM'].isin(album_filter))
     ].copy()
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:  
+        # populate sentiment chart dropdown with selected albums
+        global sentiment_dropdown2
+        sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
+                                                value=discog_filtered['YEAR_ALBUM'].unique()[0],
+                                                description='Select Album:',
+                                                disabled=False,)
 
-    # populate sentiment chart dropdown with selected albums
-    global sentiment_dropdown2
-    sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
-                                            value=discog_filtered['YEAR_ALBUM'].unique()[0],
-                                            description='Select Album:',
-                                            disabled=False,)
 
-    
-    # display UI
-    UI()    
+        # display UI
+        UI()    
 
 #-------------------------------------------------------------------------------
 # SECTION 1 | TAB 3 variables and functions
@@ -579,7 +599,7 @@ def add_period_column(discog, bin_size):
 
 def plot_albums_songs_per_period_bar(discog, bin_size):
     '''plots the number of albums and songs per period'''
-    
+
     width = 0.2 
     data = album_song_count_per_period(discog, bin_size).set_index('period')
     fig, ax1 = plt.subplots(figsize=(8,5))   
@@ -590,17 +610,17 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
 
     ax1.set_ylabel('Number of songs', color=color)
     #ax1.plot(data.period, data.album, color=color)
-    
+
     data['TRACK_TITLE'].plot(kind='bar', 
                              color=color, 
                              ax=ax1, 
                              width=width, 
                              position=1)
-                        
+
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
     ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
-    
+
     # ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
     color = colour_palette.get('orange')
@@ -622,7 +642,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     ax2.grid(False, axis='both')
     ax1.grid(False, axis='x')
     plt.show()
-    
+
 # def pirate_plot(discog, bin_size):
 #     data = add_period_column(discog, bin_size)
 #     sns.set_style("whitegrid")
@@ -645,23 +665,26 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
 
 # function to run at click of the button_3
 def show_basic_charts(x):
-    global bin_size
-    #clear previous output
-    clear_output()
-    # select current tab    
-    global selected_section
-    selected_section = 1
-    # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 0
-    
-    # display UI
-    UI()
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:
+        global bin_size
+        #clear previous output
+        clear_output()
+        # select current tab    
+        global selected_section
+        selected_section = 1
+        # select sub tab
+        global selection_tab_of_section_2
+        selection_tab_of_section_2 = 0
 
-    #display chart using the bin_size
-    #plot_albums_songs_per_period(discog_filtered, bin_size)
-    plot_albums_songs_per_period_bar(discog_filtered, bin_size)
-    
+        # display UI
+        UI()
+
+        #display chart using the bin_size
+        #plot_albums_songs_per_period(discog_filtered, bin_size)
+        plot_albums_songs_per_period_bar(discog_filtered, bin_size)
+
 
 #-------------------------------------------------------------------------------
 # SECTION 2 | TAB 2 variables and functions
@@ -689,19 +712,22 @@ def violin_plot(discog, bin_size):
     plt.show()
     
 def show_lexical_diversity(x):
-    global bin_size
-    #clear previous output
-    clear_output()
-    # select current tab    
-    global selected_section
-    selected_section = 1
-    # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 1
-    # display UI
-    UI()
-    #pirate_plot(discog_filtered, bin_size)
-    violin_plot(discog_filtered, bin_size)
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
+        global bin_size
+        #clear previous output
+        clear_output()
+        # select current tab    
+        global selected_section
+        selected_section = 1
+        # select sub tab
+        global selection_tab_of_section_2
+        selection_tab_of_section_2 = 1
+        # display UI
+        UI()
+        #pirate_plot(discog_filtered, bin_size)
+        violin_plot(discog_filtered, bin_size)
 
     
     
@@ -710,31 +736,35 @@ def show_lexical_diversity(x):
 
 # function to run at click of the button_show_wordclouds
 def show_wordclouds(x):
-    #clear previous output
-    clear_output()
-    print("WordClouds are rolling in...")
-    global bin_size
-    # select current tab    
-    global selected_section
-    selected_section = 1
-    # select sub tab
-    global selection_tab_of_section_2
-    selection_tab_of_section_2 = 2
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
 
-    data = add_period_column(discog_filtered, bin_size)
-    
-    clear_output()
-    # display UI
-    UI()
-    if wordcloud_by_selection_dropdown.value == 'period':
-        plot_wordcloud.createWordCloud(
-            data[~data['LYRICS_CLEAN'].isnull()], 'period'
-        )
-    elif wordcloud_by_selection_dropdown.value ==  'album':
-        plot_wordcloud.createWordCloud(
-            data[~data['LYRICS_CLEAN'].isnull()], 'YEAR_ALBUM'
-        )
-    
+        #clear previous output
+        clear_output()
+        print("WordClouds are rolling in...")
+        global bin_size
+        # select current tab    
+        global selected_section
+        selected_section = 1
+        # select sub tab
+        global selection_tab_of_section_2
+        selection_tab_of_section_2 = 2
+
+        data = add_period_column(discog_filtered, bin_size)
+
+        clear_output()
+        # display UI
+        UI()
+        if wordcloud_by_selection_dropdown.value == 'period':
+            plot_wordcloud.createWordCloud(
+                data[~data['LYRICS_CLEAN'].isnull()], 'period'
+            )
+        elif wordcloud_by_selection_dropdown.value ==  'album':
+            plot_wordcloud.createWordCloud(
+                data[~data['LYRICS_CLEAN'].isnull()], 'YEAR_ALBUM'
+            )
+
 
 wordcloud_by_selection_dropdown = widgets.Dropdown(options=['period', 'album',],
                                                    value='period',
@@ -857,25 +887,28 @@ def plot_albums_ratings_indexing(discog):
     
 # function to run at click of the button
 def show_discogs_users_charts(x):
-    global bin_size
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
+        global bin_size
 
-    # select current tab    
-    global selected_section
-    selected_section = 2
-    # select sub tab
-    global selection_tab_of_section_3
-    selection_tab_of_section_3 = 0
-    
-    #clear previous output
-    clear_output()
-    # display UI
-    UI()
+        # select current tab    
+        global selected_section
+        selected_section = 2
+        # select sub tab
+        global selection_tab_of_section_3
+        selection_tab_of_section_3 = 0
 
-    plot_albums_discogs_popularity(discog_filtered)
-    plot_albums_ratings(discog_filtered)
-    plot_albums_ratings_indexing(discog_filtered)
-    
-    
+        #clear previous output
+        clear_output()
+        # display UI
+        UI()
+
+        plot_albums_discogs_popularity(discog_filtered)
+        plot_albums_ratings(discog_filtered)
+        plot_albums_ratings_indexing(discog_filtered)
+
+
     
 #-------------------------------------------------------------------------------
 # SECTION 3 | TAB 2 variables and functions
@@ -969,25 +1002,30 @@ def create_chord_diag(df, column1, column2):
     
 # function to run at click of the button
 def show_billboard_100_charts(x):
-    global bin_size
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
 
-    # select current tab    
-    global selected_section
-    selected_section = 2
-    # select sub tab
-    global selection_tab_of_section_3
-    selection_tab_of_section_3 = 1
-    
-    #clear previous output
-    clear_output()
-    # display UI
-    UI()
-    
-    display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
-                              layout=widgets.Layout(width="100%")))
-    create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='period')
+        global bin_size
 
-    
+        # select current tab    
+        global selected_section
+        selected_section = 2
+        # select sub tab
+        global selection_tab_of_section_3
+        selection_tab_of_section_3 = 1
+
+        #clear previous output
+        clear_output()
+        # display UI
+        UI()
+
+        display(widgets.HTML(value=f'''<h2><center><font color="black">
+        Songs placement in Billboard 100 charts</center></h2>''',
+                                  layout=widgets.Layout(width="100%")))
+        create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='period')
+
+
 #-------------------------------------------------------------------------------
 # SECTION 3 | TAB 3 variables and functions
     
@@ -995,27 +1033,40 @@ def show_billboard_100_charts(x):
     
 # function to run at click of the button
 def show_billboard_album_charts(x):
-    global bin_size
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
 
-    # select current tab    
-    global selected_section
-    selected_section = 2
-    # select sub tab
-    global selection_tab_of_section_3
-    selection_tab_of_section_3 = 2
-    
-    #clear previous output
-    clear_output()
-    # display UI
-    UI()
+        global bin_size
 
-    display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
-                              layout=widgets.Layout(width="100%"))) 
-    create_chord_diag(discog_filtered, column1 = 'BILLBOARD_ALBUM_RANK', column2 ='period')
-    
+        # select current tab    
+        global selected_section
+        selected_section = 2
+        # select sub tab
+        global selection_tab_of_section_3
+        selection_tab_of_section_3 = 2
 
-    
-    
+        #clear previous output
+        clear_output()
+        # display UI
+        UI()
+
+        display(
+            widgets.HTML(
+                value=f'''
+                      <h2><center><font color="black">
+                      Album placement in Billboard Albums charts</center></h2>''',
+                layout=widgets.Layout(width="100%")
+            )
+        ) 
+        create_chord_diag(
+            discog_filtered,
+            column1 = 'BILLBOARD_ALBUM_RANK', 
+            column2 ='period')
+
+
+
+
     
     
     
@@ -1033,60 +1084,64 @@ sentiment_dropdown2 = widgets.Dropdown(options=[''],
     
 # function to run at click of the button_show_wordclouds
 def show_sentiment_graphs(x):
-    #clear previous output
-    clear_output()
-    print("Analysing the sentiment of the lyrics...")
-    # select current tab    
-    global selected_section
-    selected_section = 3
-    # select sub tab
-    global selection_tab_of_section_4
-    selection_tab_of_section_4 = 0
-    
-    clear_output()   
-    UI()
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
 
-    if sentiment_dropdown1.value == 'albums':
-        # display label
-        display(
-            widgets.HTML(
-                value=f'''<h3><center><font color="black">
-                          Sentiment Analysis - diverging bars</center></h3>
-                          <h4><center><font color="black">
-                          Artist: {artist} </center></h4>''',
-                layout=widgets.Layout(width="100%"))
-        ) 
-        # display plot of scores by album, sorted chronologically
-        advanced_analytics.plotDivergingBars(
-            discog_filtered.reset_index(), 
-            'SENTIMENT_COMPOUND_SCORE', 
-            'YEAR_ALBUM', 
-            green=colour_palette.get('green'),
-            red=colour_palette.get('red'),
-            sort_by_values = False)
-    else: 
-        # display more specific label
-        display(
-            widgets.HTML(
-                value=f'''<h3><center><font color="black">
-                          Sentiment Analysis - diverging bars</center></h3>
-                          <h4><center><font color="black">
-                          Artist: {artist} | 
-                          Album: {sentiment_dropdown2.value[7:]} | 
-                          Year: {sentiment_dropdown2.value[1:5]}
-                          </center></h4>''',
-                layout=widgets.Layout(width="100%"))
-        ) 
-        # display plot by song in a selected album, sorted by sentiment score
-        advanced_analytics.plotDivergingBars(
-            discog_filtered[
-                discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value
-            ].reset_index(),
-            'SENTIMENT_COMPOUND_SCORE', 
-            'TRACK_TITLE',
-            green=colour_palette.get('green'),
-            red=colour_palette.get('red')
-        )
+        #clear previous output
+        clear_output()
+        print("Analysing the sentiment of the lyrics...")
+        # select current tab    
+        global selected_section
+        selected_section = 3
+        # select sub tab
+        global selection_tab_of_section_4
+        selection_tab_of_section_4 = 0
+
+        clear_output()   
+        UI()
+
+        if sentiment_dropdown1.value == 'albums':
+            # display label
+            display(
+                widgets.HTML(
+                    value=f'''<h3><center><font color="black">
+                              Sentiment Analysis - diverging bars</center></h3>
+                              <h4><center><font color="black">
+                              Artist: {artist} </center></h4>''',
+                    layout=widgets.Layout(width="100%"))
+            ) 
+            # display plot of scores by album, sorted chronologically
+            advanced_analytics.plotDivergingBars(
+                discog_filtered.reset_index(), 
+                'SENTIMENT_COMPOUND_SCORE', 
+                'YEAR_ALBUM', 
+                green=colour_palette.get('green'),
+                red=colour_palette.get('red'),
+                sort_by_values = False)
+        else: 
+            # display more specific label
+            display(
+                widgets.HTML(
+                    value=f'''<h3><center><font color="black">
+                              Sentiment Analysis - diverging bars</center></h3>
+                              <h4><center><font color="black">
+                              Artist: {artist} | 
+                              Album: {sentiment_dropdown2.value[7:]} | 
+                              Year: {sentiment_dropdown2.value[1:5]}
+                              </center></h4>''',
+                    layout=widgets.Layout(width="100%"))
+            ) 
+            # display plot by song in a selected album, sorted by sentiment score
+            advanced_analytics.plotDivergingBars(
+                discog_filtered[
+                    discog_filtered.YEAR_ALBUM == sentiment_dropdown2.value
+                ].reset_index(),
+                'SENTIMENT_COMPOUND_SCORE', 
+                'TRACK_TITLE',
+                green=colour_palette.get('green'),
+                red=colour_palette.get('red')
+            )
 
 # inner function to be triggered with a change of dropdown1 value
 def adapt_UI(x):
@@ -1106,20 +1161,23 @@ def adapt_UI(x):
 # SECTION 4 | TAB 2 
 
 def show_sentiment_vs_charts_song(x):
-    # select current tab    
-    global selected_section
-    selected_section = 3
-    # select sub tab
-    global selection_tab_of_section_4
-    selection_tab_of_section_4 = 1
-    
-    #clear previous output
-    clear_output()
-    # display UI
-    UI()
-    display(widgets.HTML(value=f'''<h2><center><font color="black">Tracks sentiment vs placement in Billboard 100 charts </center></h2>''',
-                              layout=widgets.Layout(width="100%"))) 
-    create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
+        # select current tab    
+        global selected_section
+        selected_section = 3
+        # select sub tab
+        global selection_tab_of_section_4
+        selection_tab_of_section_4 = 1
+
+        #clear previous output
+        clear_output()
+        # display UI
+        UI()
+        display(widgets.HTML(value=f'''<h2><center><font color="black">Tracks sentiment vs placement in Billboard 100 charts </center></h2>''',
+                                  layout=widgets.Layout(width="100%"))) 
+        create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
 
 #-------------------------------------------------------------------------------
 # SECTION 4 | TAB 3 Sentiment score over time
@@ -1414,19 +1472,22 @@ def sntm_scr_ovr_time(data):
 
 
 def show_sentiment_score_ovr_time(x):
-    # select current tab    
-    global selected_section
-    selected_section = 3
-    # select sub tab
-    global selection_tab_of_section_4
-    selection_tab_of_section_4 = 2
-    
-    #clear previous output
-    clear_output()
-    # display UI
-    UI()
-    
-    sntm_scr_ovr_time(discog_filtered)
+    if len(discog_filtered) == 0:
+        no_selections_warning()
+    else:    
+        # select current tab    
+        global selected_section
+        selected_section = 3
+        # select sub tab
+        global selection_tab_of_section_4
+        selection_tab_of_section_4 = 2
+
+        #clear previous output
+        clear_output()
+        # display UI
+        UI()
+
+        sntm_scr_ovr_time(discog_filtered)
 #     sntm_scr_ovr_cht_unchta(discog_filtered)    
 #-------------------------------------------------------------------------------
 
