@@ -72,10 +72,13 @@ def no_selections_warning():
     # clear previous output
     clear_output()
     display(
-            widgets.HTML(value=f'''<b><font color="red">
-            No artist/discography selected. 
-            Make sure selections are made before running visualisations.</b>''',
-                           layout=widgets.Layout(width="100%"))
+            widgets.HTML(
+                value=f'''
+                      <b><font color="red">
+                      No artist/discography selected. Make sure selections 
+                      are made before running visualisations.
+                      </b>''',
+                layout=widgets.Layout(width="100%"))
     )
     global selected_section
     selected_section = 0
@@ -106,8 +109,12 @@ def adapt_title(text):
     adapted_text = []
     while len(text) > 0:
         text_slice = text[:21]
-        last_char = 0 if text_slice == text else min(text_slice[::-1].find(' '), len(text_slice))
-        adapted_text.append(text_slice[:None if last_char == 0 else -last_char])
+        last_char = 0 if text_slice == text else min(
+            text_slice[::-1].find(' '), len(text_slice)
+        )
+        adapted_text.append(
+            text_slice[:None if last_char == 0 else -last_char]
+        )
         text = text[21 - last_char:]
     return '\n'.join(adapted_text)
 
@@ -134,9 +141,12 @@ def get_discography(x):
     # if no match found from discogs, stop and print a message
     except:
         display(
-            widgets.HTML(value=f'''<b><font color="red">No match found,\
-        please try again </b>''',
-                           layout=widgets.Layout(width="100%"))
+            widgets.HTML(
+                value=f'''<b><font color="red">
+                          No match found,\
+                          please try again 
+                          </b>''',
+                layout=widgets.Layout(width="100%"))
         )
         #print(widgets"No match found, please try again")
         return UI()
@@ -203,9 +213,10 @@ def multi_checkbox_widget(albums, albums_filter):
     for option in options:
         if option.description in albums_filter:
             option.value = True
-    options_widget = widgets.VBox(options, layout={'overflow': 'scroll', 
-                                                   'max_height': '300px', 
-                                                   'width' : 'initial'})
+    options_widget = widgets.VBox(options, 
+                                  layout = {'overflow': 'scroll',
+                                            'max_height': '300px', 
+                                            'width' : 'initial'})
     multi_select = widgets.VBox([options_widget], 
                                 layout=widgets.Layout(padding = "20px"))
     return multi_select
@@ -242,11 +253,7 @@ def apply_selection(x):
     try:
         discog_store = pd.read_csv('discog_store.csv')
     except:
-        pass   
-#     try:
-#         discog = discog_store[discog_store['ARTIST_NAME'] == artist].reset_index()
-#     except:
-#         pass    
+        pass    
     #apply user selections, overwrite album_filter with current selection
     global album_selector 
     global album_filter 
@@ -263,9 +270,7 @@ def apply_selection(x):
     set_album_filter(selected)
     # reset selector to keep the actual selections
     set_album_selector(discog['YEAR_ALBUM'].unique().tolist(), selected)
-    
 
-    
     #clear previous output
     clear_output() 
     
@@ -287,9 +292,15 @@ def apply_selection(x):
         discog_store.to_csv('discog_store.csv', index = False)
     except PermissionError:
         clear_output()
-        display(widgets.HTML(value=f'''<b><font color="red">Permission denied: \
-        make sure 'discog_store.csv' is closed and try again </b>''',
-                           layout=widgets.Layout(width="100%")))
+        display(
+            widgets.HTML(
+                value=f'''<b><font color="red">
+                      Permission denied: \
+                      make sure 'discog_store.csv' is closed and try again 
+                      </b>''',
+                layout=widgets.Layout(width="100%")
+            )
+        )
         return UI()
            
     #get lyrics
@@ -329,9 +340,10 @@ def apply_selection(x):
         # iterate through results and populate the columns in main discog store
         # add lyrics
         for i,r in lyrics_data.iterrows():
-            discog_store.loc[(discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
-                             (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), 
-                             "LYRICS"] = r['LYRICS']
+            discog_store.loc[
+                (discog_store['ARTIST_NAME'] == r['ARTIST_NAME']) &
+                (discog_store['TRACK_TITLE'] == r['TRACK_TITLE']), 
+                "LYRICS"] = r['LYRICS']
         # add sentiment data
         for i,r in sentiment_data.iterrows():
             discog_store.loc[
@@ -382,9 +394,15 @@ def apply_selection(x):
         discog_store.to_csv('discog_store.csv', index = False)
     except PermissionError:
         clear_output()
-        display(widgets.HTML(value=f'''<b><font color="red">Permission denied: \
-        make sure 'discog_store.csv' is closed and try again </b>''',
-                           layout=widgets.Layout(width="100%")))
+        display(
+            widgets.HTML(
+                value=f'''<b><font color="red">
+                Permission denied: \
+                make sure 'discog_store.csv' is closed and try again 
+                </b>''',
+                layout=widgets.Layout(width="100%")
+            )
+        )
         return UI()
         
     
@@ -411,10 +429,11 @@ def apply_selection(x):
     else:  
         # populate sentiment chart dropdown with selected albums
         global sentiment_dropdown2
-        sentiment_dropdown2 = widgets.Dropdown(options=discog_filtered['YEAR_ALBUM'].unique(),
-                                                value=discog_filtered['YEAR_ALBUM'].unique()[0],
-                                                description='Select Album:',
-                                                disabled=False,)
+        sentiment_dropdown2 = widgets.Dropdown(
+            options=discog_filtered['YEAR_ALBUM'].unique(),
+            value=discog_filtered['YEAR_ALBUM'].unique()[0],
+            description='Select Album:',
+            disabled=False,)
 
 
         # display UI
@@ -490,7 +509,13 @@ def unique_per_period(discog, column, bin_size):
             column : []}
     if bin_size == 1:
         for period in data['period']:
-            data[column].append(len(discog[discog['YEAR'].astype(int) == int(period)][column].unique()))
+            data[column].append(
+                len(
+                    discog[
+                        discog['YEAR'].astype(int) == int(period)
+                    ][column].unique()
+                )
+            )
     else:
         for period in data['period']:
             data[column].append(
@@ -498,7 +523,9 @@ def unique_per_period(discog, column, bin_size):
                     discog[
                         (discog['YEAR'].astype(int) >= int(period[:4])) \
                         & (discog['YEAR'].astype(int) <= int(period[5:]))
-                    ][column].unique()))     
+                    ][column].unique()
+                )
+            )     
         # filter out all but one period empty before first and after last record
     output = pd.DataFrame.from_dict(data)
     # flag record with and without data
@@ -566,44 +593,17 @@ def add_period_column(discog, bin_size):
     discog['period'] = period_col_data
     return discog
                                                                
-# def plot_albums_songs_per_period(discog, bin_size):
-#     '''plots the number of albums and songs per period'''
-    
-#     data = album_song_count_per_period(discog, bin_size)
-    
-#     fig, ax1 = plt.subplots(figsize=(8,5))
-
-#     color = 'tab:red'
-#     ax1.set_xlabel('Year' if bin_size == 1 else str(bin_size) + '-year period')
-#     ax1.set_ylabel('number of albums', color=color)
-
-#     ax1.plot(data['period'], data['ALBUMS'], color=color)
-#     ax1.tick_params(axis='y', labelcolor=color)
-#     ax1.tick_params(axis='x', labelrotation=45 if len(data.index) > 5 else 0)
-    
-#     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-
-#     color = 'tab:blue'
-#     ax2.set_ylabel('number of songs', color=color)  # x-label handled with ax1
-#     ax2.plot(data.index.tolist(), data['TRACK_TITLE'], color=color)
-#     ax2.tick_params(axis='y', labelcolor=color)
-
-#     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
-    
-#     ax1.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-#     ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
-#     ax1.set_ylim(bottom=0)
-#     ax2.set_ylim(bottom=0)
-#     plt.title('Albums and songs count by period', fontsize=18)
-#     plt.show()
 
 def plot_albums_songs_per_period_bar(discog, bin_size):
     '''plots the number of albums and songs per period'''
 
     width = 0.2 
-    data = album_song_count_per_period(discog, bin_size).set_index('period')
+    data = album_song_count_per_period(
+        discog, 
+        bin_size
+    ).set_index('period')
     fig, ax1 = plt.subplots(figsize=(8,5))   
-    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    ax2 = ax1.twinx()  # instantiate a second axes sharing the same x-axis
     ax2.set_axisbelow(True)
     color = colour_palette.get('blue')
 
@@ -642,25 +642,6 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     ax2.grid(False, axis='both')
     ax1.grid(False, axis='x')
     plt.show()
-
-# def pirate_plot(discog, bin_size):
-#     data = add_period_column(discog, bin_size)
-#     sns.set_style("whitegrid")
-#     fig, ax = plt.subplots(figsize=(8,5))
-#     ax = sns.boxplot(x="period", 
-#                      y="LYRICS_CLEAN_UNIQUE_COUNT", 
-#                      data=data)
-#     ax = sns.stripplot(x="period", 
-#                        y="LYRICS_CLEAN_UNIQUE_COUNT", 
-#                        data=data, 
-#                        color=".25")
-#     ax.set_xlabel('Period')
-#     ax.set_ylabel('Number of unique words (excl. stopwords)')
-#     plt.title('Lexical diversity', fontsize=18)
-#     plt.show()
-
-
-
 
 
 # function to run at click of the button_3
@@ -869,7 +850,10 @@ def plot_albums_ratings_indexing(discog):
     fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
     data['positive'] = data['indexing'] > 0
     data['indexing'].plot(kind='bar', 
-                          color=data.positive.map({True: colour_palette.get('green'), False: colour_palette.get('red')}), 
+                          color=data.positive.map(
+                              {True: colour_palette.get('green'), 
+                               False: colour_palette.get('red')}
+                          ), 
                           ax=ax, width=0.5, position=1)
     
     ax.set_ylabel('Album Discogs rating vs. average')
@@ -882,7 +866,8 @@ def plot_albums_ratings_indexing(discog):
     # horizontal line indicating the threshold
     ax.plot([-1, len(data)], [0, 0], "k--", color = 'b')
     
-    plt.title('Average Discogs Users Rating by Album vs Index', fontsize=18)
+    plt.title('Average Discogs Users Rating by Album vs Index', 
+              fontsize=18)
     plt.show()
     
 # function to run at click of the button
@@ -920,8 +905,10 @@ def create_chord_diag(df, column1, column2):
     @param - bin_size -> int [by default 10]
     
     @return - Chord_diagram using Chord Library
-    column1 - refers charts, either album or track (BILLBOARD_TRACK_RANK, BILLBOARD_ALBUM_RANK)
-    column2 - period or sentiment (sentiment buckets tracks, sentiment buckets for albums)
+    column1 - refers charts, either album or track 
+              (BILLBOARD_TRACK_RANK, BILLBOARD_ALBUM_RANK)
+    column2 - period or sentiment (sentiment buckets tracks, 
+              sentiment buckets for albums)
     '''
     # Creating period column 
     global bin_size
@@ -937,11 +924,12 @@ def create_chord_diag(df, column1, column2):
                    , "Charted_Uncharted"
                   ] = 'Uncharted'
     #Group By period and Chart_Unchart
-    df_groupby = pd.pivot_table(data,
-                                index = [column2, 'Charted_Uncharted'],
-                                values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS',
-                                aggfunc = lambda x: len(x.unique())
-                                                ).reset_index()
+    df_groupby = pd.pivot_table(
+        data,
+        index = [column2, 'Charted_Uncharted'],
+        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS',
+        aggfunc = lambda x: len(x.unique())
+    ).reset_index()
         
   
     # Converting period to string to solve issue when using bin size 1
@@ -954,15 +942,21 @@ def create_chord_diag(df, column1, column2):
                                 
                             
     # Creating two pivot data
-    pivot_data =  df_groupby.pivot(index = column2
-                                    , columns = 'Charted_Uncharted'
-                                    , values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS')
-    pivot_data2 =  df_groupby.pivot(index = 'Charted_Uncharted'
-                                     , columns = column2
-                                     , values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS')
+    pivot_data = df_groupby.pivot(
+        index = column2,
+        columns = 'Charted_Uncharted',
+        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS'
+    )
+    pivot_data2 = df_groupby.pivot(
+        index = 'Charted_Uncharted',
+        columns = column2,
+        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS'
+    )
     
     # Appending two dataFrame
-    df_final = pd.concat([pivot_data, pivot_data2], sort = True).fillna(0).astype(int).sort_index()
+    df_final = pd.concat(
+        [pivot_data, pivot_data2],
+        sort = True).fillna(0).astype(int).sort_index()
     matrix = df_final.values.tolist()
     ls_col_nam = [col for col in df_final.columns]
 #     {artist}
@@ -988,15 +982,22 @@ def create_chord_diag(df, column1, column2):
                  , margin= 10 if wrap_index == True else 80
                  , wrap_labels= wrap_index
                 ).to_html()
-#     if column1 == 'BILLBOARD_TRACK_RANK':
-#         display(widgets.HTML(value=f'''<h2><center><font color="black">Songs placement in Billboard 100 charts</center></h2>''',
-#                              layout=widgets.Layout(width="100%")))
-#     else:
-#         display(widgets.HTML(value=f'''<h2><center><font color="black">Album placement in Billboard Albums charts</center></h2>''',
-#                              layout=widgets.Layout(width="100%")))        
-    display(widgets.HTML(value=f'''<h3><center><font color="black">Artist: {artist_nam}</center></h3>''',
-                         layout=widgets.Layout(width="100%")))        
-    display(IFrame(src="./out.html", width=1000, height=700))
+      
+    display(
+        widgets.HTML(
+            value=f'''<h3><center><font color="black">
+            Artist: {artist_nam}</center>
+            </h3>''',
+            layout=widgets.Layout(width="100%")
+        )
+    )        
+    display(
+        IFrame(
+            src="./out.html", 
+            width=1000, 
+            height=700
+        )
+    )
     
 #------------------------------------------------------------------------------------------      
     
@@ -1055,7 +1056,8 @@ def show_billboard_album_charts(x):
             widgets.HTML(
                 value=f'''
                       <h2><center><font color="black">
-                      Album placement in Billboard Albums charts</center></h2>''',
+                      Album placement in Billboard Albums charts
+                      </center></h2>''',
                 layout=widgets.Layout(width="100%")
             )
         ) 
@@ -1175,9 +1177,19 @@ def show_sentiment_vs_charts_song(x):
         clear_output()
         # display UI
         UI()
-        display(widgets.HTML(value=f'''<h2><center><font color="black">Tracks sentiment vs placement in Billboard 100 charts </center></h2>''',
-                                  layout=widgets.Layout(width="100%"))) 
-        create_chord_diag(discog_filtered, column1 = 'BILLBOARD_TRACK_RANK', column2 ='SENTIMENT_GROUP')
+        display(
+            widgets.HTML(
+                value=f'''<h2><center><font color="black">
+                Tracks sentiment vs placement in Billboard 100 charts 
+                </center></h2>''',
+                layout=widgets.Layout(width="100%")
+            )
+        ) 
+        create_chord_diag(
+            discog_filtered, 
+            column1 = 'BILLBOARD_TRACK_RANK', 
+            column2 ='SENTIMENT_GROUP'
+        )
 
 #-------------------------------------------------------------------------------
 # SECTION 4 | TAB 3 Sentiment score over time
@@ -1244,13 +1256,6 @@ def sntm_scr_ovr_time(data):
     
     # Decorations
     ax1.set_title('Song lyrics by Sentiment over time', fontsize=14)
-    
-    # Creating y-axis positive both ways
-#     plt.xticks(np.arrange(df.index.min()-1, df.max()+1, 5)
-#     plt.xticks(x[::1], fontsize=10, horizontalalignment='center')
-#     plt.xlim(x[0]-1, x[-1]+1)
-    # for y in np.arange(5, max(y2), 5):    
-    #     plt.hlines(y, xmin=x.min(), xmax=len(x), colors='black', alpha=0.3, linestyles="--", lw=0.5)
     
     #set axes limits
     # make sure the chart always displays at least 12 years on x axis
@@ -1323,10 +1328,6 @@ def sntm_scr_ovr_time(data):
     # force x axis tics to be integers
     ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
     
-    # calculate axis limits
-#     xlimit_1 = [df_charted.index.min()-1, df_charted.index.max()+1]
-#     ylimit_1 = round(max(max(y_pos) + max(y_ntr2), abs(min(y_neg) + min(y_ntr1))) *1.1)   
-
     # set title
     ax2.title.set_text('Charted Tracks')
     ##-----------------------------------------------------------------------------------##
