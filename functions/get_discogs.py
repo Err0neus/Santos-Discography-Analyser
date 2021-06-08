@@ -289,7 +289,7 @@ def get_artist_albums(a_name):
     @return: dataframe
     '''
     a_id, a_nam = getArtistID(a_name)
-    url = "http://www.discogs.com/artist/" + str(a_id) + "?limit=500"
+    url = "https://www.discogs.com/artist/" + str(a_id) + "?limit=500"
     r = requests.get(url)
     root = lxml.html.fromstring(r.text)
     albums_info = pd.DataFrame()
