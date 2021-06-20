@@ -415,7 +415,10 @@ def getBillBoardPeak(artist_name, flag:int = 1):
         df_billboard["BILLBOARD_ALBUM_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_ALBUM_DATE"], format = "%d.%m.%Y")
         df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].astype(str)
         df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].str.replace(r"\s+\(.*\)","")
-        df_final_billboard = df_billboard.sort_values(by = ["BILLBOARD_ALBUM_DATE"]).reset_index(drop = True)
+        df_final_billboard = (df_billboard.sort_values(by = ["BILLBOARD_ALBUM_DATE"])
+                             ).drop_duplicates(subset = ['BILLBOARD_ARTIST_NAME'
+                                                         , 'BILLBOARD_ALBUM']
+                                              ).reset_index(drop = True)
         #return datafram with album for a particular artist
         return df_final_billboard[
                                   ["BILLBOARD_ARTIST_NAME"
