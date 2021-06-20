@@ -1703,8 +1703,13 @@ def UI():
     # selector to include/exclude albums
     global album_selector
     # show current artist
-    label_current_artist = widgets.HTML(value=f'''<b><font size = "+1">Selected\
-    discography for <u>{artist}</u></b>''',
+    label_current_artist = widgets.HTML(value=f'''
+    <p><font size = "+1">
+    Selected discography for <b><u>{artist}</u></b>
+    </p>
+    <p><font size = "-1"><i>
+    Source <a href="https://www.discogs.com/artist/{get_discogs.getArtistID(artist_input.value)[0]}" target="_blank">link</a></i>
+    </p><br>''',
                            layout=widgets.Layout(width="100%"))
     # button to select/deselect
     text_select_deselect_all = widgets.Label(
