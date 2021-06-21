@@ -414,7 +414,7 @@ def getBillBoardPeak(artist_name, flag:int = 1):
         df_billboard["BILLBOARD_ARTIST_NAME"] = artist_nam
         df_billboard["BILLBOARD_ALBUM_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_ALBUM_DATE"], format = "%d.%m.%Y")
         df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].astype(str)
-        df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].str.replace(r"\s+\(.*\)","")
+        df_billboard["BILLBOARD_ALBUM"] = df_billboard["BILLBOARD_ALBUM"].str.replace(r"\s+\(.*\)","",regex=False)
         df_final_billboard = (df_billboard.sort_values(by = ["BILLBOARD_ALBUM_DATE"])
                              ).drop_duplicates(subset = ['BILLBOARD_ARTIST_NAME'
                                                          , 'BILLBOARD_ALBUM']
@@ -512,8 +512,8 @@ def getArtistData(a_name):
                                                                   ).reset_index(drop = True)
     
     # Creating new album column & track without any brackets
-    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUMS"].str.replace(r"\s+\(.*\)","")
-    final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
+    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUMS"].str.replace(r"\s+\(.*\)","",regex=False)
+    final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","",regex=False)
     
     # Get billboard ranking for albums and tracks
     df_billboard_albums = getBillBoardPeak(a_name)
