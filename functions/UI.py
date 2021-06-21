@@ -786,7 +786,7 @@ def plot_albums_discogs_popularity(discog):
                                    position=1)
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.tick_params(axis='x', labelrotation=45)
-    ax1.set_xlabel('Year/Album')
+    ax1.set_xlabel('') # no label but adds spacing between charts
     xlabels = data.index.tolist()
     ax1.set_xticklabels(xlabels, ha='right')
 
@@ -806,8 +806,9 @@ def plot_albums_discogs_popularity(discog):
     #ax2.yaxis.set_major_locator(MaxNLocator(integer=True)) 
     #ax1.xticks(ha='right')
     ax2.grid(None)
-    plt.title('Discogs Users - Owners and Average Ratings', fontsize=18)
+    plt.title('Discogs Users - Owners and Average Ratings\n', fontsize=18)
     plt.show()
+    print('\n')
     
 def plot_albums_ratings(discog):
     threshold = discog['DISCOG_AVG_RATING'].mean()
@@ -825,17 +826,18 @@ def plot_albums_ratings(discog):
                                    width=0.5, 
                                    position=1)
     ax.set_ylabel('Avg. Discogs user rating')
-    ax.set_xlabel('Year/Album')
+    ax.set_xlabel('') # no label but adds spacing between charts
 
     ax.tick_params(axis='x', labelrotation=45)
     xlabels = data.index.tolist()
     ax.set_xticklabels(xlabels, ha='right')
 
     # horizontal line indicating the threshold
-    ax.plot([-1, len(data)], [threshold, threshold], "k--", color = 'b')
+    ax.plot([-1, len(data)], [threshold, threshold], "k--") #, color = 'b')
     
-    plt.title('Average Discogs Users Rating by Album vs Index', fontsize=18)
+    plt.title('Average Discogs Users Rating by Album vs Index\n', fontsize=18)
     plt.show()
+    print('\n')
 
     
 def plot_albums_ratings_indexing(discog):
@@ -857,16 +859,16 @@ def plot_albums_ratings_indexing(discog):
                           ax=ax, width=0.5, position=1)
     
     ax.set_ylabel('Album Discogs rating vs. average')
-    ax.set_xlabel('Year/Album')
+    ax.set_xlabel('') # no label but adds spacing between charts
 
     ax.tick_params(axis='x', labelrotation=45)
     xlabels = data.index.tolist()
     ax.set_xticklabels(xlabels, ha='right')
     
     # horizontal line indicating the threshold
-    ax.plot([-1, len(data)], [0, 0], "k--", color = 'b')
+    ax.plot([-1, len(data)], [0, 0], "k--") #, color = 'b')
     
-    plt.title('Average Discogs Users Rating by Album vs Index', 
+    plt.title('Average Discogs Users Rating by Album vs Index\n', 
               fontsize=18)
     plt.show()
     
