@@ -587,7 +587,7 @@ def unique_per_period(discog, column, bin_size):
 def album_song_count_per_period(discog, bin_size):
     '''returns a merged dataframe by period 
     with counts of albums and songs per period'''
-    data_albums = unique_per_period(discog, 'ALBUMS', bin_size)
+    data_albums = unique_per_period(discog, 'YEAR_ALBUM', bin_size)
     data_songs = unique_per_period(discog, 'TRACK_TITLE', bin_size)
     return data_albums.merge(data_songs, on = 'period')
 
@@ -644,7 +644,7 @@ def plot_albums_songs_per_period_bar(discog, bin_size):
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
-    data['ALBUMS'].plot(kind='bar', 
+    data['YEAR_ALBUM'].plot(kind='bar', 
                         color=color, 
                         ax=ax2, 
                         width=width, 
