@@ -164,6 +164,20 @@ def get_discography(x):
 #-------------------------------------------------------------------------------        
     discog['YEAR_ALBUM'] = "[" + discog['YEAR'].astype(str) + "] " \
                             + discog['ALBUMS']
+    
+    # look for duplicates and overwrite their names (issue #51)
+    for album in discog['YEAR_ALBUM']:
+        unique_album_ids = discog[discog['YEAR_ALBUM'] == album]\
+                                               ['ARTIST_ID'].unique().tolist()
+        if len(unique_album_ids) > 1:
+            counter = 1
+            for album_id in unique_album_ids:
+                discog.loc[discog['ARTIST_ID'] == album_id, 'YEAR_ALBUM'] = \
+                discog[discog['ARTIST_ID'] == album_id]\
+                                      ['YEAR_ALBUM'] + " (" + str(counter) + ")"
+                counter += 1
+                
+            
     # make version for displaying in charts (with line breaks)
     discog['YEAR_ALBUM_DISPLAY'] = discog['YEAR_ALBUM'].astype(str).apply(adapt_title)
     # clear previous output
