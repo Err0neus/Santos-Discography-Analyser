@@ -168,12 +168,12 @@ def get_discography(x):
     # look for duplicates and overwrite their names (issue #51)
     for album in discog['YEAR_ALBUM']:
         unique_album_ids = discog[discog['YEAR_ALBUM'] == album]\
-                                               ['ARTIST_ID'].unique().tolist()
+                                               ['DISCOGS_ALBUM_ID'].unique().tolist()
         if len(unique_album_ids) > 1:
             counter = 1
             for album_id in unique_album_ids:
-                discog.loc[discog['ARTIST_ID'] == album_id, 'YEAR_ALBUM'] = \
-                discog[discog['ARTIST_ID'] == album_id]\
+                discog.loc[discog['DISCOGS_ALBUM_ID'] == album_id, 'YEAR_ALBUM'] = \
+                discog[discog['DISCOGS_ALBUM_ID'] == album_id]\
                                       ['YEAR_ALBUM'] + " (" + str(counter) + ")"
                 counter += 1
                 
