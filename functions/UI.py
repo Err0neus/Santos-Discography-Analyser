@@ -163,7 +163,7 @@ def get_discography(x):
         discog = get_discogs.getArtistData(artist)
 #-------------------------------------------------------------------------------        
     discog['YEAR_ALBUM'] = "[" + discog['YEAR'].astype(str) + "] " \
-                            + discog['ALBUMS']
+                            + discog['ALBUM']
     
     # look for duplicates and overwrite their names (issue #51)
     for album in discog['YEAR_ALBUM']:
@@ -782,7 +782,7 @@ def plot_albums_discogs_popularity(discog):
     width = 0.2
     data = pd.pivot_table(discog, 
                           index = 'YEAR_ALBUM_DISPLAY', 
-                          values = ['DISCOG_PPL_HAVING', 'DISCOG_AVG_RATING'],
+                          values = ['DISCOGS_PPL_HAVING', 'DISCOGS_AVG_RATING'],
                           aggfunc = 'max')
     
     fig, ax1 = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
@@ -793,7 +793,7 @@ def plot_albums_discogs_popularity(discog):
     ax1.yaxis.grid(True)
     ax1.set_ylabel('Discogs owners', color=color)
     #ax1.plot(data.period, data.album, color=color)
-    data['DISCOG_PPL_HAVING'].plot(kind='bar', 
+    data['DISCOGS_PPL_HAVING'].plot(kind='bar', 
                                    color=color, 
                                    ax=ax1, 
                                    width=width, 
@@ -811,7 +811,7 @@ def plot_albums_discogs_popularity(discog):
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label may be slightly clipped
-    data['DISCOG_AVG_RATING'].plot(kind='bar', 
+    data['DISCOGS_AVG_RATING'].plot(kind='bar', 
                                    color=colour_palette.get('blue'), 
                                    ax=ax2, 
                                    width=width, 
@@ -825,16 +825,16 @@ def plot_albums_discogs_popularity(discog):
     print('\n')
     
 def plot_albums_ratings(discog):
-    threshold = discog['DISCOG_AVG_RATING'].mean()
+    threshold = discog['DISCOGS_AVG_RATING'].mean()
     data = pd.pivot_table(discog,index='YEAR_ALBUM_DISPLAY',
-                          values=['DISCOG_AVG_RATING'],
+                          values=['DISCOGS_AVG_RATING'],
                           aggfunc = 'max')
-    values = np.array(data['DISCOG_AVG_RATING'].tolist())
+    values = np.array(data['DISCOGS_AVG_RATING'].tolist())
 
     # plot it
     fig, ax = plt.subplots(figsize=(max(8,min(15,len(data)+2)),5))
 
-    data['DISCOG_AVG_RATING'].plot(kind='bar', 
+    data['DISCOGS_AVG_RATING'].plot(kind='bar', 
                                    color=colour_palette.get('purple'), 
                                    ax=ax, 
                                    width=0.5, 
@@ -855,11 +855,11 @@ def plot_albums_ratings(discog):
 
     
 def plot_albums_ratings_indexing(discog):
-    threshold = discog['DISCOG_AVG_RATING'].mean()
+    threshold = discog['DISCOGS_AVG_RATING'].mean()
     data = pd.pivot_table(discog,index='YEAR_ALBUM_DISPLAY',
-                          values=['DISCOG_AVG_RATING'],
+                          values=['DISCOGS_AVG_RATING'],
                           aggfunc = 'max')
-    values = (np.array(data['DISCOG_AVG_RATING'])-threshold).tolist()
+    values = (np.array(data['DISCOGS_AVG_RATING'])-threshold).tolist()
     data['indexing'] = values
 
     # plot it
@@ -943,7 +943,7 @@ def create_chord_diag(df, column1, column2):
     df_groupby = pd.pivot_table(
         data,
         index = [column2, 'Charted_Uncharted'],
-        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS',
+        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUM',
         aggfunc = lambda x: len(x.unique())
     ).reset_index()
         
@@ -961,12 +961,12 @@ def create_chord_diag(df, column1, column2):
     pivot_data = df_groupby.pivot(
         index = column2,
         columns = 'Charted_Uncharted',
-        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS'
+        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUM'
     )
     pivot_data2 = df_groupby.pivot(
         index = 'Charted_Uncharted',
         columns = column2,
-        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUMS'
+        values = 'TRACK_TITLE' if column1 == 'BILLBOARD_TRACK_RANK' else 'ALBUM'
     )
     
     # Appending two dataFrame

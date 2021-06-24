@@ -38,7 +38,7 @@ def get_track_genius(df):
     reset_df["new_artist"] = ((reset_df['ARTIST_NAME'].str.replace("&", "and", regex = True).replace("/", " ", regex = True)
                               ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
                              ).replace(" ", "-", regex = True)
-    reset_df["new_albums"] = ((reset_df['ALBUMS'].str.replace(".", " ", regex = True)
+    reset_df["new_albums"] = ((reset_df['ALBUM'].str.replace(".", " ", regex = True)
                               ).str.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~=_+'"})
                              ).replace(" ", "-", regex = True).replace("--", "-", regex = True)
     ls_art_id, ls_a_id, ls_type, ls_artist_name, ls_albums, ls_year, ls_album_type, ls_have, ls_want, ls_rating, ls_rating_count, ls_track, ls_genius_link = [], [], [], [], [], [], [], [], [], [], [], [], []
@@ -60,9 +60,9 @@ def get_track_genius(df):
                 ls_a_id.append(reset_df["DISCOGS_ALBUM_ID"][i])
                 ls_type.append(reset_df["TYPES"][i])
                 ls_artist_name.append(reset_df["ARTIST_NAME"][i])
-                ls_albums.append(reset_df["ALBUMS"][i])
+                ls_albums.append(reset_df["ALBUM"][i])
                 ls_year.append(reset_df["YEAR"][i])
-                ls_album_type.append(reset_df["ALBUMS_TYPES"][i])
+                ls_album_type.append(reset_df["ALBUM_TYPES"][i])
                 ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
                 ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
                 ls_rating.append(reset_df["AVG_RATING"][i])
@@ -74,9 +74,9 @@ def get_track_genius(df):
             ls_a_id.append(reset_df["DISCOGS_ALBUM_ID"][i])
             ls_type.append(reset_df["TYPES"][i])
             ls_artist_name.append(reset_df["ARTIST_NAME"][i])
-            ls_albums.append(reset_df["ALBUMS"][i])
+            ls_albums.append(reset_df["ALBUM"][i])
             ls_year.append(reset_df["YEAR"][i])
-            ls_album_type.append(reset_df["ALBUMS_TYPES"][i])
+            ls_album_type.append(reset_df["ALBUM_TYPES"][i])
             ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
             ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
             ls_rating.append(reset_df["AVG_RATING"][i])
@@ -89,9 +89,9 @@ def get_track_genius(df):
     artist_df["DISCOGS_ALBUM_ID"] = ls_a_id
     artist_df["TYPES"] = ls_type
     artist_df['ARTIST_NAME'] = ls_artist_name
-    artist_df['ALBUMS'] = ls_albums
+    artist_df['ALBUM'] = ls_albums
     artist_df['YEAR'] = ls_year
-    artist_df["ALBUMS_TYPES"] = ls_album_type
+    artist_df["ALBUM_TYPES"] = ls_album_type
     artist_df["NUM_OF_PPL_HAVING"] = ls_have
     artist_df["NUM_OF_PPL_WANT"] = ls_want
     artist_df["AVG_RATING"] = ls_rating
@@ -128,9 +128,9 @@ def get_track_discog(df):
             ls_a_id.append(album_id)
             ls_type.append(reset_df["TYPES"][i])
             ls_artist_name.append(reset_df["ARTIST_NAME"][i])
-            ls_albums.append(reset_df["ALBUMS"][i])
+            ls_albums.append(reset_df["ALBUM"][i])
             ls_year.append(reset_df["YEAR"][i])
-            ls_album_type.append(reset_df["ALBUMS_TYPES"][i])
+            ls_album_type.append(reset_df["ALBUM_TYPES"][i])
             ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
             ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
             ls_rating.append(reset_df["AVG_RATING"][i])
@@ -142,9 +142,9 @@ def get_track_discog(df):
     track_info["DISCOGS_ALBUM_ID"] = ls_a_id
     track_info["TYPES"] = ls_type
     track_info['ARTIST_NAME'] = ls_artist_name
-    track_info['ALBUMS'] = ls_albums
+    track_info['ALBUM'] = ls_albums
     track_info['YEAR'] = ls_year
-    track_info["ALBUMS_TYPES"] = ls_album_type
+    track_info["ALBUM_TYPES"] = ls_album_type
     track_info['TRACK_TITLE'] = ls_track
     track_info["NUM_OF_PPL_HAVING"] = ls_have
     track_info["NUM_OF_PPL_WANT"] = ls_want
@@ -164,9 +164,9 @@ def get_track_discog(df):
                        , "DISCOGS_ALBUM_ID"
                        , "TYPES"
                        , "ARTIST_NAME"
-                       , "ALBUMS"
+                       , "ALBUM"
                        , "YEAR"
-                       , "ALBUMS_TYPES"
+                       , "ALBUM_TYPES"
                        , "TRACK_TITLE"
                        , "NUM_OF_PPL_HAVING"
                        , "NUM_OF_PPL_WANT"
@@ -179,11 +179,11 @@ def data_cleaning(df):
     Cleaning Discogs datafarme. Removing 
     '''
     
-    clean_data = df[(df["ALBUMS_TYPES"] != "(Comp)") 
-                    & (df["ALBUMS_TYPES"] != "(Comp, Album)") 
+    clean_data = df[(df["ALBUM_TYPES"] != "(Comp)") 
+                    & (df["ALBUM_TYPES"] != "(Comp, Album)") 
                     & (df["TYPES"] != "release") 
-                    & ~(df["ALBUMS"].isnull()) 
-                    & ~(df["ALBUMS_TYPES"].isnull())
+                    & ~(df["ALBUM"].isnull()) 
+                    & ~(df["ALBUM_TYPES"].isnull())
                    ]
 
     return (clean_data.reset_index(drop = True))
@@ -194,7 +194,7 @@ def flag_exclude_album(df):
     '''
     
     find_str = "Live|Best Of|Tour|Volume|Concert|Demo|Vol|Unplugged|Unreleased|Collection|Portrait|Recordings"
-    df["EXCLUDE_ALBUM"] = (df["ALBUMS"].str.contains(find_str)).copy()
+    df["EXCLUDE_ALBUM"] = (df["ALBUM"].str.contains(find_str)).copy()
     
     return (df)
 
@@ -203,7 +203,7 @@ def flag_track_title(df):
     Flag True for any duplicated track name.
     '''
     data = df[~df["TRACK_TITLE"].isnull()]# filter any empty track title
-    data_sort = data.sort_values(by = ["YEAR", "ALBUMS"]).copy()
+    data_sort = data.sort_values(by = ["YEAR", "ALBUM"]).copy()
     data_sort["EXCLUDE_SONG"] = data_sort.duplicated(subset=["TRACK_TITLE"], keep='first')
     
     return data_sort
@@ -323,11 +323,11 @@ def get_artist_albums(a_name):
     albums_info["DISCOGS_ALBUM_ID"] = album_id
     albums_info['TYPES'] = types
     albums_info["ARTIST_NAME"] = artist_name
-    albums_info['ALBUMS'] = title
-    albums_info['ALBUMS_TYPES'] = formats
+    albums_info['ALBUM'] = title
+    albums_info['ALBUM_TYPES'] = formats
     albums_info['YEAR'] = year
     # Only getting albums tiltes which are not None
-    filter_albums = albums_info[~(albums_info["ALBUMS"].isnull())].copy()
+    filter_albums = albums_info[~(albums_info["ALBUM"].isnull())].copy()
     
     update_albums_info = get_album_stat(url, filter_albums)
     
@@ -472,11 +472,11 @@ def getArtistData(a_name):
     genius_track = get_track_genius(artist_albums)
     
     #Flagging any duplicate albums and tracks but has different ID
-    genius_track['flag'] = genius_track.duplicated(subset=['ALBUMS', 'TRACK_TITLE'], keep = 'first')
+    genius_track['flag'] = genius_track.duplicated(subset=['ALBUM', 'TRACK_TITLE'], keep = 'first')
     genius_track_dup = genius_track[genius_track['flag'] == True].drop_duplicates(subset = ['DISCOGS_ALBUM_ID'
                                                                                         , 'TYPES'
                                                                                         , 'ARTIST_NAME'
-                                                                                        , 'ALBUMS'
+                                                                                        , 'ALBUM'
                                                                                         , 'YEAR']
                                                                              )
     genius_track_dup['TRACK_TITLE'] = None
@@ -512,15 +512,15 @@ def getArtistData(a_name):
         final_data = flag_track_title(flag_data) # Creating flag column for a track_title
     
     #sorting data by its years
-    final_data_sort = final_data.sort_values(by = ["YEAR"]).rename(columns={"NUM_OF_PPL_HAVING" : "DISCOG_PPL_HAVING"
-                                                                            , "NUM_OF_PPL_WANT" : "DISCOG_PPL_WANT"
-                                                                            , "NUM_OF_RATING" : "DISCOG_RATING"
-                                                                            , "AVG_RATING" : "DISCOG_AVG_RATING"
+    final_data_sort = final_data.sort_values(by = ["YEAR"]).rename(columns={"NUM_OF_PPL_HAVING" : "DISCOGS_PPL_HAVING"
+                                                                            , "NUM_OF_PPL_WANT" : "DISCOGS_PPL_WANT"
+                                                                            , "NUM_OF_RATING" : "DISCOGS_RATINGS_COUNT"
+                                                                            , "AVG_RATING" : "DISCOGS_AVG_RATING"
                                                                            }
                                                                   ).reset_index(drop = True)
     
     # Creating new album column & track without any brackets
-    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUMS"].str.replace(r"\s+\(.*\)","",regex=True)
+    final_data_sort["CLEAN_ALBUM_COL"] = final_data_sort["ALBUM"].str.replace(r"\s+\(.*\)","",regex=True)
     final_data_sort["CLEAN_TRACK_COL"] = final_data_sort["TRACK_TITLE"].str.replace(r"\s+\(.*\)","",regex=True)
     
     # Get billboard ranking for albums and tracks
@@ -543,10 +543,10 @@ def getArtistData(a_name):
                           join = 'left-outer')
     
     # Converting list of columns to integer
-    cols = ["DISCOG_PPL_HAVING"
-            , "DISCOG_PPL_WANT"
-            , "DISCOG_RATING"
-            , "DISCOG_AVG_RATING"
+    cols = ["DISCOGS_PPL_HAVING"
+            , "DISCOGS_PPL_WANT"
+            , "DISCOGS_RATINGS_COUNT"
+            , "DISCOGS_AVG_RATING"
             , "BILLBOARD_ALBUM_RANK"
             , "BILLBOARD_TRACK_RANK"
            ]
@@ -556,13 +556,13 @@ def getArtistData(a_name):
     return full_data[["DISCOGS_ARTIST_ID"
                        , "DISCOGS_ALBUM_ID"
                        , "ARTIST_NAME"
-                       , "ALBUMS"
+                       , "ALBUM"
                        , "YEAR"
                        , "TRACK_TITLE"
-                       , "DISCOG_PPL_HAVING"
-                       , "DISCOG_PPL_WANT"
-                       , "DISCOG_RATING"                       
-                       , "DISCOG_AVG_RATING"
+                       , "DISCOGS_PPL_HAVING"
+                       , "DISCOGS_PPL_WANT"
+                       , "DISCOGS_RATINGS_COUNT"                       
+                       , "DISCOGS_AVG_RATING"
                        , "EXCLUDE_ALBUM"
                        , "EXCLUDE_SONG"
                        , "GENIUS_LINK"
