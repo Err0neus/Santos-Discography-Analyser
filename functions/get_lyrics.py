@@ -42,7 +42,8 @@ def getLyrics(df):
                     lyrics_rm_3 = re.sub(r"([?')])([A-Z])", r'\1\n\2', lyrics_rm_2) # Insert line break between chart ' or ? or ) and capital letter
                     lyrics_rm_4= re.sub(r'\[.*?\]', '', lyrics_rm_3) # Remove any character within []
                     lyrics_rm_5 = [re.sub("[\\[].*?[\)\]]", "", char) for char in lyrics_rm_4.split("\n")]
-                    lyrics_rm_6 = list(filter(None, lyrics_rm_5))
+                    lyrics_rm_6 = [e for e in lyrics_rm_5 if e not in ('Embed', 'Share Url:Copy', 'Embed:Copy', '')] # removing
+#                     lyrics_rm_6 = list(filter(None, lyrics_rm_5))
                     lyrics_clean2 = '\n'.join(lyrics_rm_6)
                     filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics_clean2
                 
