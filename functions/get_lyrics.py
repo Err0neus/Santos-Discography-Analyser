@@ -18,9 +18,9 @@ def fetch_lyrics(html_class):
         ls_lyrics.append(lyrics)
     # Cleaning Lyrics
     concat_lyrics = ''.join(ls_lyrics)
-    line_break_lyrics = concat_lyrics.replace('<br/>', '\n')
-    lyrics_remove1 = re.sub(r'\[.*?\]', '', line_break_lyrics) # Removing any character within []
-    lyrics_remove2 = list(filter(None, lyrics_remove1.split('\n'))) # Removing any white space
+    lyrics_remove1 = re.sub(r'\[.*?\]', '', concat_lyrics) # Removing any character within []
+    line_break_lyrics = lyrics_remove1.replace('<br/>', '\n')
+    lyrics_remove2 = list(filter(None, line_break_lyrics.split('\n'))) # Removing any white space
     lyrics_clean = "\n".join(lyrics_remove2) # adding line break with clean lyrics
     
     return lyrics_clean
