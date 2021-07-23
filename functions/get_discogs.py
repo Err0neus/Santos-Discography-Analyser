@@ -52,23 +52,24 @@ def get_track_genius(df):
         # prcessing only the status with 200 (sucessfully connected)
         if page.status_code == 200: 
             html = bs(page.text, 'html.parser')
-            find_class = html.findAll('div', class_= "chart_row-content") # finding all the html tag "div" where the class name is "chart_row-content"
+            find_class = html.findAll('div', class_ = 'chart_row') # finding all the html tag "div" where the class name is "chart_row-content"
             for tags in find_class:
-                links = tags.find("a", class_= 'u-display_block')
-                # appending to the emply list
-                ls_art_id.append(reset_df["DISCOGS_ARTIST_ID"][i])
-                ls_a_id.append(reset_df["DISCOGS_ALBUM_ID"][i])
-                ls_type.append(reset_df["TYPES"][i])
-                ls_artist_name.append(reset_df["ARTIST_NAME"][i])
-                ls_albums.append(reset_df["ALBUM"][i])
-                ls_year.append(reset_df["YEAR"][i])
-                ls_album_type.append(reset_df["ALBUM_TYPES"][i])
-                ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
-                ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
-                ls_rating.append(reset_df["AVG_RATING"][i])
-                ls_rating_count.append(reset_df["NUM_OF_RATING"][i])
-                ls_track.append((tags.get_text())) #appending track titles
-                ls_genius_link.append(links["href"]) # appending lyrics https links for each song title
+                if len(tags.find('span').get_text().strip()) > 0:
+                    links = tags.find("a", class_= 'u-display_block')
+                    # appending to the emply list
+                    ls_art_id.append(reset_df["DISCOGS_ARTIST_ID"][i])
+                    ls_a_id.append(reset_df["DISCOGS_ALBUM_ID"][i])
+                    ls_type.append(reset_df["TYPES"][i])
+                    ls_artist_name.append(reset_df["ARTIST_NAME"][i])
+                    ls_albums.append(reset_df["ALBUM"][i])
+                    ls_year.append(reset_df["YEAR"][i])
+                    ls_album_type.append(reset_df["ALBUM_TYPES"][i])
+                    ls_have.append(reset_df["NUM_OF_PPL_HAVING"][i])
+                    ls_want.append(reset_df["NUM_OF_PPL_WANT"][i])
+                    ls_rating.append(reset_df["AVG_RATING"][i])
+                    ls_rating_count.append(reset_df["NUM_OF_RATING"][i])
+                    ls_track.append((links.get_text())) #appending track titles
+                    ls_genius_link.append(links["href"]) # appending lyrics https links for each song title
         else:
             ls_art_id.append(reset_df["DISCOGS_ARTIST_ID"][i])
             ls_a_id.append(reset_df["DISCOGS_ALBUM_ID"][i])
