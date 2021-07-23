@@ -237,7 +237,7 @@ def get_stat_link(url, df):
     html = bs(r_get.text, 'html.parser')
     find_class = html.findAll('td', class_= "title")
     
-    print("Getting Albums links in Discogs..")
+    print("Getting Albums links from Discogs..")
     # getting the links for the stat page
     for i in tqdm_notebook(range(len(find_class))):
         links = find_class[i].find("a")
