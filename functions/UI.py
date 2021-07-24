@@ -32,6 +32,9 @@ nltk.download('stopwords')
 stop_words = stopwords.words('english')
 clear_output()
 
+import warnings
+warnings.filterwarnings('ignore')
+
 #-------------------------------------------------------------------------------
 # GLOBAL VARIABLES
 
