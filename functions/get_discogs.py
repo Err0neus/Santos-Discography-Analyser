@@ -445,7 +445,7 @@ def getBillBoardPeak(artist_name, flag:int = 1):
         df_billboard["BILLBOARD_ARTIST_NAME"] = artist_nam
         df_billboard["BILLBOARD_TRACK_DATE"] = pd.to_datetime(df_billboard["BILLBOARD_TRACK_DATE"], format = "%d.%m.%Y")
         df_billboard["BILLBOARD_TRACK_TITLE"] = df_billboard["BILLBOARD_TRACK_TITLE"].astype(str)
-        df_billboard["BILLBOARD_TRACK_TITLE"] = df_billboard["BILLBOARD_TRACK_TITLE"].str.replace(r"\s+\(.*\)","")
+        df_billboard["BILLBOARD_TRACK_TITLE"] = df_billboard["BILLBOARD_TRACK_TITLE"].str.replace(r"\s+\(.*\)","",regex=True)
         df_final_billboard = (df_billboard.sort_values(by = ["BILLBOARD_TRACK_DATE"])
                              ).drop_duplicates(subset = ['BILLBOARD_ARTIST_NAME'
                                                          , 'BILLBOARD_TRACK_TITLE']
