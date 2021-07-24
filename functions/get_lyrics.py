@@ -53,13 +53,14 @@ def getLyrics(df):
 
     for i in tqdm_notebook(range(len(filter_data.GENIUS_LINK))):
         page = requests.get(filter_data.GENIUS_LINK[i]) # Getting Html Tag for each links in Genius_link column 
-        if page.status_code == 200:
+        if page.status_code == 200 and get_list_of_tag(page) != []: # added condition to prevent infinite loop when no lyrics
             find_class = []
             while find_class == []: # Refreshing page if the find_class is empty but status_code = 200
                 page = requests.get(filter_data.GENIUS_LINK[i])
                 find_class = get_list_of_tag(page)
             lyrics = fetch_lyrics(find_class)
             filter_data.loc[filter_data["GENIUS_LINK"] == filter_data["GENIUS_LINK"][i], "LYRICS"] = lyrics
+
 
         else:
             filter_data.loc[filter_data["GENIUS_LINK"] == filter_data.GENIUS_LINK[i], "LYRICS"] = None # If Url not found   
