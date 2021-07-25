@@ -1,5 +1,7 @@
 # Project_Santos
 
+Ever wondered if those positively charged songs are more successful than others? How has the sentiment of a musician's lyrics changed over time? How rich is their vocabulary or how popular are their individual albums among fans? Then you're in the right place.
+
 <strong>Santos Lyrics Analyser</strong> is a Jupyter Notebook based interface to download and visualise music artists' discography data, statistics and lyrics sentiment.
 
 ## High level overview:
