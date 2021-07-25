@@ -30,7 +30,8 @@ For any given musician/band name: <br>
 ![image05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
 <br>
 <br>
-      • lurics sentiment scores across artist's discography [Example: Eminem]<br>
+      • lyrics sentiment scores across artist's discography [Example: Eminem]<br>
+      • lyrics sentiment scores by song in specific album [Example: Eminem]<br>
       • success of tracks and albums in Billboard charts over time<br>
 
 ![image07](images/songs_placement_in_billboard_100_charts.png)<br>
