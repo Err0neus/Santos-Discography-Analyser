@@ -15,8 +15,8 @@ For any given musician/band name: <br>
       • number of songs and albums over time [Artist: David Bowie]<br><br><br> 
       
 ![image01](images/01_albums_and_songs_over_time.PNG)<br>
-      • word clouds by album or period <br> 
-      • lexical diversity over time [Artist: David Bowie] <br> 
+      • lexical diversity over time [Artist: Eminem] <br> 
+      • word clouds by album or period [Artist: David Bowie] <br> 
       
 ![image03](images/03_wordclouds_bowie.PNG)<br>      
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
@@ -28,8 +28,12 @@ For any given musician/band name: <br>
       • success of tracks and albums in Billboard charts over time<br>
 
 ![image](images/songs_placement_in_billboard_100_charts.png)<br>
-      • lyrics sentiment over time <br>
-      • success in Billboard charts vs lyrics sentiment <br>
+      • success in Billboard charts vs lyrics sentiment [Artist: David Bowie] <br>
+      
+![image08](images/08_sentiment_vs_charts_bowie.PNG)<br>
+      • lyrics sentiment over time [Artist: David Bowie] <br>
+      
+![image09](images/09_sentiment_over_time_bowie.PNG)<br>
    
 
 ## Dependencies:
