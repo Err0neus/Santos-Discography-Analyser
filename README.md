@@ -14,7 +14,7 @@ For any given musician/band name: <br>
 <h3> Example visualisations: </h3><br>
       • number of songs and albums over time<br><br><br> 
       • word clouds by album or period <br> 
-      • lexical diversity over time <br> --eminem
+      • lexical diversity over time <br> 
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
       ![image](https://user-images.githubusercontent.com/43116506/126905328-0a472b37-d208-4f42-b277-18084147eb46.png)<br>
       ![image](https://user-images.githubusercontent.com/43116506/126905394-66a6056b-01f3-4470-a6b3-5c24518419e9.png)
