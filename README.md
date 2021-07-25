@@ -14,11 +14,11 @@ For any given musician/band name: <br>
 <h3> Example visualisations: </h3><br>
       • number of songs and albums over time [Artist: David Bowie]<br><br><br> 
       
-![image01](images/01_albums_and_songs_over_time.png)<br>
+![image01](images/01_albums_and_songs_over_time.PNG)<br>
       • word clouds by album or period <br> 
       • lexical diversity over time [Artist: David Bowie] <br> 
       
-![image02](images/03_wordclouds_bowie.png)<br>      
+![image03](images/03_wordclouds_bowie.PNG)<br>      
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
       
 ![image04](images/04_discogs_users__owners_and_average_ratings.png)<br>
