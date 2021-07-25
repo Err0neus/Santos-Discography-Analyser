@@ -6,7 +6,7 @@
 
 For any given musician/band name: <br>
    - retrieves the discography of studio albums, <br>
-   - allows user to select albums from a list, then gets lyrics for each song on selected albums,<br>
+   - allows user to select albums from a list, then retrieves lyrics for songs on selected albums,<br>
    - collects data such as owners and album ratings from DISCOGS.COM, album and song placement in official Billboard music charts,<br>
    - performs lyrics sentiment analysis and generates scores, <br>
    - with a simple user interface, allows users to browse a number of visalisations (by user defined period intervals where applicable). 
