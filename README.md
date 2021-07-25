@@ -11,9 +11,10 @@ For any given musician/band name: <br>
    - performs lyrics sentiment analysis and generates scores, <br>
    - with a simple user interface, allows users to browse a number of visalisations (by user defined period intervals where applicable). 
 
-
+<br><br>
 <h3> Quick demo </h3>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/zorbor8p1Hc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br><br>
 
 <h3> Example visualisations: </h3><br>
       • number of songs and albums over time [Example: David Bowie]<br><br><br> 
