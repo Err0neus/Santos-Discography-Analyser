@@ -30,7 +30,7 @@ For any given musician/band name: <br>
 
 ## Dependencies:
 
-<h5><i>APIs</i></h5>
+<h5><i>APIs and web scraping</i></h5>
 lyricsgenius<br>
 lxml.html<br>
 cssselect<br>
