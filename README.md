@@ -12,13 +12,17 @@ For any given musician/band name: <br>
    - with a simple user interface, allows users to browse a number of visalisations (by user defined period intervals where applicable). 
    
 <h3> Example visualisations: </h3><br>
-      • number of songs and albums over time<br><br><br> 
+      • number of songs and albums over time [Artist: David Bowie]<br><br><br> 
+      
+![image01](images/01_albums_and_songs_over_time.png)<br>
       • word clouds by album or period <br> 
-      • lexical diversity over time <br> 
+      • lexical diversity over time [Artist: David Bowie] <br> 
+      
+![image02](images/03_wordclouds_bowie.png)<br>      
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
       
-![04](images/04_discogs_users__owners_and_average_ratings.png)<br>
-![05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
+![image04](images/04_discogs_users__owners_and_average_ratings.png)<br>
+![image05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
 <br>
 <br>
       • success of tracks and albums in Billboard charts over time<br>
