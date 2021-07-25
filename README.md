@@ -1,6 +1,6 @@
 # Project_Santos
 
-<strong>Santos Lyrics Analyser</strong> is a Jupyter Notebook based interface to download and visualise music artists discography data, statistics and lyrics sentiment.
+<strong>Santos Lyrics Analyser</strong> is a Jupyter Notebook based interface to download and visualise music artists' discography data, statistics and lyrics sentiment.
 
 ## High level overview:
 
