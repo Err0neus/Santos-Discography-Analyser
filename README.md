@@ -10,7 +10,11 @@ For any given musician/band name: <br>
    - collects data such as owners and album ratings from DISCOGS.COM, album and song placement in official Billboard music charts,<br>
    - performs lyrics sentiment analysis and generates scores, <br>
    - with a simple user interface, allows users to browse a number of visalisations (by user defined period intervals where applicable). 
-   
+
+
+<h3> Quick demo </h3>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zorbor8p1Hc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 <h3> Example visualisations: </h3><br>
       • number of songs and albums over time [Example: David Bowie]<br><br><br> 
       
