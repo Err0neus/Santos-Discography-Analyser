@@ -16,8 +16,8 @@ For any given musician/band name: <br>
       • word clouds by album or period <br> 
       • lexical diversity over time <br> 
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
-      ![image](https://user-images.githubusercontent.com/43116506/126905328-0a472b37-d208-4f42-b277-18084147eb46.png)<br>
-      ![image](https://user-images.githubusercontent.com/43116506/126905394-66a6056b-01f3-4470-a6b3-5c24518419e9.png)
+      ![04](images/04_discogs_users__owners_and_average_ratings.png)<br>
+      ![05](images/05_average_discoggs_users_rating_by_album_vs_index.png)
 <br>
 <br>
       • success of tracks and albums in Billboard charts over time<br>
