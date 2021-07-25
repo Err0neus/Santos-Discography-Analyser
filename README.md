@@ -19,28 +19,34 @@ For any given musician/band name: <br>
 <h3> Example visualisations: </h3><br>
       • number of songs and albums over time [Example: David Bowie]<br><br><br> 
       
-![image01](images/01_albums_and_songs_over_time.PNG)<br>
-      • lexical diversity over time [Example: Eminem] <br> 
+![image01](images/01_albums_and_songs_over_time.PNG)<br><br>
+      • lexical diversity over time [Example: Eminem] <br>
+      
+![image02](images/02_lexical_diversity_eminem.PNG)<br><br>
       • word clouds by album or period [Example: David Bowie] <br> 
       
-![image03](images/03_wordclouds_bowie.PNG)<br>      
+![image03](images/03_wordclouds_bowie.PNG)<br>   <br>   
       • Discogs album ratings and statistics [Example: Depeche Mode]<br>
       
-![image04](images/04_discogs_users__owners_and_average_ratings.png)<br>
+![image04](images/04_discogs_users__owners_and_average_ratings.png)<br><br>
 ![image05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
 <br>
 <br>
       • lyrics sentiment scores across artist's discography [Example: Eminem]<br>
+      
+![image06.1](images/06_sentiment_scores_across_albums_eminem.PNG)<br><br>
       • lyrics sentiment scores by song in specific album [Example: Eminem]<br>
+      
+![image06.2](images/06_sentiment_scores_across_songs_in_album_eminem.PNG)<br><br>
       • success of tracks and albums in Billboard charts over time<br>
 
-![image07](images/songs_placement_in_billboard_100_charts.png)<br>
+![image07](images/songs_placement_in_billboard_100_charts.png)<br><br>
       • success in Billboard charts vs lyrics sentiment [Example: David Bowie] <br>
       
-![image08](images/08_sentiment_vs_charts_bowie.PNG)<br>
+![image08](images/08_sentiment_vs_charts_bowie.PNG)<br><br>
       • lyrics sentiment over time [Example: David Bowie] <br>
       
-![image09](images/09_sentiment_over_time_bowie.PNG)<br>
+![image09](images/09_sentiment_over_time_bowie.PNG)<br><br>
    
 
 ## Dependencies:
