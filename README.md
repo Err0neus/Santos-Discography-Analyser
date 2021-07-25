@@ -16,12 +16,14 @@ For any given musician/band name: <br>
       • word clouds by album or period <br> 
       • lexical diversity over time <br> 
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
-      ![04](images/04_discogs_users__owners_and_average_ratings.png)<br>
-      ![05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
+      
+![04](images/04_discogs_users__owners_and_average_ratings.png)<br>
+![05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
 <br>
 <br>
       • success of tracks and albums in Billboard charts over time<br>
-      ![image](images/songs_placement_in_billboard_100_charts_j.jpg)<br>
+
+![image](images/songs_placement_in_billboard_100_charts.png)<br>
       • lyrics sentiment over time <br>
       • success in Billboard charts vs lyrics sentiment <br>
    
