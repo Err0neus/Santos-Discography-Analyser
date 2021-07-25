@@ -1,6 +1,6 @@
 # Project_Santos
 
-<b><u>Santos Lyrics Analyser</u></b> is a Jupyter Notebook based interface downloading and visualizing music artists discography data, statistics and lyrics sentiment
+<strong>Santos Lyrics Analyser</strong> is a Jupyter Notebook based interface downloading and visualizing music artists discography data, statistics and lyrics sentiment
 
 ## High level overview:
 
@@ -17,7 +17,8 @@ For any given musician/band name: <br>
       • lexical diversity over time <br> 
       • Discogs album ratings and statistics [Artist: Depeche Mode]<br>
       ![04](images/04_discogs_users__owners_and_average_ratings.png)<br>
-      ![05](images/05_average_discoggs_users_rating_by_album_vs_index.png)
+      ![05](images/05_average_discoggs_users_rating_by_album_vs_index.png)<br>
+      [[/images/05_average_discoggs_users_rating_by_album_vs_index.png|ALT TEXT]]
 <br>
 <br>
       • success of tracks and albums in Billboard charts over time<br>
