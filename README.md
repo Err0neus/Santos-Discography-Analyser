@@ -1,8 +1,14 @@
+<head>
+   <meta name="google-site-verification" content="O9nN9y0wR-e6eQyK6LX2jmUoExw3ZkThgZzUQItCHgo" />
+</head>
+
 # Santos Discography Analyser
 
 Ever wondered if those positively charged songs are more successful than others? How has the sentiment of a musician's lyrics changed over time? How rich is their vocabulary or how popular are their individual albums among fans? Then you're in the right place.
 
 <strong>Santos Discography Analyser</strong> is a Jupyter Notebook based interface to download and visualise music artists' discography data, statistics and lyrics sentiment.
+
+
 
 ## High level overview:
 
