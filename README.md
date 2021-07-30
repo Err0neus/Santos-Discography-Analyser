@@ -1,4 +1,4 @@
-# Project_Santos
+# Santos Discography Analyser
 
 Ever wondered if those positively charged songs are more successful than others? How has the sentiment of a musician's lyrics changed over time? How rich is their vocabulary or how popular are their individual albums among fans? Then you're in the right place.
 
