@@ -1850,7 +1850,7 @@ def UI():
     
     
     #---------------------------------------------------------------------------
-    # SECTION 3          "Visualisations - Ratings and Sucess" 
+    # SECTION 3          "Visualisations - Ratings and Success" 
     #---------------------------------------------------------------------------    
     #---------------------------------------------------------------------------
     # SECTION 3 | TAB 1   "Discogs Ratings"
@@ -2012,7 +2012,7 @@ def UI():
                                      section_4_wrapper])
     UI.set_title(0, 'Configuration')
     UI.set_title(1, 'Visualisations - Overview and Lexical Diversity')
-    UI.set_title(2, 'Visualisations - Ratings and Sucess')
+    UI.set_title(2, 'Visualisations - Ratings and Success')
     UI.set_title(3, 'Visualisations - Sentiment Analysis')
     UI.selected_index = selected_section
     display(UI)
