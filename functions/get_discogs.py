@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup as bs
 from tqdm import tqdm, tqdm_notebook
 
 # authenticate to DISCOGS.COM
-token = 'FBvXNlFYwMjpXpOkCBYtlyNdawVggJqXcQZJLoJC'
+token = 'FBvXNlFYwMjpXpOkCBYtlyNdawVggJqXcQZJLoJC' #or QrxcPWermYRrmYPASkDkNyJRSOVreDwxAZQDZKoA
 discogs = discogs_client.Client('myApp',  user_token= token)
 
 
@@ -242,9 +242,13 @@ def get_stat_link(url, df):
     # getting the links for the stat page
     for i in tqdm_notebook(range(len(find_class))):
         links = find_class[i].find("a")
-        album_ids = links["href"][links["href"].rfind("/")+1:]
-        df.loc[df["DISCOGS_ALBUM_ID"] == album_ids, "STAT_LINK"] = "https://www.discogs.com" + links["href"]
-    
+#         print(links.href)
+        album_ids = links["href"][links["href"].rfind("/")+1:links["href"].find("-")]
+        df.loc[
+            df["DISCOGS_ALBUM_ID"] == album_ids, 
+            "STAT_LINK"
+        ] = "https://www.discogs.com" + links["href"]
+        
     return df
 
 def get_album_stat(url, df):
@@ -260,6 +264,9 @@ def get_album_stat(url, df):
     df_stat_link = get_stat_link(url, df)
     # webscrapping each album website
     for idx, row in df_stat_link.iterrows():
+#         print(row)
+#         print(url)
+#         print(row["STAT_LINK"])
         stat_request = requests.get(row["STAT_LINK"])
         html_tags = bs(stat_request.text, 'html.parser')
         
@@ -269,16 +276,28 @@ def get_album_stat(url, df):
         num_want = html_tags.find("a", class_="want_num")
         
         if avg_rating is not None:
-            df_stat_link.loc[df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], "AVG_RATING"] = avg_rating.get_text()
+            df_stat_link.loc[
+                df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], 
+                "AVG_RATING"
+            ] = avg_rating.get_text()
         
         if num_rating is not None:
-            df_stat_link.loc[df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], "NUM_OF_RATING"] = num_rating.get_text()
+            df_stat_link.loc[
+                df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], 
+                "NUM_OF_RATING"
+            ] = num_rating.get_text()
         
         if num_have is not None:
-            df_stat_link.loc[df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], "NUM_OF_PPL_HAVING"] = num_have.get_text()
+            df_stat_link.loc[
+                df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], 
+                "NUM_OF_PPL_HAVING"
+            ] = num_have.get_text()
         
         if num_want is not None:
-            df_stat_link.loc[df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], "NUM_OF_PPL_WANT"] = num_want.get_text()
+            df_stat_link.loc[
+                df_stat_link["DISCOGS_ALBUM_ID"] == row["DISCOGS_ALBUM_ID"], 
+                "NUM_OF_PPL_WANT"
+            ] = num_want.get_text()
     
     return df_stat_link.drop(['STAT_LINK'], axis=1)
 
